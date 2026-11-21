@@ -11,8 +11,18 @@ import urllib.error
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 import voice
+from new_episode import build_episode
 from editorial import phrase_time
 from audio_bed import sync_episode, build_sfx
+
+class DefaultTests(unittest.TestCase):
+    def test_new_episode_has_editorial_brand_defaults(self):
+        plan={'slug':'test','title':'Test','script':'Test.','sourceUrl':'https://example.com','durationFrames':300,'shots':[{'a':0,'b':300,'graphic':'hook','purpose':'question'}],'claim_ledger':[{'id':'c'}],'topic_card':{},'creative_brief':{}}
+        ep=build_episode(plan)
+        self.assertEqual(ep['captions']['theme'],'editorial')
+        self.assertEqual(ep['endCard']['handle'],'@techwhoknows')
+        self.assertEqual(ep['endCard']['seconds'],3.2)
+        self.assertIn('cam',ep['shots'][0])
 
 class VoiceTests(unittest.TestCase):
     def test_free_only(self):

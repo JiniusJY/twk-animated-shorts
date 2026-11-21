@@ -16,7 +16,7 @@ export const MechanismGraphic: React.FC<{shot:ShotDef}>=({shot})=>{
  const pop=spring({frame:t,fps,config:{damping:22,stiffness:160}});
  const flipProgress=mode==="overflow"?Math.max(0,Math.min(1,(u-.25)/.14)):0;
  const signAngle=flipProgress*180;
- const number=reset&&live?"0000000000":flipped||mode==="power"?"2147483648":"2147483647";
+ const number=reset&&live?"0000000000":flipped||mode==="power"?"2147483648":mode==="counter"?String(2147483000+Math.floor(u*647)):"2147483647";
  const title=isCounter?(mode==="overflow"?"One more tick.":"Every counter has an edge."):reset?"Off. Then on again.":"All four. At once.";
  return <AbsoluteFill style={{background:PAPER}}>
   <svg viewBox="0 0 1080 1920" width="100%" height="100%" style={{fontFamily:"Georgia, serif"}}>

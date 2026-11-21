@@ -17,6 +17,10 @@ def build_episode(plan):
         if s.get('graphic') not in GRAPHICS:raise ValueError(f'Shot {i}: implement and register the required editorial rig before creation')
         if not s.get('purpose'):raise ValueError(f'Shot {i}: missing editorial purpose')
         if i and not s.get('anchor'):raise ValueError(f'Shot {i}: missing narration anchor')
+    for i,shot in enumerate(plan['shots']):
+        shot.setdefault('id',i+1)
+        shot.setdefault('light','day')
+        shot.setdefault('cam',{'from':[0,2,6],'to':[0,2,6],'lookFrom':[0,1.6,0],'lookTo':[0,1.6,0]})
     out={'fps':30,'world':'office','musicMood':'mystery','actors':[],'props':[],'fx':[],'cues':[],**plan}
     out['endCard']={'handle':'@techwhoknows','seconds':3.2,**plan.get('endCard',{})}
     out['captions']={'enabled':True,'maxWordsPerPage':4,'theme':'editorial',**plan.get('captions',{})}
