@@ -1,20 +1,62 @@
 #!/usr/bin/env python3
 """
 Cloud TTS + Cloud Word Alignment (zero local AI models).
+
 Primary: Fish Audio (FISH_API_KEY + FISH_VOICE_ID) -> voice.wav
          Groq Whisper (GROQ_API_KEY) -> words.json
 Fallback (if secrets are missing): Edge-TTS (free cloud voice + built-in word timings).
+
+Expressiveness (Fish S2, the production model per https://docs.fish.audio/developer-guide/models-pricing/models-overview):
+- episode.json "voice": {"temperature": 0.8, "topP": 0.8, "speed": 1.0}
+- S2 [bracket] emotion cues in the script text, e.g. "[excited] ...", "[whispering] ..."
+  S2 does NOT interpret S1 (parenthesis) cues; this script converts known (paren) cues
+  to [bracket] when an S2 model is used, and strips unknown cues so they are never spoken.
+
+Caching: voice + alignment are reused while the script and voice params are unchanged
+(hash in voice/voice_manifest.json). --force regenerates. This keeps render retries
+comparable (same take) and avoids repeating paid API calls.
 """
 import argparse
 import asyncio
+import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
 import urllib.error
 import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
+
+# Fish S2 emotion/style cues (bracket syntax). Subset of the documented 64+; unknown
+# cues are stripped so they are never read aloud.
+S2_CUES = {
+    "happy", "sad", "angry", "excited", "calm", "whispering", "shouting", "laughing",
+    "crying", "curious", "surprised", "sarcastic", "serious", "fearful", "disgusted",
+    "emphatic", "pause", "long pause", "sigh", "breath",
+}
+PAREN_TO_BRACKET = re.compile(r"\(([a-zA-Z ]{2,24})\)")
+BRACKET_CUE = re.compile(r"\[([a-zA-Z ]{2,24})\]")
+
+
+def normalize_cues(text: str, model: str) -> str:
+    """Match cue syntax to the model family; drop cues we don't trust."""
+    def clean_bracket(m: re.Match) -> str:
+        cue = m.group(1).strip().lower()
+        return f"[{cue}]" if cue in S2_CUES else m.group(0) if cue.startswith("http") else ""
+
+    if model.startswith("s2"):
+        # convert known S1 (paren) cues to S2 [bracket] cues
+        def paren(m: re.Match) -> str:
+            cue = m.group(1).strip().lower()
+            return f"[{cue}]" if cue in S2_CUES else m.group(0)
+
+        text = PAREN_TO_BRACKET.sub(paren, text)
+        return BRACKET_CUE.sub(clean_bracket, text)
+    # S1/edge: strip [bracket] cues entirely (S1 would read them literally)
+    return BRACKET_CUE.sub(lambda m: f"({m.group(1)})" if m.group(1).strip().lower() in S2_CUES else "", text)
 
 
 def run_ffmpeg_to_wav(src: Path, dst: Path):
@@ -27,23 +69,35 @@ def run_ffmpeg_to_wav(src: Path, dst: Path):
     )
 
 
-def synth_fish_audio(text: str, out_mp3: Path, api_key: str, voice_id: str):
-    payload = json.dumps({
+def synth_fish_audio(text: str, out_mp3: Path, api_key: str, voice_id: str, voice_cfg: dict) -> tuple[str, str]:
+    """Returns (provider, model_used). Tries production S2 first, then free S2, then legacy S1."""
+    direction = str(voice_cfg.get("direction", "")).strip().lower()
+    if direction and direction in S2_CUES:
+        text = f"[{direction}] " + text
+    payload_base = {
         "text": text,
         "reference_id": voice_id,
         "format": "mp3",
         "mp3_bitrate": 192,
         "latency": "normal",
-    }).encode("utf-8")
+        "temperature": float(voice_cfg.get("temperature", 0.8)),
+        "top_p": float(voice_cfg.get("topP", 0.8)),
+    }
+    speed = float(voice_cfg.get("speed", 1.0))
+    if speed != 1.0:
+        payload_base["prosody"] = {"speed": speed}
 
-    for model_hdr in ("s1", "s2.1-pro-free"):
+    last_exc: Exception | None = None
+    for model_hdr in ("s2.1-pro", "s2.1-pro-free", "s1"):
+        payload = dict(payload_base)
+        payload["text"] = normalize_cues(text, model_hdr)
         req = urllib.request.Request(
             "https://api.fish.audio/v1/tts",
-            data=payload,
+            data=json.dumps(payload).encode("utf-8"),
             headers={
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
-                "User-Agent": "curl/8.7.1",
+                "User-Agent": "twk-animated-shorts/2.0",
                 "model": model_hdr,
             },
             method="POST",
@@ -52,12 +106,14 @@ def synth_fish_audio(text: str, out_mp3: Path, api_key: str, voice_id: str):
             with urllib.request.urlopen(req, timeout=90) as resp:
                 out_mp3.write_bytes(resp.read())
                 print(f"Fish Audio synthesized using model={model_hdr}", flush=True)
-                return
+                return "fish-audio", model_hdr
         except urllib.error.HTTPError as exc:
-            if exc.code == 402 and model_hdr != "s2.1-pro-free":
-                print("Fish paid model returned 402; switching to free model=s2.1-pro-free...", flush=True)
+            last_exc = exc
+            if exc.code == 402 and model_hdr != "s1":
+                print(f"Fish model {model_hdr} returned 402; trying next model...", flush=True)
                 continue
             raise
+    raise RuntimeError(f"All Fish Audio models failed: {last_exc}")
 
 
 def align_groq_whisper(audio_path: Path, api_key: str) -> list[dict]:
@@ -106,6 +162,9 @@ async def synth_edge_tts(text: str, out_mp3: Path, voice: str = "en-US-AndrewMul
 
 
 def fallback_even_words(text: str, wav_path: Path) -> list[dict]:
+    """APPROXIMATE proportional timings — NOT word alignment. Only used when no
+    real aligner is available; recorded as approximate in words_meta.json and the
+    mix manifest so nobody mistakes it for precision timing."""
     out = subprocess.check_output(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", str(wav_path)],
         text=True,
@@ -118,49 +177,135 @@ def fallback_even_words(text: str, wav_path: Path) -> list[dict]:
     return [{"w": t, "s": round(i * step, 3), "e": round((i + 1) * step, 3)} for i, t in enumerate(tokens)]
 
 
+def norm_token(t: str) -> str:
+    return re.sub(r"[^a-z0-9']", "", t.lower())
+
+
+def strip_cues(text: str) -> str:
+    """Remove S2 [bracket] and S1 (paren) cue markup — for validation and hashing-for-display, never for synth."""
+    text = BRACKET_CUE.sub("", text)
+    text = PAREN_TO_BRACKET.sub("", text)
+    return " ".join(text.split())
+
+
+def validate_alignment(script: str, words: list[dict], wav_path: Path) -> list[str]:
+    """Check transcript-vs-script token match and timing coverage. Returns problems."""
+    problems: list[str] = []
+    if not words:
+        return ["no words produced by the aligner"]
+    script_tokens = [norm_token(t) for t in strip_cues(script).split() if norm_token(t)]
+    word_tokens = [norm_token(w["w"]) for w in words if norm_token(w["w"])]
+    if script_tokens:
+        matched = sum(1 for a, b in zip(script_tokens, word_tokens) if a == b)
+        ratio = matched / max(1, min(len(script_tokens), len(word_tokens)))
+        if ratio < 0.7:
+            problems.append(f"transcript/script token match {ratio:.0%} < 70%")
+    out = subprocess.check_output(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", str(wav_path)],
+        text=True,
+    ).strip()
+    dur = float(out)
+    coverage = words[-1]["e"] / dur if dur > 0 else 0.0
+    if coverage < 0.6:
+        problems.append(f"alignment covers {coverage:.0%} of the audio (< 60%)")
+    for i in range(1, len(words)):
+        if words[i]["s"] < words[i - 1]["s"]:
+            problems.append(f"word timings out of order at index {i}")
+            break
+    return problems
+
+
+def script_hash(script: str, voice_id: str, voice_cfg: dict, aligner: str) -> str:
+    h = hashlib.sha256()
+    h.update(script.encode("utf-8"))
+    h.update(voice_id.encode("utf-8"))
+    h.update(json.dumps(voice_cfg, sort_keys=True).encode("utf-8"))
+    h.update(aligner.encode("utf-8"))
+    return h.hexdigest()
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate cloud voiceover and word timings")
     parser.add_argument("--episode", required=True, help="Episode directory path")
+    parser.add_argument("--force", action="store_true", help="Regenerate even if the cached take matches")
     args = parser.parse_args()
 
     ep_dir = Path(args.episode).resolve()
     ep_json = json.loads((ep_dir / "episode.json").read_text(encoding="utf-8"))
     script = ep_json.get("script") or (ep_dir / "script.txt").read_text(encoding="utf-8")
     script = " ".join(script.split())
+    voice_cfg = ep_json.get("voice", {}) or {}
 
     voice_dir = ep_dir / "voice"
     voice_dir.mkdir(parents=True, exist_ok=True)
     wav_path = voice_dir / "voice.wav"
     words_path = voice_dir / "words.json"
+    manifest_path = voice_dir / "voice_manifest.json"
 
     fish_key = os.environ.get("FISH_API_KEY", "").strip()
     fish_voice = os.environ.get("FISH_VOICE_ID", "").strip()
     groq_key = os.environ.get("GROQ_API_KEY", "").strip()
+    aligner = "groq-whisper" if groq_key else ("edge-tts" if not (fish_key and fish_voice) else "proportional-fallback")
+
+    want = script_hash(script, fish_voice or "edge", voice_cfg, aligner)
+    if not args.force and manifest_path.exists() and wav_path.exists() and words_path.exists():
+        try:
+            old = json.loads(manifest_path.read_text(encoding="utf-8"))
+            if old.get("script_hash") == want:
+                print(f"Reusing cached voice take (script+voice unchanged, hash {want[:12]}...)", flush=True)
+                return
+        except Exception:
+            pass
 
     with tempfile.TemporaryDirectory() as tmp:
         mp3_path = Path(tmp) / "raw.mp3"
         words: list[dict] = []
+        provider, model, method, approximate = "unknown", "unknown", "unknown", False
 
         if fish_key and fish_voice:
             print("Using Fish Audio TTS...", flush=True)
-            synth_fish_audio(script, mp3_path, fish_key, fish_voice)
+            provider, model = synth_fish_audio(script, mp3_path, fish_key, fish_voice, voice_cfg)
             run_ffmpeg_to_wav(mp3_path, wav_path)
             if groq_key:
                 print("Aligning word timings with Groq Whisper...", flush=True)
                 words = align_groq_whisper(mp3_path, groq_key)
+                method = "groq-whisper"
             else:
-                print("GROQ_API_KEY not set; falling back to proportional word timings.", flush=True)
-                words = fallback_even_words(script, wav_path)
+                print("GROQ_API_KEY not set; falling back to APPROXIMATE proportional word timings (not real alignment).", flush=True)
+                words = fallback_even_words(re.sub(r"[\[\]\(\)]", "", script), wav_path)
+                method = "proportional-fallback"
+                approximate = True
         else:
             print("FISH_API_KEY/FISH_VOICE_ID not set; using Edge-TTS cloud fallback...", flush=True)
-            words = asyncio.run(synth_edge_tts(script, mp3_path))
+            provider, model = "edge-tts", "en-US-AndrewMultilingualNeural"
+            clean = normalize_cues(script, "edge")
+            words = asyncio.run(synth_edge_tts(clean, mp3_path))
             run_ffmpeg_to_wav(mp3_path, wav_path)
+            method = "edge-tts"
             if groq_key:
                 print("Refining word timings with Groq Whisper...", flush=True)
                 words = align_groq_whisper(mp3_path, groq_key)
+                method = "groq-whisper"
+
+    problems = validate_alignment(script, words, wav_path)
+    if problems:
+        print("ALIGNMENT VALIDATION FAILED: " + "; ".join(problems), file=sys.stderr, flush=True)
+        sys.exit(1)
 
     words_path.write_text(json.dumps(words, indent=2), encoding="utf-8")
-    print(f"Wrote {wav_path} and {len(words)} words to {words_path}")
+    meta = {
+        "provider": provider,
+        "model": model,
+        "method": method,
+        "approximate": approximate,
+        "script_hash": want,
+        "voice_cfg": voice_cfg,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "word_count": len(words),
+    }
+    (voice_dir / "words_meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    manifest_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    print(f"Wrote {wav_path} and {len(words)} words to {words_path} (method={method}, approximate={approximate})")
 
 
 if __name__ == "__main__":

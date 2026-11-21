@@ -6,8 +6,10 @@ Private study only. Videos: vids/ (720p, original EN audio), transcripts: tx/, p
 - Vertical 1080x1920, 30 fps, 31-78 s (median ~60 s), voice starts at frame 1-4 (no intro, no logo, no outro, no CTA).
 - Voice: one male narrator, fast and steady: 3.5-4.1 words/s (median 3.7), almost no pauses (word gaps >0.25 s total <1 s per video).
 - Loudness -14 LUFS integrated, LRA ~2.4 LU (heavily compressed). Music/SFX bed under voice only ~5-10 dB below speech.
-- Captions: one word (sometimes 2-3) at a time, white bold sans, thin black outline, lower-middle, hard swaps on each word.
-  (OUR RULE: no captions unless the user asks.)
+- Captions: ON by default, engine-rendered from the word timings - phrase pages of 2-6 words,
+  white bold sans with thin black outline in the lower-third safe zone, semantic emphasis (only
+  page-first, sentence-final, and ALL-CAPS words pop - not every-word bouncing).
+  Set `captions.enabled: false` for a caption-free master or platform variant.
 
 ## Script formula (20/20 follow it)
 1. **Hook = paradox stated as fact, sentence 1, no setup.** A person did something that sounds dumb/impossible with stakes,

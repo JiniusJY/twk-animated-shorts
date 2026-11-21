@@ -123,6 +123,12 @@ def download_audio(url: str, out_base: Path) -> Path | None:
     return None
 
 
+def cleared_tracks(catalog: list[dict]) -> list[dict]:
+    """Only tracks whose rights_status has been upgraded to 'cleared' or
+    'licensed' after a real license check may be considered for a mix."""
+    return [t for t in catalog if t.get("rights_status") in ("cleared", "licensed")]
+
+
 def main():
     load_env()
     parser = argparse.ArgumentParser(description="Scrape viral audios via Bright Data across TikTok, IG, and YouTube")
@@ -176,6 +182,16 @@ def main():
                         "mood": guess_mood(title + " " + (hit.get("description") or "")),
                         "url": url,
                         "file": str(mp3),
+                        # Rights-awareness: scraped sounds are references, not
+                        # cleared assets. Nothing here is safe to publish until
+                        # rights_status is upgraded after a real license check.
+                        "rights_status": "uncleared",
+                        "rights_notes": "Scraped viral sound; original artist/license unknown. "
+                                        "Do not use in a published video until cleared or replaced "
+                                        "with a licensed/original track.",
+                        "source_page": url,
+                        "scraped_at": __import__("datetime").datetime.now(
+                            __import__("datetime").timezone.utc).isoformat(timespec="seconds"),
                     }
                     existing.append(entry)
                     seen_urls.add(url)

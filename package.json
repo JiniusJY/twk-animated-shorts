@@ -6,7 +6,9 @@
   "scripts": {
     "studio": "remotion studio src/index.ts",
     "build-check": "tsc --noEmit",
-    "scout": "python3 scripts/scout.py"
+    "scout": "python3 scripts/scout.py",
+    "test": "vitest run",
+    "test:pipeline": "python3 tests/test_pipeline.py"
   },
   "dependencies": {
     "@react-three/fiber": "^9.8.2",
@@ -23,6 +25,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/three": "^0.187.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.0",
     "vitest": "^5.1.1"
   }

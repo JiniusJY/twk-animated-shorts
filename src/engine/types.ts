@@ -126,6 +126,8 @@ export interface ShotDef {
   id: number;
   a: number;
   b: number;
+  /** Storyboard contract: what this shot is FOR (question / mechanism / payoff...). */
+  purpose?: string;
   world?: WorldPreset;
   light: LightMode;
   dof?: number;
@@ -134,6 +136,42 @@ export interface ShotDef {
   sunAz?: number;
   sunEl?: number;
   cam: CamPath;
+}
+
+/** One sourced claim behind what the narration says. */
+export interface ClaimEntry {
+  id: string;
+  source_url: string;
+  source_date?: string;
+  accessed_at?: string;
+  /** What the source actually supports vs what is inferred or illustrative. */
+  attribution: string;
+  limits?: string;
+  /** Where in the source the supporting passage lives (section, timestamp, page). */
+  passage?: string;
+  /** The exact proposed on-screen/spoken wording this claim backs. */
+  wording?: string;
+}
+
+/** Editorial metadata: why this story, for whom, and what each claim rests on. */
+export interface TopicCard {
+  trend_timestamp?: string;
+  audience_question: string;
+  why_now?: string;
+}
+
+export interface CreativeBrief {
+  question: string;
+  answer: string;
+  proof?: string;
+  caveat?: string;
+  sharing_reason?: string;
+}
+
+export interface BeatClaims {
+  /** Shot id this beat maps to. */
+  shot: number;
+  claim_ids: string[];
 }
 
 export interface CueDef {
@@ -172,11 +210,19 @@ export interface EpisodeSpec {
   fx?: FxDef[];
   cues?: CueDef[];
   captions?: CaptionsConfig;
+  topic_card?: TopicCard;
+  creative_brief?: CreativeBrief;
+  /** Every load-bearing factual claim, with the source that supports it and its limits. */
+  claim_ledger?: ClaimEntry[];
+  beats?: BeatClaims[];
+  alternate_hook?: string;
   /** Optional voice direction: Fish Audio expressiveness controls + S2 [bracket] emotion cues in the script. */
   voice?: {
     temperature?: number; // 0..1, higher = more varied/expressive (Fish default 0.7)
     topP?: number; // 0..1 nucleus sampling (Fish default 0.7)
     speed?: number; // prosody speed multiplier, 0.5..2.0
+    /** Default S2 delivery cue for the whole episode, e.g. "curious", "emphatic", "whispering". */
+    direction?: string;
   };
 }
 

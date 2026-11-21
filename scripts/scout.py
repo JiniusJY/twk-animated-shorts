@@ -55,6 +55,19 @@ def score_story(title: str, engagement: int) -> float:
     return round((min(engagement, 20000) ** 0.5) * 0.4 + hook_hits * 3.0 + has_number, 2)
 
 
+def normalize_scores(items: list[dict]) -> list[dict]:
+    """Rescale raw scores per source to a 0-100 range so HN, Reddit and
+    lobste.rs engagement magnitudes do not swamp each other in the ranking."""
+    by_source: dict[str, list[dict]] = {}
+    for it in items:
+        by_source.setdefault(it["source"], []).append(it)
+    for group in by_source.values():
+        peak = max((it["score"] for it in group), default=1.0) or 1.0
+        for it in group:
+            it["source_rank"] = round(100.0 * it["score"] / peak, 1)
+    return items
+
+
 def collect_reddit(limit_per_sub: int = 10) -> list[dict]:
     items = []
     for sub in SUBREDDITS:
@@ -135,7 +148,8 @@ def main():
     raw = collect_reddit() + collect_hn() + collect_lobsters()
     deduped = []
     seen_titles = set()
-    for it in sorted(raw, key=lambda x: x["score"], reverse=True):
+    normalize_scores(raw)
+    for it in sorted(raw, key=lambda x: (x.get("source_rank", 0.0), x["score"]), reverse=True):
         key = it["title"].lower()
         if key in seen_titles or key in seen or it["url"] in seen:
             continue
@@ -149,7 +163,7 @@ def main():
 
     print(f"Top {len(top)} viral story candidates:")
     for idx, it in enumerate(top, 1):
-        print(f"{idx}. [{it['source']} | score={it['score']} | eng={it['engagement']}] {it['title']}")
+        print(f"{idx}. [{it['source']} | rank={it.get('source_rank')} | score={it['score']} | eng={it['engagement']}] {it['title']}")
         print(f"   {it['url']}")
 
 

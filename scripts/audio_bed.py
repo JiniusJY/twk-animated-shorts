@@ -67,6 +67,9 @@ def sync_episode(ep: dict, fps: int, voice_dur: float) -> tuple[dict, float, flo
     for p in ep.get("props", []):
         for kf in p.get("keyframes", []):
             kf["f"] = int(round(kf["f"] * scale))
+            a = kf.get("action")
+            if a and "dur" in a:
+                a["dur"] = max(1, int(round(a["dur"] * scale)))
     for fx in ep.get("fx", []):
         fx["a"] = int(round(fx["a"] * scale))
         fx["b"] = int(round(fx["b"] * scale))

@@ -13,7 +13,7 @@ The 3D cartoon look, ink outlines, DOF, colour grade, and bean-head character ri
 
 2. **Write the episode (`src/episodes/<slug>/episode.json`):**
    Follow `references/STYLE_BIBLE.md`:
-   - 45–65 s (`~3.7 words/s`), voice starts immediately, zero intro/outro/CTA, English only, no on-screen captions.
+   - 45–65 s (`~3.7 words/s`), voice starts immediately, zero intro/outro/CTA, English only. Captions are rendered by the engine and are ON by default (phrase pages, 2–6 words, semantic emphasis, lower-third safe zone); set `captions.enabled: false` only for a caption-free master.
    - Formula: **Paradox hook (sentence 1)** → **Concrete setting** → **3–4 escalating beats** → **"Wait, ...?" mystery** → **"You see," everyday analogy** → **Ironic payoff**.
    - Keep `episode.json` compact (~200–300 lines) with **12–15 varied shots across 3–4 distinct `shot.world` locations** (`office`, `town`, `server_room`, `tarmac`, `courtroom`) so the story travels across scenes (e.g. main setting → lab/vault → `"golden"` town everyday analogy → payoff) and never stays stuck in one room.
    - **9:16 Vertical Framing & Camera Rules**:

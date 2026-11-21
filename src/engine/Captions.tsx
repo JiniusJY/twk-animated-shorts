@@ -36,6 +36,15 @@ export function groupCaptionPages(words: CaptionWord[], maxWords = 4, maxDur = 1
   return pages;
 }
 
+/**
+ * Semantic emphasis: color follows the spoken word, but only page-first,
+ * sentence-final, and ALL-CAPS words (2+ letters) get the pop - not
+ * every-word bouncing. Exported for tests.
+ */
+export function isEmphaticWord(word: string, indexInPage: number): boolean {
+  return indexInPage === 0 || BREAK_AFTER.test(word) || (word.length > 1 && word === word.toUpperCase());
+}
+
 export const Captions: React.FC<{ words: CaptionWord[] | null; config?: CaptionsConfig }> = ({ words, config }) => {
   const f = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
@@ -71,9 +80,9 @@ export const Captions: React.FC<{ words: CaptionWord[] | null; config?: Captions
       >
         {page.words.map((w, i) => {
           const active = t >= w.s - 0.03 && t < w.e + 0.1;
-          // Pop-in on activation, decaying over 6 frames — frame-pure, no CSS transitions
+          const emphatic = isEmphaticWord(w.w, i);
           const age = f - w.s * fps;
-          const pop = active ? 1 + 0.16 * Math.max(0, 1 - age / 6) : 1;
+          const pop = active && emphatic ? 1 + 0.16 * Math.max(0, 1 - age / 6) : 1;
           return (
             <span
               key={i}

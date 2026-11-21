@@ -64,7 +64,8 @@ function checkKeys(o: Obj, allowed: string[], where: string, errs: string[]) {
 
 function validateShot(s: Obj, i: number, dur: number, errs: string[]): ShotDef | null {
   const where = `shots[${i}]`;
-  checkKeys(s, ["id", "a", "b", "world", "light", "dof", "flashAt", "kickAt", "sunAz", "sunEl", "cam"], where, errs);
+  checkKeys(s, ["id", "a", "b", "world", "light", "dof", "flashAt", "kickAt", "sunAz", "sunEl", "cam", "purpose"], where, errs);
+  if (s.purpose !== undefined && !isStr(s.purpose)) errs.push(`${where}.purpose: must be a string`);
   if (!isInt(s.id)) errs.push(`${where}.id: must be an integer`);
   if (!isInt(s.a) || !isInt(s.b)) {
     errs.push(`${where}: a and b must be integer frames`);
@@ -127,7 +128,9 @@ function validateKeyframes(
     if (!isInt(k.f) || k.f < 0) errs.push(`${where}.f: must be a non-negative integer frame`);
     else {
       if (k.f > dur) errs.push(`${where}.f: ${k.f} exceeds durationFrames ${dur}`);
-      if (k.f <= prevF) errs.push(`${where}.f: keyframes must be ordered by strictly increasing f (got ${k.f} after ${prevF})`);
+      const tieOk = kind === "prop"; // props may stack different action types on the same beat
+      if (tieOk ? k.f < prevF : k.f <= prevF)
+        errs.push(`${where}.f: keyframes must be ordered by ${tieOk ? "non-decreasing" : "strictly increasing"} f (got ${k.f} after ${prevF})`);
       prevF = k.f;
     }
     if (k.pos !== undefined && !isV3(k.pos)) errs.push(`${where}.pos: must be [x, y, z]`);
@@ -253,7 +256,7 @@ function validateCaptions(c: unknown, errs: string[]): CaptionsConfig | undefine
 export function validateEpisode(raw: unknown, source: string): EpisodeSpec {
   const errs: string[] = [];
   if (!isObj(raw)) throw new Error(`${source}: episode is not an object`);
-  checkKeys(raw, ["slug", "title", "fps", "durationFrames", "world", "musicMood", "script", "sourceUrl", "shots", "actors", "props", "fx", "cues", "captions", "voice", "bgAudio"], source, errs);
+  checkKeys(raw, ["slug", "title", "fps", "durationFrames", "world", "musicMood", "script", "sourceUrl", "shots", "actors", "props", "fx", "cues", "captions", "voice", "bgAudio", "topic_card", "creative_brief", "claim_ledger", "beats", "alternate_hook"], source, errs);
 
   if (!isStr(raw.slug) || !/^[a-z0-9][a-z0-9-]*$/.test(raw.slug))
     errs.push(`${source}.slug: required, lowercase letters/digits/hyphens`);
@@ -270,7 +273,8 @@ export function validateEpisode(raw: unknown, source: string): EpisodeSpec {
   if (!isStr(raw.sourceUrl) || !/^https?:\/\//.test(raw.sourceUrl))
     errs.push(`${source}.sourceUrl: required — every episode must link the primary source backing its factual claims`);
   if (isObj(raw.voice)) {
-    checkKeys(raw.voice, ["temperature", "topP", "speed"], `${source}.voice`, errs);
+    checkKeys(raw.voice, ["temperature", "topP", "speed", "direction"], `${source}.voice`, errs);
+    if (raw.voice.direction !== undefined && !isStr(raw.voice.direction)) errs.push(`${source}.voice.direction: must be a string (Fish S2 cue word)`);
     const v = raw.voice;
     if (v.temperature !== undefined && (!isNum(v.temperature) || v.temperature < 0 || v.temperature > 1))
       errs.push(`${source}.voice.temperature: must be 0..1`);
@@ -336,6 +340,55 @@ export function validateEpisode(raw: unknown, source: string): EpisodeSpec {
   if (raw.cues !== undefined && !Array.isArray(raw.cues)) errs.push(`${source}.cues: must be an array`);
 
   validateCaptions(raw.captions, errs);
+
+  // Editorial metadata (playbook: claim ledger + topic card + creative brief + per-beat claims)
+  const claimIds = new Set<string>();
+  if (raw.claim_ledger !== undefined) {
+    if (!Array.isArray(raw.claim_ledger)) errs.push(`${source}.claim_ledger: must be an array`);
+    else (raw.claim_ledger as unknown[]).forEach((c, i) => {
+      const where = `${source}.claim_ledger[${i}]`;
+      if (!isObj(c)) { errs.push(`${where}: must be an object`); return; }
+      checkKeys(c, ["id", "source_url", "source_date", "accessed_at", "attribution", "limits", "passage", "wording"], where, errs);
+      if (!isStr(c.id) || !c.id) errs.push(`${where}.id: required`);
+      else claimIds.add(c.id);
+      if (!isStr(c.source_url) || !/^https?:\/\//.test(c.source_url)) errs.push(`${where}.source_url: required http(s) URL`);
+      if (!isStr(c.attribution) || !c.attribution) errs.push(`${where}.attribution: required — state what the source actually supports`);
+    });
+  }
+  if (raw.topic_card !== undefined) {
+    const where = `${source}.topic_card`;
+    if (!isObj(raw.topic_card)) errs.push(`${where}: must be an object`);
+    else {
+      checkKeys(raw.topic_card, ["trend_timestamp", "audience_question", "why_now"], where, errs);
+      if (!isStr(raw.topic_card.audience_question) || !raw.topic_card.audience_question)
+        errs.push(`${where}.audience_question: required`);
+    }
+  }
+  if (raw.creative_brief !== undefined) {
+    const where = `${source}.creative_brief`;
+    if (!isObj(raw.creative_brief)) errs.push(`${where}: must be an object`);
+    else {
+      checkKeys(raw.creative_brief, ["question", "answer", "proof", "caveat", "sharing_reason"], where, errs);
+      if (!isStr(raw.creative_brief.question)) errs.push(`${where}.question: required`);
+      if (!isStr(raw.creative_brief.answer)) errs.push(`${where}.answer: required`);
+    }
+  }
+  if (raw.alternate_hook !== undefined && !isStr(raw.alternate_hook)) errs.push(`${source}.alternate_hook: must be a string`);
+  if (raw.beats !== undefined) {
+    if (!Array.isArray(raw.beats)) errs.push(`${source}.beats: must be an array`);
+    else (raw.beats as unknown[]).forEach((b, i) => {
+      const where = `${source}.beats[${i}]`;
+      if (!isObj(b)) { errs.push(`${where}: must be an object`); return; }
+      checkKeys(b, ["shot", "claim_ids"], where, errs);
+      if (!isInt(b.shot)) errs.push(`${where}.shot: must be a shot id (integer)`);
+      else if (!ids.has(b.shot)) errs.push(`${where}.shot: no shot with id ${b.shot}`);
+      if (!Array.isArray(b.claim_ids)) errs.push(`${where}.claim_ids: must be an array`);
+      else for (const cid of b.claim_ids) {
+        if (!isStr(cid)) errs.push(`${where}.claim_ids: entries must be strings`);
+        else if (claimIds.size > 0 && !claimIds.has(cid)) errs.push(`${where}: claim_id "${cid}" not in claim_ledger`);
+      }
+    });
+  }
 
   if (errs.length > 0) {
     throw new Error(`Invalid episode "${source}":\n  - ${errs.join("\n  - ")}`);

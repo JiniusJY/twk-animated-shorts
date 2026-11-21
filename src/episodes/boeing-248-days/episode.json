@@ -6,7 +6,7 @@
   "world": "tarmac",
   "musicMood": "tense",
   "sourceUrl": "https://www.theguardian.com/business/2015/may/01/us-aviation-authority-boeing-787-dreamliner-bug-could-cause-loss-of-control",
-  "script": "If you left a Boeing 787 turned on for 248 days straight, all four power generators would shut off at the exact same time, even mid-flight. Boeing engineers caught this in lab testing back in 2015, and aviation regulators panicked. A commercial jet could lose all electrical power simply because nobody turned it off. Wait, how does staying awake break four generators? Inside each generator control unit, a tiny software clock ticks up one hundred times every second. The programmers stored that count in a 32-bit signed integer, which caps out at roughly two billion ticks, or 248 and a half days. You see, it works like a car odometer rolling past 999,999. The moment that counter overflows, the number flips negative, and the jet's failsafe shuts off all AC power at once. Until Boeing shipped a software update, the FAA issued an official federal directive with the oldest fix in IT history: airlines were legally required to turn the entire airplane off and on again every 120 days.",
+  "script": "If you left a Boeing 787 turned on for 248 days straight, all four power generators would shut off at the exact same time, even mid-flight. Boeing engineers caught this in lab testing back in 2015, and aviation regulators panicked. A commercial jet could lose all electrical power simply because nobody turned it off. Wait, how does staying awake break four generators? The leading theory: inside each generator control unit, a tiny software clock ticks up about one hundred times every second. If that count is stored in a thirty-two bit signed integer, it caps out at roughly two billion ticks, or 248 and a half days. You see, it works like a car odometer rolling past 999,999. The moment that counter overflows, the number flips negative, and the jet's failsafe shuts off all AC power at once. Until Boeing shipped a software update, the FAA issued an official federal directive with the oldest fix in IT history: airlines were legally required to turn the entire airplane off and on again every 120 days.",
   "shots": [
     {
       "id": 1,
@@ -15,8 +15,33 @@
       "world": "tarmac",
       "light": "day",
       "dof": 0,
-      "kickAt": [62],
-      "cam": { "from": [-1.4, 2.3, 6.8], "to": [-0.9, 2.25, 6.5], "lookFrom": [0.0, 1.85, -3.2], "lookTo": [0.0, 1.85, -3.2], "fovFrom": 42, "fovTo": 42 }
+      "kickAt": [
+        62
+      ],
+      "cam": {
+        "from": [
+          -1.4,
+          2.3,
+          6.8
+        ],
+        "to": [
+          -0.9,
+          2.25,
+          6.5
+        ],
+        "lookFrom": [
+          0.0,
+          1.85,
+          -3.2
+        ],
+        "lookTo": [
+          0.0,
+          1.85,
+          -3.2
+        ],
+        "fovFrom": 42,
+        "fovTo": 42
+      }
     },
     {
       "id": 2,
@@ -26,7 +51,31 @@
       "light": "day",
       "dof": 9,
       "flashAt": 146,
-      "cam": { "from": [0.25, 1.8, 4.4], "to": [0.45, 1.8, 4.3], "lookFrom": [0.0, 1.55, -1.2], "lookTo": [0.0, 1.55, -1.2], "fovFrom": 40, "fovTo": 40, "rollDeg": -1.5 }
+      "cam": {
+        "from": [
+          0.25,
+          1.8,
+          4.4
+        ],
+        "to": [
+          0.45,
+          1.8,
+          4.3
+        ],
+        "lookFrom": [
+          0.0,
+          1.55,
+          -1.2
+        ],
+        "lookTo": [
+          0.0,
+          1.55,
+          -1.2
+        ],
+        "fovFrom": 40,
+        "fovTo": 40,
+        "rollDeg": -1.5
+      }
     },
     {
       "id": 3,
@@ -35,7 +84,30 @@
       "world": "office",
       "light": "day",
       "dof": 0,
-      "cam": { "from": [-0.9, 2.05, 5.6], "to": [0.2, 2.05, 5.6], "lookFrom": [-0.3, 1.65, -1.8], "lookTo": [0.0, 1.65, -1.8], "fovFrom": 40, "fovTo": 40 }
+      "cam": {
+        "from": [
+          -0.9,
+          2.05,
+          5.6
+        ],
+        "to": [
+          0.2,
+          2.05,
+          5.6
+        ],
+        "lookFrom": [
+          -0.3,
+          1.65,
+          -1.8
+        ],
+        "lookTo": [
+          0.0,
+          1.65,
+          -1.8
+        ],
+        "fovFrom": 40,
+        "fovTo": 40
+      }
     },
     {
       "id": 4,
@@ -44,7 +116,30 @@
       "world": "office",
       "light": "day",
       "dof": 7,
-      "cam": { "from": [1.1, 1.95, 4.9], "to": [0.7, 1.95, 4.8], "lookFrom": [0.0, 1.62, -1.6], "lookTo": [0.0, 1.62, -1.6], "fovFrom": 40, "fovTo": 40 }
+      "cam": {
+        "from": [
+          1.1,
+          1.95,
+          4.9
+        ],
+        "to": [
+          0.7,
+          1.95,
+          4.8
+        ],
+        "lookFrom": [
+          0.0,
+          1.62,
+          -1.6
+        ],
+        "lookTo": [
+          0.0,
+          1.62,
+          -1.6
+        ],
+        "fovFrom": 40,
+        "fovTo": 40
+      }
     },
     {
       "id": 5,
@@ -53,7 +148,31 @@
       "world": "office",
       "light": "day",
       "dof": 10,
-      "cam": { "from": [-0.1, 1.85, 4.75], "to": [0.0, 1.85, 4.65], "lookFrom": [0.0, 1.6, -1.4], "lookTo": [0.0, 1.6, -1.4], "fovFrom": 39, "fovTo": 39, "rollDeg": 1.6 }
+      "cam": {
+        "from": [
+          -0.1,
+          1.85,
+          4.75
+        ],
+        "to": [
+          0.0,
+          1.85,
+          4.65
+        ],
+        "lookFrom": [
+          0.0,
+          1.6,
+          -1.4
+        ],
+        "lookTo": [
+          0.0,
+          1.6,
+          -1.4
+        ],
+        "fovFrom": 39,
+        "fovTo": 39,
+        "rollDeg": 1.6
+      }
     },
     {
       "id": 6,
@@ -62,7 +181,30 @@
       "world": "server_room",
       "light": "day",
       "dof": 0,
-      "cam": { "from": [-0.8, 1.95, 5.5], "to": [-0.3, 1.95, 5.4], "lookFrom": [0.0, 1.7, -1.8], "lookTo": [0.0, 1.7, -1.8], "fovFrom": 40, "fovTo": 40 }
+      "cam": {
+        "from": [
+          -0.8,
+          1.95,
+          5.5
+        ],
+        "to": [
+          -0.3,
+          1.95,
+          5.4
+        ],
+        "lookFrom": [
+          0.0,
+          1.7,
+          -1.8
+        ],
+        "lookTo": [
+          0.0,
+          1.7,
+          -1.8
+        ],
+        "fovFrom": 40,
+        "fovTo": 40
+      }
     },
     {
       "id": 7,
@@ -71,7 +213,30 @@
       "world": "server_room",
       "light": "day",
       "dof": 8,
-      "cam": { "from": [0.45, 2.0, 5.1], "to": [0.25, 1.95, 5.0], "lookFrom": [0.0, 1.68, -1.6], "lookTo": [0.0, 1.68, -1.6], "fovFrom": 40, "fovTo": 40 }
+      "cam": {
+        "from": [
+          0.45,
+          2.0,
+          5.1
+        ],
+        "to": [
+          0.25,
+          1.95,
+          5.0
+        ],
+        "lookFrom": [
+          0.0,
+          1.68,
+          -1.6
+        ],
+        "lookTo": [
+          0.0,
+          1.68,
+          -1.6
+        ],
+        "fovFrom": 40,
+        "fovTo": 40
+      }
     },
     {
       "id": 8,
@@ -80,8 +245,34 @@
       "world": "server_room",
       "light": "day",
       "dof": 9,
-      "kickAt": [712],
-      "cam": { "from": [0.0, 1.88, 4.75], "to": [0.0, 1.88, 4.65], "lookFrom": [0.0, 1.68, -1.6], "lookTo": [0.0, 1.68, -1.6], "fovFrom": 39, "fovTo": 39, "rollDeg": -1.5 }
+      "kickAt": [
+        712
+      ],
+      "cam": {
+        "from": [
+          0.0,
+          1.88,
+          4.75
+        ],
+        "to": [
+          0.0,
+          1.88,
+          4.65
+        ],
+        "lookFrom": [
+          0.0,
+          1.68,
+          -1.6
+        ],
+        "lookTo": [
+          0.0,
+          1.68,
+          -1.6
+        ],
+        "fovFrom": 39,
+        "fovTo": 39,
+        "rollDeg": -1.5
+      }
     },
     {
       "id": 9,
@@ -90,7 +281,30 @@
       "world": "town",
       "light": "golden",
       "dof": 0,
-      "cam": { "from": [-0.7, 2.15, 5.8], "to": [-0.2, 2.1, 5.7], "lookFrom": [0.0, 1.68, -1.8], "lookTo": [0.0, 1.68, -1.8], "fovFrom": 40, "fovTo": 40 }
+      "cam": {
+        "from": [
+          -0.7,
+          2.15,
+          5.8
+        ],
+        "to": [
+          -0.2,
+          2.1,
+          5.7
+        ],
+        "lookFrom": [
+          0.0,
+          1.68,
+          -1.8
+        ],
+        "lookTo": [
+          0.0,
+          1.68,
+          -1.8
+        ],
+        "fovFrom": 40,
+        "fovTo": 40
+      }
     },
     {
       "id": 10,
@@ -99,8 +313,34 @@
       "world": "town",
       "light": "golden",
       "dof": 8,
-      "kickAt": [992],
-      "cam": { "from": [0.35, 1.95, 5.05], "to": [0.15, 1.92, 4.95], "lookFrom": [0.0, 1.68, -1.6], "lookTo": [0.0, 1.68, -1.6], "fovFrom": 39, "fovTo": 39, "rollDeg": 1.8 }
+      "kickAt": [
+        992
+      ],
+      "cam": {
+        "from": [
+          0.35,
+          1.95,
+          5.05
+        ],
+        "to": [
+          0.15,
+          1.92,
+          4.95
+        ],
+        "lookFrom": [
+          0.0,
+          1.68,
+          -1.6
+        ],
+        "lookTo": [
+          0.0,
+          1.68,
+          -1.6
+        ],
+        "fovFrom": 39,
+        "fovTo": 39,
+        "rollDeg": 1.8
+      }
     },
     {
       "id": 11,
@@ -109,8 +349,33 @@
       "world": "tarmac",
       "light": "golden",
       "dof": 0,
-      "kickAt": [1142],
-      "cam": { "from": [-0.4, 2.05, 5.5], "to": [0.3, 2.0, 5.4], "lookFrom": [0.0, 1.6, -2.5], "lookTo": [0.0, 1.6, -2.5], "fovFrom": 40, "fovTo": 40 }
+      "kickAt": [
+        1142
+      ],
+      "cam": {
+        "from": [
+          -0.4,
+          2.05,
+          5.5
+        ],
+        "to": [
+          0.3,
+          2.0,
+          5.4
+        ],
+        "lookFrom": [
+          0.0,
+          1.6,
+          -2.5
+        ],
+        "lookTo": [
+          0.0,
+          1.6,
+          -2.5
+        ],
+        "fovFrom": 40,
+        "fovTo": 40
+      }
     },
     {
       "id": 12,
@@ -119,8 +384,34 @@
       "world": "tarmac",
       "light": "day",
       "dof": 8,
-      "kickAt": [1268, 1292],
-      "cam": { "from": [-0.4, 1.85, 4.6], "to": [-0.6, 1.85, 4.5], "lookFrom": [-0.45, 1.55, -1.4], "lookTo": [-0.45, 1.55, -1.4], "fovFrom": 38, "fovTo": 38 }
+      "kickAt": [
+        1268,
+        1292
+      ],
+      "cam": {
+        "from": [
+          -0.4,
+          1.85,
+          4.6
+        ],
+        "to": [
+          -0.6,
+          1.85,
+          4.5
+        ],
+        "lookFrom": [
+          -0.45,
+          1.55,
+          -1.4
+        ],
+        "lookTo": [
+          -0.45,
+          1.55,
+          -1.4
+        ],
+        "fovFrom": 38,
+        "fovTo": 38
+      }
     },
     {
       "id": 13,
@@ -129,7 +420,30 @@
       "world": "tarmac",
       "light": "day",
       "dof": 8,
-      "cam": { "from": [0.45, 1.85, 4.5], "to": [0.65, 1.85, 4.4], "lookFrom": [0.45, 1.55, -1.4], "lookTo": [0.45, 1.55, -1.4], "fovFrom": 38, "fovTo": 38 }
+      "cam": {
+        "from": [
+          0.45,
+          1.85,
+          4.5
+        ],
+        "to": [
+          0.65,
+          1.85,
+          4.4
+        ],
+        "lookFrom": [
+          0.45,
+          1.55,
+          -1.4
+        ],
+        "lookTo": [
+          0.45,
+          1.55,
+          -1.4
+        ],
+        "fovFrom": 38,
+        "fovTo": 38
+      }
     },
     {
       "id": 14,
@@ -138,87 +452,517 @@
       "world": "tarmac",
       "light": "day",
       "dof": 0,
-      "cam": { "from": [0.0, 2.1, 5.2], "to": [2.6, 5.8, 11.8], "lookFrom": [0.0, 1.65, -1.8], "lookTo": [0.0, 2.1, -5.2], "fovFrom": 40, "fovTo": 44 }
+      "cam": {
+        "from": [
+          0.0,
+          2.1,
+          5.2
+        ],
+        "to": [
+          2.6,
+          5.8,
+          11.8
+        ],
+        "lookFrom": [
+          0.0,
+          1.65,
+          -1.8
+        ],
+        "lookTo": [
+          0.0,
+          2.1,
+          -5.2
+        ],
+        "fovFrom": 40,
+        "fovTo": 44
+      }
     }
   ],
   "actors": [
     {
       "id": "pilot",
       "preset": "pilot",
-      "pos": [-0.62, 0, 0.2],
+      "pos": [
+        -0.62,
+        0,
+        0.2
+      ],
       "expr": "shock",
       "facing": 1,
       "keyframes": [
-        { "f": 0, "pos": [-0.62, 0, 0.2], "expr": "shock", "talk": true, "facing": 1, "look": 1, "mode": "stand" },
-        { "f": 82, "pos": [-0.55, 0, 0.25], "expr": "nervous", "talk": true, "facing": 1, "look": 1, "mode": "stand" },
-        { "f": 150, "pos": [-18.0, 0, 0.0], "walk": false, "talk": false },
-        { "f": 1135, "pos": [-0.45, 0, 0.3], "expr": "dazed", "talk": false, "mode": "sit", "facing": 0 },
-        { "f": 1245, "pos": [0.22, 0, 0.2], "expr": "relief", "talk": false, "mode": "stand", "facing": -1, "look": -1 },
-        { "f": 1365, "pos": [-0.15, 0, 0.25], "expr": "laugh", "talk": true, "mode": "stand", "facing": 1, "look": 1 }
+        {
+          "f": 0,
+          "pos": [
+            -0.62,
+            0,
+            0.2
+          ],
+          "expr": "shock",
+          "talk": true,
+          "facing": 1,
+          "look": 1,
+          "mode": "stand"
+        },
+        {
+          "f": 82,
+          "pos": [
+            -0.55,
+            0,
+            0.25
+          ],
+          "expr": "nervous",
+          "talk": true,
+          "facing": 1,
+          "look": 1,
+          "mode": "stand"
+        },
+        {
+          "f": 150,
+          "pos": [
+            -18.0,
+            0,
+            0.0
+          ],
+          "walk": false,
+          "talk": false
+        },
+        {
+          "f": 1135,
+          "pos": [
+            -0.45,
+            0,
+            0.3
+          ],
+          "expr": "dazed",
+          "talk": false,
+          "mode": "sit",
+          "facing": 0
+        },
+        {
+          "f": 1245,
+          "pos": [
+            0.22,
+            0,
+            0.2
+          ],
+          "expr": "relief",
+          "talk": false,
+          "mode": "stand",
+          "facing": -1,
+          "look": -1
+        },
+        {
+          "f": 1365,
+          "pos": [
+            -0.15,
+            0,
+            0.25
+          ],
+          "expr": "laugh",
+          "talk": true,
+          "mode": "stand",
+          "facing": 1,
+          "look": 1
+        }
       ]
     },
     {
       "id": "engineer",
       "preset": "engineer",
-      "pos": [0.62, 0, 0.15],
+      "pos": [
+        0.62,
+        0,
+        0.15
+      ],
       "expr": "nervous",
       "facing": -1,
       "keyframes": [
-        { "f": 0, "pos": [0.62, 0, 0.15], "expr": "nervous", "talk": false, "facing": -1, "look": -1, "mode": "stand" },
-        { "f": 82, "pos": [0.55, 0, 0.2], "expr": "shock", "talk": false, "facing": -1, "look": -1 },
-        { "f": 150, "pos": [-1.25, 0, 0.35], "expr": "neutral", "walk": true, "talk": true, "side": true },
-        { "f": 240, "pos": [-0.58, 0, 0.35], "expr": "nervous", "walk": false, "talk": true, "side": false, "facing": 1, "look": 1 },
-        { "f": 355, "pos": [-0.55, 0, 0.35], "expr": "shock", "walk": false, "talk": true, "facing": 1, "look": 1 },
-        { "f": 455, "pos": [-0.65, 0, 0.25], "expr": "nervous", "walk": false, "talk": true, "facing": 1, "look": 1 },
-        { "f": 700, "pos": [-0.62, 0, 0.25], "expr": "shock", "walk": false, "talk": true, "facing": 1, "look": 1 },
-        { "f": 835, "pos": [-18.0, 0, 0.0], "walk": false, "talk": false },
-        { "f": 1135, "pos": [0.55, 0, 0.2], "expr": "pained", "walk": false, "talk": false, "mode": "sit", "facing": -1 },
-        { "f": 1245, "pos": [0.85, 0, 0.15], "expr": "smile", "walk": false, "talk": false, "mode": "stand", "facing": -1 },
-        { "f": 1365, "pos": [0.62, 0, 0.2], "expr": "grin", "walk": false, "talk": true, "mode": "stand", "facing": -1, "look": -1 }
+        {
+          "f": 0,
+          "pos": [
+            0.62,
+            0,
+            0.15
+          ],
+          "expr": "nervous",
+          "talk": false,
+          "facing": -1,
+          "look": -1,
+          "mode": "stand"
+        },
+        {
+          "f": 82,
+          "pos": [
+            0.55,
+            0,
+            0.2
+          ],
+          "expr": "shock",
+          "talk": false,
+          "facing": -1,
+          "look": -1
+        },
+        {
+          "f": 150,
+          "pos": [
+            -1.25,
+            0,
+            0.35
+          ],
+          "expr": "neutral",
+          "walk": true,
+          "talk": true,
+          "side": true
+        },
+        {
+          "f": 240,
+          "pos": [
+            -0.58,
+            0,
+            0.35
+          ],
+          "expr": "nervous",
+          "walk": false,
+          "talk": true,
+          "side": false,
+          "facing": 1,
+          "look": 1
+        },
+        {
+          "f": 355,
+          "pos": [
+            -0.55,
+            0,
+            0.35
+          ],
+          "expr": "shock",
+          "walk": false,
+          "talk": true,
+          "facing": 1,
+          "look": 1
+        },
+        {
+          "f": 455,
+          "pos": [
+            -0.65,
+            0,
+            0.25
+          ],
+          "expr": "nervous",
+          "walk": false,
+          "talk": true,
+          "facing": 1,
+          "look": 1
+        },
+        {
+          "f": 700,
+          "pos": [
+            -0.62,
+            0,
+            0.25
+          ],
+          "expr": "shock",
+          "walk": false,
+          "talk": true,
+          "facing": 1,
+          "look": 1
+        },
+        {
+          "f": 835,
+          "pos": [
+            -18.0,
+            0,
+            0.0
+          ],
+          "walk": false,
+          "talk": false
+        },
+        {
+          "f": 1135,
+          "pos": [
+            0.55,
+            0,
+            0.2
+          ],
+          "expr": "pained",
+          "walk": false,
+          "talk": false,
+          "mode": "sit",
+          "facing": -1
+        },
+        {
+          "f": 1245,
+          "pos": [
+            0.85,
+            0,
+            0.15
+          ],
+          "expr": "smile",
+          "walk": false,
+          "talk": false,
+          "mode": "stand",
+          "facing": -1
+        },
+        {
+          "f": 1365,
+          "pos": [
+            0.62,
+            0,
+            0.2
+          ],
+          "expr": "grin",
+          "walk": false,
+          "talk": true,
+          "mode": "stand",
+          "facing": -1,
+          "look": -1
+        }
       ]
     },
     {
       "id": "faaBoss",
       "preset": "boss",
-      "pos": [18.0, 0, 0.2],
+      "pos": [
+        18.0,
+        0,
+        0.2
+      ],
       "expr": "stern",
       "facing": -1,
       "keyframes": [
-        { "f": 0, "pos": [18.0, 0, 0.2], "walk": false },
-        { "f": 255, "pos": [1.25, 0, 0.35], "expr": "stern", "walk": true, "talk": true, "side": true, "mirror": true },
-        { "f": 330, "pos": [0.58, 0, 0.35], "expr": "stern", "walk": false, "talk": true, "side": false, "facing": -1, "look": -1 },
-        { "f": 455, "pos": [18.0, 0, 0.2], "walk": false, "talk": false },
-        { "f": 1245, "pos": [-0.42, 0, 0.25], "expr": "stern", "walk": false, "talk": true, "facing": -1, "prop": "hammer" },
-        { "f": 1365, "pos": [-0.82, 0, 0.2], "expr": "grin", "walk": false, "talk": false, "facing": 1, "prop": null }
+        {
+          "f": 0,
+          "pos": [
+            18.0,
+            0,
+            0.2
+          ],
+          "walk": false
+        },
+        {
+          "f": 255,
+          "pos": [
+            1.25,
+            0,
+            0.35
+          ],
+          "expr": "stern",
+          "walk": true,
+          "talk": true,
+          "side": true,
+          "mirror": true
+        },
+        {
+          "f": 330,
+          "pos": [
+            0.58,
+            0,
+            0.35
+          ],
+          "expr": "stern",
+          "walk": false,
+          "talk": true,
+          "side": false,
+          "facing": -1,
+          "look": -1
+        },
+        {
+          "f": 455,
+          "pos": [
+            18.0,
+            0,
+            0.2
+          ],
+          "walk": false,
+          "talk": false
+        },
+        {
+          "f": 1245,
+          "pos": [
+            -0.42,
+            0,
+            0.25
+          ],
+          "expr": "stern",
+          "walk": false,
+          "talk": true,
+          "facing": -1,
+          "prop": "hammer"
+        },
+        {
+          "f": 1365,
+          "pos": [
+            -0.82,
+            0,
+            0.2
+          ],
+          "expr": "grin",
+          "walk": false,
+          "talk": false,
+          "facing": 1,
+          "prop": null
+        }
       ]
     },
     {
       "id": "worker",
       "preset": "worker",
-      "pos": [-18.0, 0, 0.2],
+      "pos": [
+        -18.0,
+        0,
+        0.2
+      ],
       "expr": "neutral",
       "keyframes": [
-        { "f": 0, "pos": [-18.0, 0, 0.2], "walk": false },
-        { "f": 150, "pos": [0.65, 0, 0.2], "expr": "nervous", "walk": false, "talk": false, "facing": -1, "look": -1 },
-        { "f": 255, "pos": [0.0, 0, -0.15], "expr": "shock", "walk": false, "talk": false, "facing": 0 },
-        { "f": 455, "pos": [0.65, 0, 0.25], "expr": "nervous", "walk": false, "talk": false, "facing": -1, "look": -1 },
-        { "f": 700, "pos": [0.62, 0, 0.25], "expr": "shock", "walk": false, "talk": false, "facing": -1 },
-        { "f": 835, "pos": [-0.68, 0, 0.3], "expr": "grin", "walk": false, "talk": true, "facing": 1, "look": 1 },
-        { "f": 980, "pos": [-0.62, 0, 0.3], "expr": "shock", "walk": false, "talk": true, "facing": 1, "look": 1 },
-        { "f": 1135, "pos": [-18.0, 0, 0.2], "walk": false }
+        {
+          "f": 0,
+          "pos": [
+            -18.0,
+            0,
+            0.2
+          ],
+          "walk": false
+        },
+        {
+          "f": 150,
+          "pos": [
+            0.65,
+            0,
+            0.2
+          ],
+          "expr": "nervous",
+          "walk": false,
+          "talk": false,
+          "facing": -1,
+          "look": -1
+        },
+        {
+          "f": 255,
+          "pos": [
+            0.0,
+            0,
+            -0.15
+          ],
+          "expr": "shock",
+          "walk": false,
+          "talk": false,
+          "facing": 0
+        },
+        {
+          "f": 455,
+          "pos": [
+            0.65,
+            0,
+            0.25
+          ],
+          "expr": "nervous",
+          "walk": false,
+          "talk": false,
+          "facing": -1,
+          "look": -1
+        },
+        {
+          "f": 700,
+          "pos": [
+            0.62,
+            0,
+            0.25
+          ],
+          "expr": "shock",
+          "walk": false,
+          "talk": false,
+          "facing": -1
+        },
+        {
+          "f": 835,
+          "pos": [
+            -0.68,
+            0,
+            0.3
+          ],
+          "expr": "grin",
+          "walk": false,
+          "talk": true,
+          "facing": 1,
+          "look": 1
+        },
+        {
+          "f": 980,
+          "pos": [
+            -0.62,
+            0,
+            0.3
+          ],
+          "expr": "shock",
+          "walk": false,
+          "talk": true,
+          "facing": 1,
+          "look": 1
+        },
+        {
+          "f": 1135,
+          "pos": [
+            -18.0,
+            0,
+            0.2
+          ],
+          "walk": false
+        }
       ]
     },
     {
       "id": "kid",
       "preset": "kid",
-      "pos": [18.0, 0, 0.25],
+      "pos": [
+        18.0,
+        0,
+        0.25
+      ],
       "scale": 0.78,
       "expr": "smile",
       "keyframes": [
-        { "f": 0, "pos": [18.0, 0, 0.25], "walk": false },
-        { "f": 835, "pos": [0.68, 0, 0.3], "expr": "smile", "walk": false, "facing": -1, "prop": "icecream" },
-        { "f": 980, "pos": [0.62, 0, 0.3], "expr": "shock", "walk": false, "facing": -1, "prop": "icecream" },
-        { "f": 1135, "pos": [18.0, 0, 0.25], "walk": false }
+        {
+          "f": 0,
+          "pos": [
+            18.0,
+            0,
+            0.25
+          ],
+          "walk": false
+        },
+        {
+          "f": 835,
+          "pos": [
+            0.68,
+            0,
+            0.3
+          ],
+          "expr": "smile",
+          "walk": false,
+          "facing": -1,
+          "prop": "icecream"
+        },
+        {
+          "f": 980,
+          "pos": [
+            0.62,
+            0,
+            0.3
+          ],
+          "expr": "shock",
+          "walk": false,
+          "facing": -1,
+          "prop": "icecream"
+        },
+        {
+          "f": 1135,
+          "pos": [
+            18.0,
+            0,
+            0.25
+          ],
+          "walk": false
+        }
       ]
     }
   ],
@@ -227,118 +971,568 @@
       "id": "jet787",
       "kind": "plane",
       "world": "tarmac",
-      "pos": [0.0, 0.0, -8.8],
+      "pos": [
+        0.0,
+        0.0,
+        -8.8
+      ],
       "rotY": 0.48,
       "scale": 0.88,
       "color": "#2b6cb0",
       "keyframes": [
-        { "f": 0, "pos": [0.0, 0.0, -8.8], "rotY": 0.48 }
+        {
+          "f": 0,
+          "pos": [
+            0.0,
+            0.0,
+            -8.8
+          ],
+          "rotY": 0.48
+        }
       ]
     },
     {
       "id": "labUnit",
       "kind": "gcu",
       "world": "office",
-      "pos": [0.0, 0.0, -1.9],
+      "pos": [
+        0.0,
+        0.0,
+        -1.9
+      ],
       "rotY": 0.0,
       "color": "#355c7d",
       "accent": "#f8f1de",
       "label": "LAB TEST 2015",
       "sublabel": "4x GCU: DAY 248",
       "keyframes": [
-        { "f": 150, "label": "LAB TEST 2015", "sublabel": "4x GCU: DAY 248" },
-        { "f": 255, "label": "POWER LOSS!", "sublabel": "ALL 4 UNITS OFF" },
-        { "f": 355, "label": "WAIT... WHY?", "sublabel": "248 DAYS AWAKE" }
+        {
+          "f": 150,
+          "label": "LAB TEST 2015",
+          "sublabel": "4x GCU: DAY 248",
+          "action": {
+            "type": "generatorState",
+            "on": true
+          }
+        },
+        {
+          "f": 255,
+          "label": "POWER LOSS!",
+          "sublabel": "ALL 4 UNITS OFF",
+          "action": {
+            "type": "generatorState",
+            "on": false
+          }
+        },
+        {
+          "f": 258,
+          "action": {
+            "type": "beaconIntensity",
+            "value": 1.0,
+            "dur": 8
+          }
+        },
+        {
+          "f": 355,
+          "label": "WAIT... WHY?",
+          "sublabel": "248 DAYS AWAKE",
+          "action": {
+            "type": "beaconIntensity",
+            "value": 0.0,
+            "dur": 15
+          }
+        }
       ]
     },
     {
       "id": "clockVault",
       "kind": "clock",
       "world": "server_room",
-      "pos": [0.0, 0.0, -1.8],
+      "pos": [
+        0.0,
+        0.0,
+        -1.8
+      ],
       "rotY": 0.0,
       "color": "#2f4b6e",
       "accent": "#fff8e8",
       "label": "100 TICKS / SEC",
       "sublabel": "GCU TIMER CLOCK",
       "keyframes": [
-        { "f": 455, "label": "100 TICKS / SEC", "sublabel": "GCU TIMER CLOCK" },
-        { "f": 580, "label": "32-BIT INTEGER", "sublabel": "SIGNED COUNTER" },
-        { "f": 700, "label": "2,147,483,647", "sublabel": "248.5 DAYS MAX" }
+        {
+          "f": 455,
+          "label": "100 TICKS / SEC",
+          "sublabel": "LEADING THEORY",
+          "action": {
+            "type": "clockHands",
+            "value": 0,
+            "dur": 1
+          }
+        },
+        {
+          "f": 580,
+          "label": "32-BIT INTEGER",
+          "sublabel": "SIGNED COUNTER (THEORY)",
+          "action": {
+            "type": "counterValue",
+            "value": 2147483000,
+            "dur": 1
+          }
+        },
+        {
+          "f": 582,
+          "action": {
+            "type": "clockHands",
+            "value": 1440,
+            "dur": 118
+          }
+        },
+        {
+          "f": 700,
+          "label": "2,147,483,647",
+          "sublabel": "248.5 DAYS MAX",
+          "action": {
+            "type": "counterValue",
+            "value": 2147483647,
+            "dur": 115
+          }
+        },
+        {
+          "f": 705,
+          "action": {
+            "type": "clockHands",
+            "value": 2880,
+            "dur": 115
+          }
+        },
+        {
+          "f": 828,
+          "action": {
+            "type": "counterValue",
+            "value": -2147483648,
+            "dur": 6
+          }
+        },
+        {
+          "f": 830,
+          "action": {
+            "type": "beaconIntensity",
+            "value": 1.0,
+            "dur": 6
+          }
+        },
+        {
+          "f": 834,
+          "action": {
+            "type": "generatorState",
+            "on": false
+          }
+        }
       ]
     },
     {
       "id": "vintageCar",
       "kind": "car",
       "world": "town",
-      "pos": [0.0, 0.0, -2.2],
+      "pos": [
+        0.0,
+        0.0,
+        -2.2
+      ],
       "rotY": 0.18,
       "color": "#c94638",
       "accent": "#fff8e8",
       "label": "999,999 MILES",
       "sublabel": "CAR ODOMETER",
       "keyframes": [
-        { "f": 835, "label": "999,999 MILES", "sublabel": "CAR ODOMETER" },
-        { "f": 980, "label": "-2,147,483,648", "sublabel": "OVERFLOW!" }
+        {
+          "f": 835,
+          "label": "999,999 MILES",
+          "sublabel": "CAR ODOMETER",
+          "action": {
+            "type": "counterValue",
+            "value": 999995,
+            "dur": 1
+          }
+        },
+        {
+          "f": 835,
+          "action": {
+            "type": "wheelRotation",
+            "speed": 0.09
+          }
+        },
+        {
+          "f": 940,
+          "action": {
+            "type": "counterValue",
+            "value": 1000000,
+            "dur": 90
+          }
+        },
+        {
+          "f": 979,
+          "action": {
+            "type": "wheelRotation",
+            "speed": 0.0
+          }
+        },
+        {
+          "f": 980,
+          "label": "-2,147,483,648",
+          "sublabel": "OVERFLOW!",
+          "action": {
+            "type": "counterValue",
+            "value": -2147483648,
+            "dur": 8
+          }
+        }
       ]
     },
     {
       "id": "faaSign",
       "kind": "sign",
       "world": "tarmac",
-      "pos": [-0.95, 0.0, -1.6],
+      "pos": [
+        -0.95,
+        0.0,
+        -1.6
+      ],
       "rotY": 0.14,
       "color": "#8a5a3a",
       "accent": "#f6ecd2",
       "label": "787 DREAMLINER",
       "sublabel": "4x AC GENERATORS",
       "keyframes": [
-        { "f": 0, "label": "787 DREAMLINER", "sublabel": "4x AC GENERATORS" },
-        { "f": 1135, "label": "FAILSAFE TRIP", "sublabel": "ALL AC POWER OFF" },
-        { "f": 1245, "label": "FAA DIRECTIVE", "sublabel": "REBOOT < 120 DAYS" }
+        {
+          "f": 0,
+          "label": "787 DREAMLINER",
+          "sublabel": "4x AC GENERATORS"
+        },
+        {
+          "f": 1135,
+          "label": "FAILSAFE TRIP",
+          "sublabel": "ALL AC POWER OFF"
+        },
+        {
+          "f": 1245,
+          "label": "FAA DIRECTIVE",
+          "sublabel": "REBOOT < 120 DAYS"
+        },
+        {
+          "f": 1315,
+          "label": "SYSTEM RESET",
+          "sublabel": "ALL 4 GCUs BACK ON"
+        }
       ]
     },
     {
       "id": "masterSwitch",
       "kind": "switch",
       "world": "tarmac",
-      "pos": [18.0, 0.0, -1.5],
+      "pos": [
+        18.0,
+        0.0,
+        -1.5
+      ],
       "rotY": -0.14,
       "color": "#d93b34",
       "accent": "#fff8e8",
       "label": "MASTER POWER",
       "sublabel": "OFF / ON AGAIN",
       "keyframes": [
-        { "f": 0, "pos": [18.0, 0.0, -1.5] },
-        { "f": 1245, "pos": [1.0, 0.0, -1.5] }
+        {
+          "f": 0,
+          "pos": [
+            18.0,
+            0.0,
+            -1.5
+          ]
+        },
+        {
+          "f": 1245,
+          "pos": [
+            1.0,
+            0.0,
+            -1.5
+          ],
+          "action": {
+            "type": "leverAngle",
+            "value": 0.0,
+            "dur": 1
+          }
+        },
+        {
+          "f": 1270,
+          "action": {
+            "type": "leverAngle",
+            "value": -75.0,
+            "dur": 12
+          }
+        },
+        {
+          "f": 1310,
+          "action": {
+            "type": "leverAngle",
+            "value": 0.0,
+            "dur": 12
+          }
+        }
       ]
     }
   ],
   "fx": [
-    { "kind": "burst", "pos": [0.0, 2.4, -4.5], "a": 58, "b": 82, "scale": 1.6 },
-    { "kind": "creak", "pos": [0.0, 2.9, -1.6], "a": 590, "b": 695, "scale": 1.1 },
-    { "kind": "burst", "pos": [0.0, 2.4, -1.5], "a": 710, "b": 745, "scale": 1.4 },
-    { "kind": "burst", "pos": [0.0, 2.5, -1.3], "a": 988, "b": 1022, "scale": 1.4 },
-    { "kind": "stars", "pos": [-0.62, 2.25, 0.3], "a": 995, "b": 1125, "scale": 0.95 },
-    { "kind": "puff", "pos": [-1.8, 2.0, -5.8], "a": 1138, "b": 1190, "scale": 1.6 },
-    { "kind": "stars", "pos": [-0.45, 1.75, 0.3], "a": 1140, "b": 1240, "scale": 0.95 },
-    { "kind": "burst", "pos": [-0.85, 1.85, -1.3], "a": 1266, "b": 1280, "scale": 1.0 },
-    { "kind": "burst", "pos": [-0.85, 1.85, -1.3], "a": 1290, "b": 1306, "scale": 1.0 },
-    { "kind": "burst", "pos": [1.0, 2.0, -1.2], "a": 1385, "b": 1415, "scale": 1.3 }
+    {
+      "kind": "burst",
+      "pos": [
+        0.0,
+        2.4,
+        -4.5
+      ],
+      "a": 58,
+      "b": 82,
+      "scale": 1.6
+    },
+    {
+      "kind": "creak",
+      "pos": [
+        0.0,
+        2.9,
+        -1.6
+      ],
+      "a": 590,
+      "b": 695,
+      "scale": 1.1
+    },
+    {
+      "kind": "burst",
+      "pos": [
+        0.0,
+        2.4,
+        -1.5
+      ],
+      "a": 710,
+      "b": 745,
+      "scale": 1.4
+    },
+    {
+      "kind": "burst",
+      "pos": [
+        0.0,
+        2.5,
+        -1.3
+      ],
+      "a": 988,
+      "b": 1022,
+      "scale": 1.4
+    },
+    {
+      "kind": "stars",
+      "pos": [
+        -0.62,
+        2.25,
+        0.3
+      ],
+      "a": 995,
+      "b": 1125,
+      "scale": 0.95
+    },
+    {
+      "kind": "puff",
+      "pos": [
+        -1.8,
+        2.0,
+        -5.8
+      ],
+      "a": 1138,
+      "b": 1190,
+      "scale": 1.6
+    },
+    {
+      "kind": "stars",
+      "pos": [
+        -0.45,
+        1.75,
+        0.3
+      ],
+      "a": 1140,
+      "b": 1240,
+      "scale": 0.95
+    },
+    {
+      "kind": "burst",
+      "pos": [
+        -0.85,
+        1.85,
+        -1.3
+      ],
+      "a": 1266,
+      "b": 1280,
+      "scale": 1.0
+    },
+    {
+      "kind": "burst",
+      "pos": [
+        -0.85,
+        1.85,
+        -1.3
+      ],
+      "a": 1290,
+      "b": 1306,
+      "scale": 1.0
+    },
+    {
+      "kind": "burst",
+      "pos": [
+        1.0,
+        2.0,
+        -1.2
+      ],
+      "a": 1385,
+      "b": 1415,
+      "scale": 1.3
+    }
   ],
   "cues": [
-    { "t": 0.2, "kind": "whoosh" },
-    { "t": 2.1, "kind": "boom" },
-    { "t": 4.9, "kind": "flash" },
-    { "t": 8.5, "kind": "whoosh" },
-    { "t": 11.8, "kind": "pop" },
-    { "t": 15.2, "kind": "tick" },
-    { "t": 19.3, "kind": "tick" },
-    { "t": 23.7, "kind": "boom" },
-    { "t": 27.8, "kind": "whoosh" },
-    { "t": 33.0, "kind": "snap" },
-    { "t": 37.8, "kind": "boom" },
-    { "t": 42.3, "kind": "pop" },
-    { "t": 46.2, "kind": "chime" }
+    {
+      "t": 0.2,
+      "kind": "whoosh"
+    },
+    {
+      "t": 2.1,
+      "kind": "boom"
+    },
+    {
+      "t": 4.9,
+      "kind": "flash"
+    },
+    {
+      "t": 8.5,
+      "kind": "whoosh"
+    },
+    {
+      "t": 11.8,
+      "kind": "pop"
+    },
+    {
+      "t": 15.2,
+      "kind": "tick"
+    },
+    {
+      "t": 19.3,
+      "kind": "tick"
+    },
+    {
+      "t": 23.7,
+      "kind": "boom"
+    },
+    {
+      "t": 27.8,
+      "kind": "whoosh"
+    },
+    {
+      "t": 33.0,
+      "kind": "snap"
+    },
+    {
+      "t": 37.8,
+      "kind": "boom"
+    },
+    {
+      "t": 42.3,
+      "kind": "pop"
+    },
+    {
+      "t": 46.2,
+      "kind": "chime"
+    }
+  ],
+  "voice": {
+    "temperature": 0.85,
+    "topP": 0.8,
+    "direction": "curious"
+  },
+  "topic_card": {
+    "trend_timestamp": "2015-05-01",
+    "audience_question": "How can leaving a plane ON break it?",
+    "why_now": "Evergreen systems-engineering paradox: the fix is the oldest trick in IT."
+  },
+  "creative_brief": {
+    "question": "How does staying awake for 248 days shut down all four generators at once?",
+    "answer": "A software counter in each generator control unit overflows at the same moment, and the failsafe cuts all AC power.",
+    "proof": "FAA airworthiness directive 2015-10066: 248-day counter overflow, simultaneous GCU failsafe, 120-day power-cycle mandate.",
+    "caveat": "The exact 32-bit/100Hz counter mechanism is a widely repeated technical inference, not confirmed by the FAA directive; presented as the leading theory.",
+    "sharing_reason": "The fix for a billion-dollar jet is literally turning it off and on again."
+  },
+  "alternate_hook": "The FAA once ordered every Boeing 787 to be rebooted like a frozen laptop.",
+  "claim_ledger": [
+    {
+      "id": "faa-248-overflow",
+      "source_url": "https://www.federalregister.gov/documents/2015/05/01/2015-10066/airworthiness-directives-the-boeing-company-airplanes",
+      "source_date": "2015-05-01",
+      "accessed_at": "2026-11-21",
+      "attribution": "FAA directive: GCU software counter overflow after 248 days of continuous power, simultaneous failsafe shutdown of all four GCUs, loss of all AC electrical power.",
+      "limits": "Does NOT specify counter width (32-bit) or tick rate (100Hz)."
+    },
+    {
+      "id": "faa-120-day-cycle",
+      "source_url": "https://www.federalregister.gov/documents/2015/05/01/2015-10066/airworthiness-directives-the-boeing-company-airplanes",
+      "source_date": "2015-05-01",
+      "accessed_at": "2026-11-21",
+      "attribution": "FAA required repetitive electrical power deactivation (reboot) at intervals not exceeding 120 days until a software fix.",
+      "limits": "Main/APU batteries need not be disconnected; 'loss of all AC power' is not 'no electrical power at all'."
+    },
+    {
+      "id": "counter-32bit-100hz",
+      "source_url": "http://www.nihamkin.com/boeing-787-dreamliner-and-the-counter-overflow.html",
+      "accessed_at": "2026-11-21",
+      "attribution": "Technical analysis proposing a signed 32-bit counter at 100Hz ticks (~248.55 days to overflow).",
+      "limits": "Explicitly an inference by the author, not a confirmed design detail. Presented on screen and in narration as the leading theory."
+    }
+  ],
+  "beats": [
+    {
+      "shot": 3,
+      "claim_ids": [
+        "faa-248-overflow"
+      ]
+    },
+    {
+      "shot": 4,
+      "claim_ids": [
+        "faa-248-overflow"
+      ]
+    },
+    {
+      "shot": 6,
+      "claim_ids": [
+        "counter-32bit-100hz"
+      ]
+    },
+    {
+      "shot": 7,
+      "claim_ids": [
+        "counter-32bit-100hz"
+      ]
+    },
+    {
+      "shot": 8,
+      "claim_ids": [
+        "counter-32bit-100hz",
+        "faa-248-overflow"
+      ]
+    },
+    {
+      "shot": 11,
+      "claim_ids": [
+        "faa-248-overflow"
+      ]
+    },
+    {
+      "shot": 12,
+      "claim_ids": [
+        "faa-120-day-cycle"
+      ]
+    }
   ]
 }
