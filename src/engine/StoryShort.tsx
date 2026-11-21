@@ -184,7 +184,7 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   const sunRef = useMemo(() => {
     const dl = new THREE.DirectionalLight("#ffffff", 2.8);
     dl.castShadow = true;
-    dl.shadow.mapSize.set(2048, 2048);
+    dl.shadow.mapSize.set(1024, 1024);
     dl.shadow.camera.near = 1;
     dl.shadow.camera.far = 140;
     dl.shadow.camera.left = -28;
@@ -356,7 +356,7 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
         );
       })}
 
-      <EffectComposer multisampling={4}>
+      <EffectComposer multisampling={0}>
         <primitive object={fx.ink} dispose={null} />
         <primitive object={fx.lens.pre} dispose={null} />
         <primitive object={fx.lens.main} dispose={null} />

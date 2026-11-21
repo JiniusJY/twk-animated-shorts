@@ -4,79 +4,153 @@ on:
   workflow_dispatch:
     inputs:
       episode:
-        description: "Episode slug inside src/episodes/ (e.g. amazon-bot-book)"
+        description: "Episode slug inside src/episodes/ (e.g. boeing-248-days)"
         required: true
-        default: "amazon-bot-book"
+        default: "boeing-248-days"
       scale:
         description: "Output scale (1 = 1080x1920 HD, 1.3333333333333333 = 1440x2560 2K)"
         required: false
         default: "1"
+      shards:
+        description: "Parallel render shards (up to 16 on free public runners)"
+        required: false
+        default: "10"
+
+concurrency:
+  group: render-${{ github.event.inputs.episode || 'default' }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
 
 jobs:
-  render:
+  typecheck:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: "npm"
+      - run: npm ci
+      - run: npx tsc --noEmit
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.shards.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: Install system & Python dependencies
+      - name: Cache Python packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-audio-v1-${{ runner.os }}
+      - name: Install audio dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libgl1 libegl1 mesa-vulkan-drivers
-          pip install --no-cache-dir numpy scipy edge-tts
-
-      - name: Install Node dependencies
-        run: npm install
-
-      - name: Type-check Remotion engine
-        run: npx tsc --noEmit
-
+          sudo apt-get install -y ffmpeg
+          pip install numpy scipy edge-tts
       - name: Generate cloud voiceover & word timings
         env:
           FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
           FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: |
-          python3 scripts/voice.py --episode "src/episodes/${{ inputs.episode }}"
-
-      - name: Build procedural audio mix (-15 LUFS)
+        run: python3 scripts/voice.py --episode "src/episodes/${{ inputs.episode }}"
+      - name: Build procedural audio mix (-15 LUFS) & sync timings
         run: |
           mkdir -p out
           python3 scripts/audio_bed.py --episode "src/episodes/${{ inputs.episode }}" --props-out out/props.json
-
-      - name: Render Remotion 3D + 2D video
+      - id: shards
+        name: Compute parallel render shards
         run: |
-          npx remotion render src/index.ts "${{ inputs.episode }}" out/video.mp4 \
+          MATRIX=$(python3 scripts/make_shards.py out/props.json "${{ inputs.shards }}")
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+      - name: Upload prepared audio & props
+        uses: actions/upload-artifact@v4
+        with:
+          name: prep-${{ inputs.episode }}-${{ github.run_id }}
+          path: |
+            out/props.json
+            src/episodes/${{ inputs.episode }}/audio/mix.wav
+          retention-days: 1
+
+  render:
+    needs: [typecheck, prepare]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        shard: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: Install system Chromium libs
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libgl1 libegl1 mesa-vulkan-drivers
+      - run: npm ci
+      - name: Cache Remotion headless browser
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.remotion
+          key: remotion-browser-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Ensure Remotion browser
+        run: npx remotion browser ensure
+      - name: Download prepared props
+        uses: actions/download-artifact@v4
+        with:
+          name: prep-${{ inputs.episode }}-${{ github.run_id }}
+          path: prep
+      - name: Render shard ${{ matrix.shard.idx }} (${{ matrix.shard.range }})
+        run: |
+          mkdir -p out
+          PROPS=$(find prep -name 'props.json' | head -n 1)
+          npx remotion render src/index.ts "${{ inputs.episode }}" "out/chunk-${{ matrix.shard.idx }}.mp4" \
             --codec h264 --crf 16 --scale "${{ inputs.scale }}" \
-            --props=out/props.json \
-            --gl=swangle
+            --props="$PROPS" \
+            --frames="${{ matrix.shard.range }}" \
+            --muted --gl=swangle
+      - name: Upload rendered chunk
+        uses: actions/upload-artifact@v4
+        with:
+          name: chunk-${{ inputs.episode }}-${{ github.run_id }}-${{ matrix.shard.idx }}
+          path: out/chunk-${{ matrix.shard.idx }}.mp4
+          retention-days: 1
 
-      - name: Mux video + mastered audio
+  publish:
+    needs: [prepare, render]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Download prepared audio & rendered chunks
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "*-${{ inputs.episode }}-${{ github.run_id }}*"
+          path: chunks
+          merge-multiple: true
+      - name: Concatenate chunks & mux mastered audio
         run: |
-          ffmpeg -y -i out/video.mp4 -i "src/episodes/${{ inputs.episode }}/audio/mix.wav" \
+          mkdir -p out
+          find chunks -name 'chunk-*.mp4' | sort | sed "s|^|file '|;s|$|'|" > concat.txt
+          cat concat.txt
+          MIX=$(find chunks -name 'mix.wav' | head -n 1)
+          ffmpeg -y -f concat -safe 0 -i concat.txt -c copy out/video.mp4
+          ffmpeg -y -i out/video.mp4 -i "$MIX" \
             -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 192k -shortest out/final.mp4
-
-      - name: Upload rendered MP4 artifact
+      - name: Upload final MP4 artifact
         uses: actions/upload-artifact@v4
         with:
           name: short-${{ inputs.episode }}
           path: out/final.mp4
           retention-days: 30
-
       - name: Publish MP4 to GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -84,4 +158,4 @@ jobs:
           TAG="ep-${{ inputs.episode }}-${{ github.run_number }}"
           gh release create "$TAG" out/final.mp4 \
             --title "${{ inputs.episode }} (#${{ github.run_number }})" \
-            --notes "Automated cloud render for episode ${{ inputs.episode }}."
+            --notes "Automated parallel cloud render for episode ${{ inputs.episode }}."
