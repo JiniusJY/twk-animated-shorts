@@ -5,7 +5,9 @@ Reuses templates/audio/dsp.py, instruments.py, and sfx_gen.py driven by episode.
 """
 import argparse
 import json
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 import numpy as np
 from scipy import ndimage
@@ -87,7 +89,12 @@ def synth_cue(kind: str, r) -> np.ndarray:
     if kind == "snap":
         return S.bolt_snap(r)
     if kind == "flash":
-        return I.cymbal(vel=0.55, r=r, dur=0.9, bright=1.2) * 0.45 + S.whoosh(0.22, r, peak=0.35)
+        a = I.cymbal(vel=0.55, r=r, dur=0.9, bright=1.2) * 0.45
+        b = S.whoosh(0.22, r, peak=0.35)
+        out = np.zeros(max(len(a), len(b)))
+        out[: len(a)] += a
+        out[: len(b)] += b
+        return out
     if kind == "chime":
         return I.vibes(I.m2f(76), vel=0.65, r=r, dur=0.9)
     if kind == "tick":
@@ -119,10 +126,26 @@ def get_wav_duration(path: Path) -> float:
     return x.shape[1] / float(sr)
 
 
+def load_bg_audio(src: Path, dur: float) -> np.ndarray:
+    n = ns(dur)
+    with tempfile.TemporaryDirectory() as tmp:
+        wav = Path(tmp) / "bg.wav"
+        subprocess.run(
+            ["ffmpeg", "-y", "-stream_loop", "-1", "-i", str(src), "-t", f"{dur:.3f}", "-ar", str(SR), "-ac", "2", "-c:a", "pcm_s24le", str(wav)],
+            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+        raw, _ = read_wav(str(wav))
+    out = np.zeros((2, n), dtype=np.float64)
+    k = min(n, raw.shape[1])
+    out[:, :k] = raw[:, :k]
+    return fades(out, 0.05, 0.25)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Build procedural audio mix for episode")
     parser.add_argument("--episode", required=True)
     parser.add_argument("--props-out", default="", help="Optional path to write Remotion props JSON synced to voice duration")
+    parser.add_argument("--bg-audio", default="", help="Optional path to scraped viral audio track")
     args = parser.parse_args()
 
     ep_dir = Path(args.episode).resolve()
@@ -157,7 +180,12 @@ def main():
     voice_st = st(voice)
 
     words = json.loads((ep_dir / "voice" / "words.json").read_text(encoding="utf-8"))
-    music = build_music(dur, ep.get("musicMood", "playful"))
+    bg_path = Path(args.bg_audio).expanduser() if args.bg_audio else (Path(ep["bgAudio"]).expanduser() if ep.get("bgAudio") else None)
+    if bg_path and bg_path.exists():
+        print(f"Using viral background track: {bg_path.name}", flush=True)
+        music = load_bg_audio(bg_path, dur)
+    else:
+        music = build_music(dur, ep.get("musicMood", "playful"))
     music *= duck_envelope(n, words, duck_db=-4.0)
 
     # Set music bed ~10.5 dB below voice

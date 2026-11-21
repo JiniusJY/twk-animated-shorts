@@ -6,8 +6,12 @@ remotion-tmp/
 *.mp4
 *.mov
 *.wav
+*.mp3
+*.m4a
 *.log
 __pycache__/
 *.pyc
 .venv/
 .env
+.env.*
+viral-audio/
