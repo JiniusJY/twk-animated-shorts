@@ -139,7 +139,9 @@ jobs:
           echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
       - id: meta
         name: Record expected duration
-        run: echo "duration=$(python3 -c "import json; print(json.load(open('out/props.json'))['durationFrames'] / json.load(open('out/props.json'))['fps'])")" >> "$GITHUB_OUTPUT"
+        run: |
+          DUR=$(python3 -c "import json; d=json.load(open('out/props.json'))['spec']; print(d['durationFrames']/d['fps'])")
+          echo "duration=$DUR" >> "$GITHUB_OUTPUT"
       - name: Upload prepared audio & props
         uses: actions/upload-artifact@v4
         with:
