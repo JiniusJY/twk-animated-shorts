@@ -27,7 +27,8 @@ export const EditorialScene:React.FC<{shot:ShotDef}>=({shot})=>{
   <g transform={`translate(${(1-reveal)*-60} 0)`}>
   <path d="M100 650H980V1050H100Z" fill="#d4d2bf" stroke={I} strokeWidth="4"/>
   <path d="M135 690H610V970H135Z" fill={I}/>
-  <path d={`M150 850H250L280 790 320 910 355 850H${360+u*220}`} fill="none" stroke={G} strokeWidth="5"/>
+  <path d={Array.from({length:90},(_,i)=>`${i?"L":"M"}${145+i*5.1} ${830+Math.sin(i*.22-t*.18)*90}`).join(" ")} fill="none" stroke="#9bc7a8" strokeWidth="15"/>
+  <rect x={150+(t*5)%400} y="700" width="12" height="245" fill={G} opacity=".35"/>
   {[0,1,2,3].map(i=><g key={i}><circle cx={720+i%2*150} cy={760+Math.floor(i/2)*150} r="35" fill={i/4<u?R:G} stroke={I} strokeWidth="4"/><path d={`M${685+i%2*150} ${760+Math.floor(i/2)*150}h70`} stroke={I} strokeWidth="3"/></g>)}
   <path d="M80 1050H1000M150 1050V1180M930 1050V1180" stroke={I} strokeWidth="12"/>
   </g><text x="540" y="480" fill={I} textAnchor="middle" fontSize="145">2015</text>
@@ -44,6 +45,7 @@ export const EditorialScene:React.FC<{shot:ShotDef}>=({shot})=>{
   <g transform={`translate(${(1-reveal)*60} 0)`}><rect x="180" y="550" width="720" height="570" rx="16" fill={G} stroke={I} strokeWidth="5"/>
   {Array.from({length:9},(_,i)=><g key={i} stroke={I} strokeWidth="8"><path d={`M${240+i*75} 500v50M${240+i*75} 1120v50`}/></g>)}
   <rect x="280" y="670" width="520" height="310" fill={I} stroke={P} strokeWidth="3"/>
+  <rect x="290" y={970-270*u} width="500" height={270*u} fill={G} opacity=".65"/>
   <text x="540" y="805" fill={P} textAnchor="middle" fontFamily="'Courier New',monospace" fontSize="100">{String(Math.floor(t/fps*100)).padStart(4,"0")}</text>
   <text x="540" y="900" fill={P} textAnchor="middle" fontFamily="Arial,sans-serif" fontSize="27">TICKS</text></g>
   <text x="540" y="1300" fill={R} textAnchor="middle" fontSize="55" fontStyle="italic">about 100 times a second</text>

@@ -50,9 +50,10 @@ export const MechanismGraphic: React.FC<{shot:ShotDef}>=({shot})=>{
      <path d="M108 638h75" stroke={INK} opacity=".3"/>
     </g>
     <g clipPath="url(#reel-window)">
+    {mode==="counter" && <rect x="207" y="574" width={754*u} height="135" fill={GREEN} opacity=".25"/>}
     {number.split("").map((n,i)=>{
       const x=207+i*75.6;
-      const roll=mode==="overflow"&&i===9?Math.sin(flipProgress*Math.PI)*18:0;
+      const roll=mode==="counter"&&i>=7?Math.sin((u*647/10**(9-i))%1*Math.PI)*55:mode==="overflow"&&i===9?Math.sin(flipProgress*Math.PI)*18:0;
       return <g key={i} transform={`translate(${x} 574)`}>
        <rect width="70" height="135" rx="4" fill={PAPER}/>
        <rect y="0" width="70" height="18" fill={INK} opacity=".07"/>

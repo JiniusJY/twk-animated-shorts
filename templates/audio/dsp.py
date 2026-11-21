@@ -316,6 +316,19 @@ def norm_to(x, target_lufs, mode="momentary"):
 
 # ---------------------------------------------------------------- wav io
 def read_wav(path):
+    # Python <3.12 cannot read ffmpeg's WAVE_FORMAT_EXTENSIBLE PCM header.
+    # scipy preserves its 24-bit samples left-justified in int32.
+    try:
+        wave.open(path, "rb").close()
+    except wave.Error:
+        from scipy.io import wavfile
+        sr, data = wavfile.read(path)
+        if np.issubdtype(data.dtype, np.integer):
+            data = data.astype(np.float64) / float(1 << (data.dtype.itemsize*8-1))
+        else:
+            data = data.astype(np.float64)
+        if data.ndim == 1: data = data[:, None]
+        return data.T, sr
     with wave.open(path, "rb") as w:
         n, ch, sw, sr = w.getnframes(), w.getnchannels(), w.getsampwidth(), w.getframerate()
         raw = w.readframes(n)

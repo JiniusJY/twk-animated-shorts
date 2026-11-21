@@ -6,7 +6,7 @@ export const EndCard:React.FC<{start:number;handle:string}>=({start,handle})=>{
  const press=Math.max(0,1-Math.abs((f-start)-fps*1.15)/5);
  const p=spring({frame:f-start,fps,config:{damping:24,stiffness:170}});
  return <AbsoluteFill style={{background:"#f1eddd",color:"#26352f",justifyContent:"center",alignItems:"center",fontFamily:"Arial,sans-serif",paddingBottom:100,boxSizing:"border-box",opacity:Math.min(1,(f-start+1)/5)}}>
-  <div style={{width:230,height:230,borderRadius:"50%",overflow:"hidden",background:"#111316",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:36}}><Img src={staticFile("brand/twk-owner-logo.jpg")} style={{width:400,maxWidth:"none",height:"auto"}} /></div>
+  <div style={{width:230,height:230,borderRadius:"50%",overflow:"hidden",background:"#111316",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:36}}><Img src={staticFile("brand/twk-owner-logo-centered.png")} style={{width:230,maxWidth:"none",height:"auto"}} /></div>
   <div style={{fontFamily:"Georgia,serif",fontSize:78,letterSpacing:-3,marginBottom:32}}>Now you know.</div>
   <div style={{width:95,height:4,background:"#cb4a32",marginBottom:35}}/>
   <div style={{fontSize:38,marginBottom:22,letterSpacing:2}}>FOLLOW</div>
