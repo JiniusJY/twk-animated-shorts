@@ -1,0 +1,163 @@
+{
+  "slug": "amazon-bot-book",
+  "title": "The $23.6 Million Used Book",
+  "fps": 30,
+  "durationFrames": 1350,
+  "world": "office",
+  "musicMood": "playful",
+  "sourceUrl": "https://www.michaeleisen.org/blog/?p=358",
+  "script": "Two bots accidentally priced a used biology textbook at twenty-three million dollars, and nobody noticed for days. In April 2011, a postdoc named Michael needed a textbook about flies. Normal price? About a hundred bucks. Instead, two rival Amazon sellers were using automated pricing bots. Seller A set a simple rule: always match Seller B, minus a fraction. Seller B set an even greedier rule: always charge twenty-seven percent more than Seller A. Wait, what happens when two bots only copy each other? Every night, Seller B raised the price. By morning, Seller A caught up. Then Seller B jumped twenty-seven percent higher again. You see, it's like two auction bidders who both leave automatic instructions: whatever the other guy bids, go higher, and then both walk out of the room. Within ten days, that dusty paperback hit twenty-three million, six hundred ninety-eight thousand dollars. And the best part? It still charged three ninety-nine for shipping.",
+  "shots": [
+    {
+      "id": 1,
+      "a": 0,
+      "b": 150,
+      "light": "day",
+      "dof": 12,
+      "flashAt": 146,
+      "kickAt": [90],
+      "cam": { "from": [0.8, 2.2, 6.2], "to": [0.3, 1.9, 4.6], "lookFrom": [0, 1.4, 0], "lookTo": [0, 1.5, 0], "fovFrom": 40, "fovTo": 36, "rollDeg": -2 }
+    },
+    {
+      "id": 2,
+      "a": 150,
+      "b": 330,
+      "light": "day",
+      "dof": 8,
+      "cam": { "from": [-3.6, 2.5, 6.0], "to": [-2.2, 2.1, 4.8], "lookFrom": [-2.4, 1.3, 0], "lookTo": [-1.8, 1.35, 0], "fovFrom": 38, "fovTo": 36 }
+    },
+    {
+      "id": 3,
+      "a": 330,
+      "b": 540,
+      "light": "day",
+      "dof": 10,
+      "cam": { "from": [4.2, 2.3, 6.4], "to": [1.8, 2.1, 5.2], "lookFrom": [3.2, 1.4, -1.5], "lookTo": [2.2, 1.5, -1.5], "fovFrom": 40, "fovTo": 38 }
+    },
+    {
+      "id": 4,
+      "a": 540,
+      "b": 780,
+      "light": "day",
+      "dof": 6,
+      "kickAt": [620, 690, 740],
+      "cam": { "from": [0, 3.2, 9.2], "to": [0, 2.6, 7.2], "lookFrom": [0, 1.6, -1.2], "lookTo": [0, 1.8, -1.2], "fovFrom": 44, "fovTo": 40, "rollDeg": 3 }
+    },
+    {
+      "id": 5,
+      "a": 780,
+      "b": 1050,
+      "light": "golden",
+      "dof": 10,
+      "cam": { "from": [-4.5, 2.6, 6.8], "to": [4.5, 2.6, 6.8], "lookFrom": [0, 1.5, -1.5], "lookTo": [0, 1.6, -1.5], "fovFrom": 38, "fovTo": 38 }
+    },
+    {
+      "id": 6,
+      "a": 1050,
+      "b": 1350,
+      "light": "day",
+      "dof": 12,
+      "kickAt": [1120, 1260],
+      "cam": { "from": [0.4, 2.0, 5.6], "to": [0.1, 1.7, 3.8], "lookFrom": [0, 1.5, 0], "lookTo": [0, 1.65, 0], "fovFrom": 40, "fovTo": 34, "rollDeg": -4 }
+    }
+  ],
+  "actors": [
+    {
+      "id": "michael",
+      "preset": "worker",
+      "pos": [-2.6, 0, 0.2],
+      "expr": "neutral",
+      "keyframes": [
+        { "f": 0, "expr": "shock", "talk": true },
+        { "f": 150, "expr": "neutral", "talk": false },
+        { "f": 240, "expr": "nervous", "talk": true },
+        { "f": 540, "expr": "pained", "talk": false },
+        { "f": 1050, "expr": "laugh", "talk": true }
+      ]
+    },
+    {
+      "id": "botA",
+      "preset": "bot",
+      "pos": [2.2, 0, -2.0],
+      "expr": "grin",
+      "keyframes": [
+        { "f": 330, "expr": "grin", "talk": true },
+        { "f": 600, "pos": [1.4, 0, -1.5], "expr": "laugh", "walk": true },
+        { "f": 780, "pos": [2.2, 0, -2.0], "expr": "grin", "walk": false },
+        { "f": 1050, "expr": "dazed", "talk": false }
+      ]
+    },
+    {
+      "id": "botB",
+      "preset": "bot",
+      "outfit": { "jacket": "#e0533c", "cap": "#241726" },
+      "pos": [4.4, 0, -2.0],
+      "expr": "stern",
+      "keyframes": [
+        { "f": 380, "expr": "grin", "talk": true },
+        { "f": 600, "pos": [3.5, 0, -1.5], "expr": "laugh", "walk": true },
+        { "f": 780, "pos": [4.4, 0, -2.0], "expr": "grin", "walk": false },
+        { "f": 1050, "expr": "shock", "talk": false }
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "deskCenter",
+      "kind": "desk",
+      "pos": [0, 0, 0],
+      "color": "#c98b52"
+    },
+    {
+      "id": "flyBook",
+      "kind": "book",
+      "pos": [0, 1.0, 0],
+      "color": "#3d7a5a",
+      "accent": "#fff4dc",
+      "label": "FLY BOOK",
+      "sublabel": "$100.00",
+      "bob": 0.05,
+      "keyframes": [
+        { "f": 0, "label": "FLY BOOK", "sublabel": "$23,698,655" },
+        { "f": 150, "label": "FLY BOOK", "sublabel": "$100.00" },
+        { "f": 540, "label": "FLY BOOK", "sublabel": "$14,200" },
+        { "f": 680, "label": "FLY BOOK", "sublabel": "$1,730,045" },
+        { "f": 1050, "label": "FLY BOOK", "sublabel": "$23,698,655.93" },
+        { "f": 1240, "label": "+$3.99", "sublabel": "SHIPPING" }
+      ]
+    },
+    {
+      "id": "priceBoard",
+      "kind": "screen",
+      "pos": [0, 0, -3.2],
+      "color": "#262b38",
+      "accent": "#f7f3ea",
+      "label": "$23.6M",
+      "sublabel": "BOT PRICE WAR",
+      "keyframes": [
+        { "f": 0, "label": "$23,698,655", "sublabel": "USED TEXTBOOK" },
+        { "f": 180, "label": "$100", "sublabel": "NORMAL PRICE" },
+        { "f": 360, "label": "0.998x", "sublabel": "vs 1.27x BOT" },
+        { "f": 600, "label": "$1,730,045", "sublabel": "DAY 5 LOOP" },
+        { "f": 850, "label": "BID +27%", "sublabel": "INFINITE LOOP" },
+        { "f": 1080, "label": "$23,698,655", "sublabel": "+ $3.99 SHIPPING" }
+      ]
+    }
+  ],
+  "fx": [
+    { "kind": "burst", "pos": [0, 2.2, 0.2], "a": 80, "b": 115, "scale": 1.6 },
+    { "kind": "stars", "pos": [0, 2.5, 0.2], "a": 620, "b": 700, "scale": 1.5 },
+    { "kind": "ring", "pos": [0, 2.2, 0.2], "a": 1115, "b": 1160, "scale": 1.8 }
+  ],
+  "cues": [
+    { "t": 0.2, "kind": "whoosh" },
+    { "t": 3.0, "kind": "boom" },
+    { "t": 4.9, "kind": "flash" },
+    { "t": 11.5, "kind": "pop" },
+    { "t": 18.0, "kind": "cash" },
+    { "t": 22.8, "kind": "cash" },
+    { "t": 26.0, "kind": "chime" },
+    { "t": 37.2, "kind": "boom" },
+    { "t": 41.3, "kind": "cash" }
+  ]
+}

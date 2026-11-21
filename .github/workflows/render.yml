@@ -3,18 +3,17 @@ name: Render Animated Short
 on:
   workflow_dispatch:
     inputs:
-      composition:
-        description: "Remotion composition ID to render"
+      episode:
+        description: "Episode slug inside src/episodes/ (e.g. amazon-bot-book)"
         required: true
-        default: "BridgeShort"
+        default: "amazon-bot-book"
       scale:
-        description: "Output scale (1 = 1080x1920, 1.3333 = 1440x2560)"
+        description: "Output scale (1 = 1080x1920, 1.3333 = 1440x2560 2K)"
         required: false
         default: "1.3333"
-      audio_file:
-        description: "Optional path to mixed audio WAV/MP3 to mux"
-        required: false
-        default: ""
+
+permissions:
+  contents: write
 
 jobs:
   render:
@@ -27,38 +26,62 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: "npm"
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install system dependencies (ffmpeg + Chromium deps)
+      - name: Install system & Python dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64
+          sudo apt-get install -y ffmpeg libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libgl1 libegl1 mesa-vulkan-drivers
+          pip install --no-cache-dir numpy scipy edge-tts
 
       - name: Install Node dependencies
-        if: hashFiles('package.json') != ''
-        run: npm ci || npm install
+        run: npm install
 
-      - name: Render Remotion video
-        if: hashFiles('package.json') != ''
+      - name: Type-check Remotion engine
+        run: npx tsc --noEmit
+
+      - name: Generate cloud voiceover & word timings
+        env:
+          FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
+          FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          python3 scripts/voice.py --episode "src/episodes/${{ inputs.episode }}"
+
+      - name: Build procedural audio mix (-15 LUFS)
         run: |
           mkdir -p out
-          npx remotion render src/index.ts "${{ inputs.composition }}" out/video.mp4 \
-            --codec h264 --crf 16 --scale "${{ inputs.scale }}"
+          python3 scripts/audio_bed.py --episode "src/episodes/${{ inputs.episode }}" --props-out out/props.json
 
-      - name: Mux audio (if provided)
-        if: inputs.audio_file != '' && hashFiles('out/video.mp4') != ''
+      - name: Render Remotion 3D + 2D video
         run: |
-          ffmpeg -y -i out/video.mp4 -i "${{ inputs.audio_file }}" \
+          npx remotion render src/index.ts "${{ inputs.episode }}" out/video.mp4 \
+            --codec h264 --crf 16 --scale "${{ inputs.scale }}" \
+            --props=out/props.json \
+            --gl=angle --angle=swiftshader
+
+      - name: Mux video + mastered audio
+        run: |
+          ffmpeg -y -i out/video.mp4 -i "src/episodes/${{ inputs.episode }}/audio/mix.wav" \
             -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 192k -shortest out/final.mp4
 
-      - name: Upload rendered video
-        if: hashFiles('out/*.mp4') != ''
+      - name: Upload rendered MP4 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: rendered-${{ inputs.composition }}
-          path: out/*.mp4
+          name: short-${{ inputs.episode }}
+          path: out/final.mp4
           retention-days: 30
+
+      - name: Publish MP4 to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="ep-${{ inputs.episode }}-${{ github.run_number }}"
+          gh release create "$TAG" out/final.mp4 \
+            --title "${{ inputs.episode }} (#${{ github.run_number }})" \
+            --notes "Automated cloud render for episode ${{ inputs.episode }}."

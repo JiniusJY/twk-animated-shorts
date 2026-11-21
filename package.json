@@ -1,0 +1,28 @@
+{
+  "name": "twk-animated-shorts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Low-token automated 3D-world + 2D-cartoon vertical shorts engine powered by Remotion, Three.js, Fish Audio, Groq Whisper, and GitHub Actions",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "build-check": "tsc --noEmit",
+    "scout": "python3 scripts/scout.py"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^9.8.2",
+    "@react-three/postprocessing": "^3.2.2",
+    "@remotion/cli": "4.0.545",
+    "@remotion/three": "4.0.545",
+    "postprocessing": "^6.39.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "4.0.545",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.187.0",
+    "typescript": "^5.7.0"
+  }
+}
