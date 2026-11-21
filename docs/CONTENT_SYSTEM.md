@@ -52,6 +52,8 @@ First watch without sound: does it explain the change? Then listen without pictu
 
 Technical QA checks loudness, peaks, duration, black and freeze segments. They do not certify art direction, truth, performance or viewer understanding. A deliberately static explanatory hold may need a documented exception instead of useless motion. Never weaken an existing gate silently.
 
+Future renders omit the bottom source-ledger footer strip (the small 'Simplified illustration / Sources in episode claim ledger' line) and the bottom red progress bar/circular-avatar decoration, per the owner's 22 November review. Do not apply this as a silent edit to already-published videos. Keep the claim ledger and caption/description sources. Retain meaningful in-scene uncertainty labels, such as the unverified internal-counter theory; removing decorative footer chrome does not remove the duty to distinguish theory from established fact.
+
 ### 8. Release and learning
 
 No new full workflow run merely to see if it works. Prefer a short local proof and a short free voice audition first. Follow the user's current instructions about reruns. Report what was actually verified, which audio is old and which is new. Full render and release wait for the applicable review/authority. Do not overwrite an earlier delivered release with an unapproved rough cut.
