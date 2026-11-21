@@ -77,3 +77,7 @@ New episodes include a short branded end card after the completed story: Follow 
 Use real screenshots or video excerpts when they supply evidence or context the illustration cannot. Preserve the original URL, author/account, publication date, capture time, exact excerpt and a rights/usage note in the episode asset ledger. A public X post is not automatically licensed for unrestricted reuse. Prefer permission, licensed media, official press assets or a limited, justified editorial excerpt. Do not bypass paywalls, remove watermarks or expose private messages. Attribute clearly on screen, distinguish a claim from a verified fact, and avoid crops or edits that change meaning. Do not invent a screenshot, quote, metric or engagement count. Keep text legible on a phone. Source media is optional per story, not decorative B-roll.
 
 The end card uses the actual TechWhoKnows logo from the website brand asset, stored at `public/brand/twk-logo.svg`. Do not redraw or improvise the logo. Preserve its proportions and contrast. Website logo provenance is documented in `public/brand/README.md`. The current Boeing render does not add unrelated social footage.
+
+## Publishing package
+
+Every episode also follows [PUBLISHING_SYSTEM.md](PUBLISHING_SYSTEM.md): platform-specific titles, captions and relevant hashtags; truthful hooks; per-platform music selection and rights; approved publishing manifests; destination and processing checks; and post-release measurement. These rules govern future releases. They do not mean an uploader or metrics monitor is already implemented.
