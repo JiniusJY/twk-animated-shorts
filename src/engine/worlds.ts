@@ -242,11 +242,11 @@ export function makeLabelTexture(key: string, label: string, sublabel: string, b
     ctx.fillStyle = fg;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "900 58px sans-serif";
-    ctx.fillText(label.slice(0, 18), 256, sublabel ? 96 : 128);
+    ctx.font = "900 54px sans-serif";
+    ctx.fillText(label.slice(0, 18), 256, sublabel ? 96 : 128, 456);
     if (sublabel) {
-      ctx.font = "700 34px sans-serif";
-      ctx.fillText(sublabel.slice(0, 26), 256, 174);
+      ctx.font = "700 32px sans-serif";
+      ctx.fillText(sublabel.slice(0, 26), 256, 174, 456);
     }
   });
 }

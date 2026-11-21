@@ -13,36 +13,36 @@
       "a": 0,
       "b": 150,
       "light": "day",
-      "dof": 12,
+      "dof": 8,
       "flashAt": 146,
       "kickAt": [75],
-      "cam": { "from": [-2.2, 2.4, 8.8], "to": [-1.2, 2.1, 6.2], "lookFrom": [0, 1.8, 0.2], "lookTo": [0, 1.9, 0.2], "fovFrom": 40, "fovTo": 36, "rollDeg": -2.5 }
+      "cam": { "from": [-0.8, 2.6, 11.4], "to": [-0.3, 2.2, 8.8], "lookFrom": [-0.4, 1.8, -1.0], "lookTo": [-0.3, 1.7, -0.5], "fovFrom": 46, "fovTo": 42, "rollDeg": -2 }
     },
     {
       "id": 2,
       "a": 150,
       "b": 380,
       "light": "day",
-      "dof": 8,
-      "cam": { "from": [4.2, 2.3, 6.8], "to": [1.8, 2.1, 5.2], "lookFrom": [1.0, 1.5, 1.4], "lookTo": [1.4, 1.5, 1.4], "fovFrom": 38, "fovTo": 36 }
+      "dof": 7,
+      "cam": { "from": [2.8, 2.4, 9.6], "to": [1.8, 2.1, 7.8], "lookFrom": [1.8, 1.6, 0.8], "lookTo": [1.9, 1.5, 0.8], "fovFrom": 44, "fovTo": 42 }
     },
     {
       "id": 3,
       "a": 380,
       "b": 680,
       "light": "day",
-      "dof": 11,
+      "dof": 9,
       "kickAt": [540],
-      "cam": { "from": [2.4, 2.2, 5.6], "to": [2.7, 2.0, 4.1], "lookFrom": [2.8, 1.5, 1.2], "lookTo": [2.8, 1.55, 1.2], "fovFrom": 38, "fovTo": 34 }
+      "cam": { "from": [2.5, 2.2, 7.6], "to": [2.5, 2.0, 6.2], "lookFrom": [2.6, 1.5, 0.4], "lookTo": [2.6, 1.5, 0.4], "fovFrom": 44, "fovTo": 40 }
     },
     {
       "id": 4,
       "a": 680,
       "b": 980,
       "light": "golden",
-      "dof": 10,
+      "dof": 9,
       "kickAt": [830],
-      "cam": { "from": [-4.8, 2.3, 6.2], "to": [-3.0, 2.0, 4.5], "lookFrom": [-3.2, 1.5, 1.5], "lookTo": [-3.2, 1.55, 1.5], "fovFrom": 38, "fovTo": 34, "rollDeg": 2 }
+      "cam": { "from": [-3.4, 2.3, 7.8], "to": [-3.0, 2.0, 6.4], "lookFrom": [-3.0, 1.5, 0.4], "lookTo": [-3.0, 1.5, 0.4], "fovFrom": 44, "fovTo": 40, "rollDeg": 2 }
     },
     {
       "id": 5,
@@ -51,23 +51,23 @@
       "light": "golden",
       "dof": 6,
       "kickAt": [1010, 1100],
-      "cam": { "from": [0.8, 3.0, 9.6], "to": [0.2, 2.3, 6.4], "lookFrom": [0, 1.8, -0.5], "lookTo": [0, 1.8, -0.5], "fovFrom": 44, "fovTo": 38, "rollDeg": -3.5 }
+      "cam": { "from": [0.4, 2.8, 10.8], "to": [0.1, 2.3, 8.2], "lookFrom": [0, 1.6, 0.5], "lookTo": [0, 1.5, 1.2], "fovFrom": 46, "fovTo": 42, "rollDeg": -3 }
     },
     {
       "id": 6,
       "a": 1240,
       "b": 1560,
       "light": "day",
-      "dof": 9,
+      "dof": 8,
       "kickAt": [1410],
-      "cam": { "from": [0.5, 2.1, 6.5], "to": [0.1, 1.9, 5.0], "lookFrom": [0.2, 1.55, 2.2], "lookTo": [0.2, 1.55, 2.2], "fovFrom": 40, "fovTo": 36, "rollDeg": 2 }
+      "cam": { "from": [0.4, 2.2, 8.8], "to": [0.2, 2.0, 7.2], "lookFrom": [0.2, 1.5, 1.6], "lookTo": [0.2, 1.45, 1.8], "fovFrom": 44, "fovTo": 40, "rollDeg": 1.5 }
     }
   ],
   "actors": [
     {
       "id": "pilot",
       "preset": "pilot",
-      "pos": [-1.8, 0, 3.0],
+      "pos": [-1.3, 0, 2.6],
       "expr": "shock",
       "keyframes": [
         { "f": 0, "expr": "shock", "talk": true },
@@ -80,11 +80,11 @@
     {
       "id": "engineer",
       "preset": "engineer",
-      "pos": [1.0, 0, 2.6],
+      "pos": [1.1, 0, 2.4],
       "expr": "nervous",
       "keyframes": [
-        { "f": 150, "pos": [1.8, 0, 2.4], "expr": "nervous", "walk": true, "talk": true },
-        { "f": 380, "pos": [1.4, 0, 2.2], "expr": "shock", "walk": false, "talk": false },
+        { "f": 150, "pos": [1.6, 0, 2.2], "expr": "nervous", "walk": true, "talk": true },
+        { "f": 380, "pos": [1.3, 0, 2.0], "expr": "shock", "walk": false, "talk": false },
         { "f": 680, "expr": "nervous", "talk": true },
         { "f": 980, "expr": "shock", "talk": false },
         { "f": 1240, "expr": "relief", "talk": true }
@@ -93,12 +93,12 @@
     {
       "id": "faaBoss",
       "preset": "boss",
-      "pos": [0.2, 0, 3.4],
+      "pos": [0.1, 0, 3.0],
       "expr": "stern",
       "keyframes": [
-        { "f": 0, "pos": [6.5, 0, 3.4], "expr": "stern" },
-        { "f": 1240, "pos": [0.1, 0, 3.2], "expr": "stern", "walk": true, "talk": true },
-        { "f": 1380, "pos": [0.1, 0, 3.2], "expr": "grin", "walk": false, "talk": true }
+        { "f": 0, "pos": [8.5, 0, 3.0], "expr": "stern" },
+        { "f": 1240, "pos": [0.0, 0, 2.8], "expr": "stern", "walk": true, "talk": true },
+        { "f": 1380, "pos": [0.0, 0, 2.8], "expr": "grin", "walk": false, "talk": true }
       ]
     }
   ],
@@ -106,20 +106,20 @@
     {
       "id": "jet787",
       "kind": "plane",
-      "pos": [0, 0, -2.5],
-      "rotY": 0.45,
+      "pos": [0, 0.2, -7.8],
+      "rotY": 0.9,
       "color": "#2b6cb0",
       "keyframes": [
-        { "f": 0, "pos": [0, 0.4, -2.5], "rotY": 0.45 },
-        { "f": 980, "pos": [0, 0.0, -2.5], "rotY": 0.45 },
-        { "f": 1030, "pos": [0, -0.15, -2.5], "rotY": 0.52 }
+        { "f": 0, "pos": [0, 0.5, -7.8], "rotY": 0.9 },
+        { "f": 980, "pos": [0, 0.2, -7.8], "rotY": 0.9 },
+        { "f": 1030, "pos": [0, -0.1, -7.8], "rotY": 0.95 }
       ]
     },
     {
       "id": "counterBoard",
       "kind": "screen",
-      "pos": [2.8, 0, 1.2],
-      "rotY": -0.35,
+      "pos": [2.8, 0, 0.2],
+      "rotY": -0.15,
       "color": "#262b38",
       "accent": "#fff8e8",
       "label": "787 POWER",
@@ -136,23 +136,23 @@
     {
       "id": "odometerSign",
       "kind": "sign",
-      "pos": [-3.2, 0, 1.5],
-      "rotY": 0.35,
+      "pos": [-3.0, 0, 0.4],
+      "rotY": 0.15,
       "color": "#3b4252",
       "accent": "#ffefd6",
       "label": "999,999",
       "sublabel": "ODOMETER",
       "keyframes": [
         { "f": 680, "label": "999,999", "sublabel": "ODOMETER" },
-        { "f": 830, "label": "-2,147,483,648", "sublabel": "NEGATIVE OVERFLOW" }
+        { "f": 830, "label": "-2,147,483,648", "sublabel": "OVERFLOW!" }
       ]
     }
   ],
   "fx": [
-    { "kind": "burst", "pos": [0, 2.5, 0], "a": 68, "b": 105, "scale": 1.8 },
-    { "kind": "stars", "pos": [-3.2, 2.6, 1.6], "a": 825, "b": 885, "scale": 1.5 },
-    { "kind": "ring", "pos": [0, 2.2, -1.0], "a": 995, "b": 1045, "scale": 2.2 },
-    { "kind": "puff", "pos": [0.1, 2.1, 3.1], "a": 1405, "b": 1445, "scale": 1.3 }
+    { "kind": "burst", "pos": [-0.8, 2.3, 2.5], "a": 68, "b": 105, "scale": 1.6 },
+    { "kind": "stars", "pos": [-3.0, 2.5, 0.6], "a": 825, "b": 885, "scale": 1.4 },
+    { "kind": "ring", "pos": [0, 2.0, 1.5], "a": 995, "b": 1045, "scale": 2.0 },
+    { "kind": "puff", "pos": [0.0, 2.1, 2.7], "a": 1405, "b": 1445, "scale": 1.3 }
   ],
   "cues": [
     { "t": 0.2, "kind": "whoosh" },
