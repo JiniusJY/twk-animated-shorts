@@ -16,6 +16,9 @@ import {
 import { LOOK, LightPreset } from "./lights";
 import { NOINK } from "./ink";
 import type { PropDef, WorldPreset, V3 } from "./types";
+import { evalPropAt as evalPropPrepared, prepareProp, type ResolvedActions } from "./eval";
+
+export { lerpV3 } from "./eval";
 
 const matCache = new Map<string, THREE.MeshLambertMaterial>();
 function toonMat(key: string, params: THREE.MeshLambertMaterialParameters): THREE.MeshLambertMaterial {
@@ -27,47 +30,12 @@ function toonMat(key: string, params: THREE.MeshLambertMaterialParameters): THRE
   return m;
 }
 
-export function lerpV3(a: V3, b: V3, t: number): V3 {
-  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
-}
-
+/**
+ * @deprecated StoryShort uses prepareProp + evalPropAt from ./eval (pre-sorted,
+ * single evaluation per frame). Kept for compatibility.
+ */
 export function evalPropAt(p: PropDef, f: number) {
-  let pos: V3 = p.pos;
-  let rotY = p.rotY ?? 0;
-  let scale = p.scale ?? 1;
-  let label = p.label ?? "";
-  let sublabel = p.sublabel ?? "";
-
-  if (p.keyframes && p.keyframes.length > 0) {
-    const kfs = [...p.keyframes].sort((x, y) => x.f - y.f);
-    for (let i = 0; i < kfs.length; i++) {
-      const k = kfs[i];
-      if (f >= k.f) {
-        if (k.label !== undefined) label = k.label;
-        if (k.sublabel !== undefined) sublabel = k.sublabel;
-      }
-      const next = kfs[i + 1];
-      if (next && f >= k.f && f < next.f) {
-        const u = (f - k.f) / Math.max(1, next.f - k.f);
-        const s = u * u * (3 - 2 * u);
-        if (k.pos && next.pos) pos = lerpV3(k.pos, next.pos, s);
-        else if (k.pos) pos = k.pos;
-        if (k.rotY !== undefined && next.rotY !== undefined) rotY = k.rotY + (next.rotY - k.rotY) * s;
-        else if (k.rotY !== undefined) rotY = k.rotY;
-        if (k.scale !== undefined && next.scale !== undefined) scale = k.scale + (next.scale - k.scale) * s;
-        else if (k.scale !== undefined) scale = k.scale;
-        break;
-      } else if (!next && f >= k.f) {
-        if (k.pos) pos = k.pos;
-        if (k.rotY !== undefined) rotY = k.rotY;
-        if (k.scale !== undefined) scale = k.scale;
-      }
-    }
-  }
-
-  if (p.bob) pos = [pos[0], pos[1] + Math.sin(f * 0.08) * p.bob, pos[2]];
-  if (p.spin) rotY += f * p.spin;
-  return { pos, rotY, scale, label, sublabel };
+  return evalPropPrepared(prepareProp(p), f);
 }
 
 export function makeSky(_preset: LightPreset, mode: "day" | "golden"): THREE.Mesh {
@@ -646,7 +614,16 @@ export function makeLabelTexture(key: string, label: string, sublabel: string, b
   });
 }
 
-export function buildPropMesh(p: PropDef): { group: THREE.Group; setLabel: (l: string, s: string) => void } {
+export interface BuiltProp {
+  group: THREE.Group;
+  setLabel: (l: string, s: string) => void;
+  /** Apply resolved typed story actions (lever angle, counter value, GCU state, beacon, clock hands, wheels). */
+  setAction: (a: ResolvedActions) => void;
+}
+
+const fmtCounter = (v: number): string => Math.round(v).toLocaleString("en-US");
+
+export function buildPropMesh(p: PropDef): BuiltProp {
   const g = new THREE.Group();
   const baseCol = p.color ?? "#d9823b";
   const accentCol = p.accent ?? "#f8f1de";
@@ -655,6 +632,17 @@ export function buildPropMesh(p: PropDef): { group: THREE.Group; setLabel: (l: s
   const mTrim = toonMat(`prop_${p.id}_t`, { color: "#d8cfc0" });
   let faceMesh: THREE.Mesh | null = null;
   let lastTextKey = `${p.label ?? ""}|${p.sublabel ?? ""}`;
+  let lastLabel = p.label ?? "";
+  let lastSublabel = p.sublabel ?? "";
+  // Action-capable sub-parts, populated by the kind builders below
+  let leverPivot: THREE.Group | null = null;
+  let beaconMat: THREE.MeshLambertMaterial | null = null;
+  let beaconMesh: THREE.Mesh | null = null;
+  const ledMats: THREE.MeshLambertMaterial[] = [];
+  let hourHand: THREE.Group | null = null;
+  let minuteHand: THREE.Group | null = null;
+  const wheelGroups: THREE.Group[] = [];
+  let lastCounter: number | null = null;
 
   const makeFaceMat = (l: string, s: string) =>
     toonMat(`faceHD_${p.id}_${l}_${s}`, {
@@ -797,19 +785,24 @@ export function buildPropMesh(p: PropDef): { group: THREE.Group; setLabel: (l: s
       g.add(hl);
     }
 
-    // 4 wheels with hubcaps
+    // 4 wheels with hubcaps, each in a spin group so wheelRotation actually rolls them
     for (const wx of [-0.82, 0.82]) {
       for (const wz of [-0.74, 0.74]) {
+        const wg = new THREE.Group();
+        wg.position.set(wx, 0.35, wz);
         const w = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.26, 16), tyreM);
         w.rotation.x = Math.PI / 2;
-        w.position.set(wx, 0.35, wz);
         w.castShadow = true;
-        g.add(w);
+        wg.add(w);
 
         const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.29, 12), chromeM);
         cap.rotation.x = Math.PI / 2;
-        cap.position.set(wx, 0.35, wz);
-        g.add(cap);
+        wg.add(cap);
+        // spoke so rotation reads on the hubcap
+        const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.26, 0.31), tyreM);
+        wg.add(spoke);
+        g.add(wg);
+        wheelGroups.push(wg);
       }
     }
 
@@ -825,7 +818,6 @@ export function buildPropMesh(p: PropDef): { group: THREE.Group; setLabel: (l: s
     // 3D Cartoon Avionics Generator Control Unit & 100Hz 32-Bit Clock Apparatus (9:16 compact width 1.55m)
     const brassM = toonMat("clockBrass", { color: "#d9a74a" });
     const caseM = toonMat(`clockCase_${p.id}`, { color: baseCol });
-    const ledRed = toonMat("clockAlert", { color: "#e0483e" });
     const clockFaceM = toonMat("clockDialFace", {
       map: ctex("clockDialHD", 256, 256, (ctx) => {
         ctx.fillStyle = "#f7f1e1";
@@ -844,17 +836,6 @@ export function buildPropMesh(p: PropDef): { group: THREE.Group; setLabel: (l: s
           ctx.lineTo(128 + 98 * Math.cos(a), 128 + 98 * Math.sin(a));
           ctx.stroke();
         }
-        ctx.lineWidth = 12;
-        ctx.beginPath();
-        ctx.moveTo(128, 128);
-        ctx.lineTo(128, 56);
-        ctx.stroke();
-        ctx.lineWidth = 9;
-        ctx.strokeStyle = "#c84638";
-        ctx.beginPath();
-        ctx.moveTo(128, 128);
-        ctx.lineTo(182, 148);
-        ctx.stroke();
       }),
     });
 
@@ -880,9 +861,36 @@ export function buildPropMesh(p: PropDef): { group: THREE.Group; setLabel: (l: s
     dialFace.position.set(-0.38, 2.66, 0.11);
     g.add(dialFace);
 
-    const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 12), ledRed);
-    beacon.position.set(0.45, 2.52, 0);
-    g.add(beacon);
+    // Real analog hands driven by the clockHands action (minutes shown on the dial)
+    const handDark = toonMat("clockHandDark", { color: "#221f2e" });
+    const handRed = toonMat("clockHandRed", { color: "#c84638" });
+    hourHand = new THREE.Group();
+    hourHand.position.set(-0.38, 2.66, 0.115);
+    const hh = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.2, 0.02), handDark);
+    hh.position.y = 0.075;
+    hourHand.add(hh);
+    g.add(hourHand);
+    minuteHand = new THREE.Group();
+    minuteHand.position.set(-0.38, 2.66, 0.125);
+    const mh = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.28, 0.02), handRed);
+    mh.position.y = 0.11;
+    minuteHand.add(mh);
+    g.add(minuteHand);
+
+    // Four GCU output LEDs driven by the generatorState action (green = generating, red = failsafe cut)
+    for (let li = 0; li < 4; li++) {
+      const lm = new THREE.MeshLambertMaterial({ color: "#3ec95f", emissive: "#1d5c30" });
+      const led = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 8), lm);
+      led.position.set(-0.45 + li * 0.3, 1.3, 0.19);
+      g.add(led);
+      ledMats.push(lm);
+    }
+
+    // Warning beacon driven by the beaconIntensity action (own material so one prop never recolors another)
+    beaconMat = new THREE.MeshLambertMaterial({ color: "#e0483e", emissive: "#5c1410", emissiveIntensity: 0.2 });
+    beaconMesh = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 12), beaconMat);
+    beaconMesh.position.set(0.45, 2.52, 0);
+    g.add(beaconMesh);
   } else if (p.kind === "switch") {
     // Compact Cartoon "TURN IT OFF & ON AGAIN" Master Power Switch Box (1.3m wide)
     const redM = toonMat("switchRed", { color: "#d93b34" });
@@ -897,16 +905,19 @@ export function buildPropMesh(p: PropDef): { group: THREE.Group; setLabel: (l: s
       g.add(faceMesh);
     }
 
-    // Giant throw lever on the right side
+    // Giant throw lever on the right side, on a hinge pivot driven by the leverAngle action (degrees)
     addBox(g, 0.26, 0.35, 0.26, 0.72, 1.35, 0, mDark);
+    leverPivot = new THREE.Group();
+    leverPivot.position.set(0.86, 1.52, 0.1);
+    leverPivot.rotation.x = 0.45;
     const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.8, 10), chromeM);
-    arm.position.set(0.86, 1.68, 0.2);
-    arm.rotation.x = 0.45;
-    g.add(arm);
+    arm.position.set(0, 0.32, 0.1);
+    leverPivot.add(arm);
     const knob = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 12), redM);
-    knob.position.set(0.86, 2.04, 0.36);
+    knob.position.set(0, 0.68, 0.16);
     knob.castShadow = true;
-    g.add(knob);
+    leverPivot.add(knob);
+    g.add(leverPivot);
   } else if (p.kind === "desk") {
     addBox(g, 2.4, 0.16, 1.2, 0, 0.95, 0, mBase);
     for (const lx of [-1.0, 1.0]) for (const lz of [-0.45, 0.45]) addBox(g, 0.14, 0.95, 0.14, lx, 0.475, lz, mDark);
@@ -960,9 +971,47 @@ export function buildPropMesh(p: PropDef): { group: THREE.Group; setLabel: (l: s
     group: g,
     setLabel: (l: string, s: string) => {
       const k = `${l}|${s}`;
-      if (faceMesh && k !== lastTextKey) {
+      lastLabel = l;
+      lastSublabel = s;
+      if (faceMesh && k !== lastTextKey && lastCounter === null) {
         lastTextKey = k;
         faceMesh.material = makeFaceMat(l, s);
+      }
+    },
+    setAction: (a: ResolvedActions) => {
+      if (leverPivot && a.leverAngle !== undefined) {
+        leverPivot.rotation.x = 0.45 + (a.leverAngle * Math.PI) / 180;
+      }
+      if (a.generatorState !== undefined && ledMats.length > 0) {
+        for (const lm of ledMats) {
+          lm.color.set(a.generatorState ? "#3ec95f" : "#e0483e");
+          lm.emissive.set(a.generatorState ? "#1d5c30" : "#6e1210");
+        }
+      }
+      if (beaconMat && beaconMesh && a.beaconIntensity !== undefined) {
+        beaconMat.emissiveIntensity = 0.2 + 2.8 * a.beaconIntensity;
+        beaconMesh.scale.setScalar(1 + 0.35 * a.beaconIntensity);
+      }
+      if (a.clockHands !== undefined && hourHand && minuteHand) {
+        // value = minutes shown on the dial; hands rotate clockwise (-z)
+        minuteHand.rotation.z = -(a.clockHands / 60) * Math.PI * 2;
+        hourHand.rotation.z = -(a.clockHands / 720) * Math.PI * 2;
+      }
+      if (a.wheelAngle !== undefined && wheelGroups.length > 0) {
+        for (const wg of wheelGroups) wg.rotation.z = -a.wheelAngle;
+      }
+      if (a.counterValue !== undefined && faceMesh) {
+        const v = Math.round(a.counterValue);
+        if (v !== lastCounter) {
+          lastCounter = v;
+          const text = fmtCounter(v).slice(0, 18);
+          lastTextKey = `${text}|${lastSublabel}`;
+          faceMesh.material = makeFaceMat(text, lastSublabel);
+        }
+      } else if (a.counterValue === undefined && lastCounter !== null) {
+        lastCounter = null;
+        lastTextKey = `${lastLabel}|${lastSublabel}`;
+        if (faceMesh) faceMesh.material = makeFaceMat(lastLabel, lastSublabel);
       }
     },
   };

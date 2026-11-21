@@ -2,12 +2,19 @@
 """
 Procedural SFX + Music + Voice master mix (-15.0 LUFS, <= -1.2 dBTP)
 Reuses templates/audio/dsp.py, instruments.py, and sfx_gen.py driven by episode.json.
+
+Timeline sync: every visual timing (shots, keyframes, FX) is scaled from authored
+frames to the voice duration — and cue times now scale by the SAME factor, so SFX
+stay on their visual beats (previously cues kept their authored seconds and drifted
+seconds early on longer voice takes).
 """
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 import numpy as np
 from scipy import ndimage
@@ -19,6 +26,9 @@ from dsp import SR, ns, dbg, rng, read_wav, write_wav, st, place, integrated, tr
 import instruments as I  # noqa: E402
 import sfx_gen as S  # noqa: E402
 
+TARGET_LUFS = -15.0
+CEIL_DB = -1.2
+
 
 def duck_envelope(n_samples: int, words: list[dict], duck_db: float = -3.5) -> np.ndarray:
     mask = np.zeros(n_samples, dtype=np.float64)
@@ -29,6 +39,41 @@ def duck_envelope(n_samples: int, words: list[dict], duck_db: float = -3.5) -> n
     smooth = ndimage.gaussian_filter1d(mask, sigma=SR * 0.08)
     smooth = np.clip(smooth, 0.0, 1.0)
     return dbg(duck_db * smooth)
+
+
+def sync_episode(ep: dict, fps: int, voice_dur: float) -> tuple[dict, float, float]:
+    """Scale all authored timings to the voice duration. Returns (ep, dur_seconds, scale).
+
+    Shots, actor/prop keyframes and FX are in FRAMES and scale by `scale`.
+    Cues are in SECONDS against the authored script timeline, so they scale by
+    the SAME factor — this was the sync bug: cues used to keep authored seconds
+    while every visual beat moved.
+    """
+    dur = max(15.0, voice_dur + 0.4)
+    synced_frames = int(round(dur * fps))
+    scale = synced_frames / max(1, int(ep["durationFrames"]))
+    for s in ep.get("shots", []):
+        s["a"] = int(round(s["a"] * scale))
+        s["b"] = int(round(s["b"] * scale))
+        if "flashAt" in s:
+            s["flashAt"] = int(round(s["flashAt"] * scale))
+        if "kickAt" in s:
+            s["kickAt"] = [int(round(k * scale)) for k in s["kickAt"]]
+    if ep.get("shots"):
+        ep["shots"][-1]["b"] = synced_frames
+    for a in ep.get("actors", []):
+        for kf in a.get("keyframes", []):
+            kf["f"] = int(round(kf["f"] * scale))
+    for p in ep.get("props", []):
+        for kf in p.get("keyframes", []):
+            kf["f"] = int(round(kf["f"] * scale))
+    for fx in ep.get("fx", []):
+        fx["a"] = int(round(fx["a"] * scale))
+        fx["b"] = int(round(fx["b"] * scale))
+    for c in ep.get("cues", []):
+        c["t"] = round(float(c["t"]) * scale, 3)
+    ep["durationFrames"] = synced_frames
+    return ep, dur, scale
 
 
 def build_music(dur: float, mood: str, seed: int = 42) -> np.ndarray:
@@ -113,17 +158,59 @@ def build_sfx(dur: float, cues: list[dict], seed: int = 99) -> np.ndarray:
     return buf
 
 
-def soft_limit(x: np.ndarray, ceil_db: float = -1.2) -> np.ndarray:
+def lookahead_limiter(x: np.ndarray, ceil_db: float = CEIL_DB, lookahead_ms: float = 5.0, release_ms: float = 80.0) -> np.ndarray:
+    """Stereo-linked lookahead peak limiter.
+
+    Unlike the old soft_limit(), one loud SFX peak only turns down its own
+    neighbourhood instead of rescaling the ENTIRE mix around the global max
+    (which dragged every speech section down ~9 LU and made the final master
+    miss its -15 LUFS target by a mile).
+    """
     ceil = dbg(ceil_db)
-    peak = float(np.max(np.abs(x)))
-    if peak > ceil and peak > 0:
-        x = np.tanh(x * (ceil / peak) * 1.1) * ceil / np.tanh(1.1)
-    return x
+    env = np.max(np.abs(x), axis=0)  # linked gain so the stereo image never wanders
+    hop = 64
+    nblk = (len(env) + hop - 1) // hop
+    pad = nblk * hop - len(env)
+    b = np.max(np.pad(env, (0, pad), constant_values=0).reshape(nblk, hop), axis=1)
+    # gain needed per block so no sample in the block exceeds the ceiling
+    g = np.minimum(1.0, ceil / np.maximum(b, 1e-9))
+    la = max(1, ns(lookahead_ms / 1000) // hop)
+    g = ndimage.minimum_filter1d(g, size=2 * la + 1, mode="nearest")  # lookahead: gain dips before the peak
+    rel = max(1.0, ns(release_ms / 1000) / hop)
+    g = ndimage.gaussian_filter1d(g, sigma=rel / 4, mode="nearest")  # smooth release, no pumping clicks
+    g = np.minimum(g, np.minimum(1.0, ceil / np.maximum(b, 1e-9)))  # never above the required dip
+    up = np.repeat(g, hop)[: len(env)]
+    return x * up
+
+
+def normalize_and_limit(mix: np.ndarray, target_lufs: float = TARGET_LUFS, ceil_db: float = CEIL_DB) -> np.ndarray:
+    """Two-pass integrated loudness normalization + true-peak-safe limiting."""
+    cur = integrated(mix)
+    if np.isfinite(cur):
+        mix = mix * dbg(target_lufs - cur)
+    mix = lookahead_limiter(mix, ceil_db)
+    # Pass 2: limiting cost some integrated loudness — make it up once, then re-limit
+    post = integrated(mix)
+    if np.isfinite(post) and abs(post - target_lufs) > 0.3:
+        mix = lookahead_limiter(mix * dbg(target_lufs - post), ceil_db)
+    ceil = dbg(ceil_db)
+    return np.clip(mix, -ceil, ceil)
 
 
 def get_wav_duration(path: Path) -> float:
     x, sr = read_wav(str(path))
     return x.shape[1] / float(sr)
+
+
+def sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def git_sha() -> str:
+    try:
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True, cwd=ROOT).strip()
+    except Exception:
+        return "unknown"
 
 
 def load_bg_audio(src: Path, dur: float) -> np.ndarray:
@@ -154,35 +241,21 @@ def main():
 
     voice_wav = ep_dir / "voice" / "voice.wav"
     voice_dur = get_wav_duration(voice_wav)
-    # Match video length to voice + 0.4s breathing room (minimum 15s)
-    dur = max(15.0, voice_dur + 0.4)
-    synced_frames = int(round(dur * fps))
-    if ep.get("shots"):
-        scale = synced_frames / max(1, int(ep["durationFrames"]))
-        for s in ep["shots"]:
-            s["a"] = int(round(s["a"] * scale))
-            s["b"] = int(round(s["b"] * scale))
-            if "flashAt" in s:
-                s["flashAt"] = int(round(s["flashAt"] * scale))
-            if "kickAt" in s:
-                s["kickAt"] = [int(round(k * scale)) for k in s["kickAt"]]
-        ep["shots"][-1]["b"] = synced_frames
-        for a in ep.get("actors", []):
-            for kf in a.get("keyframes", []):
-                kf["f"] = int(round(kf["f"] * scale))
-        for p in ep.get("props", []):
-            for kf in p.get("keyframes", []):
-                kf["f"] = int(round(kf["f"] * scale))
-        for fx in ep.get("fx", []):
-            fx["a"] = int(round(fx["a"] * scale))
-            fx["b"] = int(round(fx["b"] * scale))
-    ep["durationFrames"] = synced_frames
+    ep, dur, scale = sync_episode(ep, fps, voice_dur)
+    print(f"Timeline sync: voice {voice_dur:.2f}s -> {ep['durationFrames']} frames at {fps}fps (scale {scale:.4f}, cues scaled too)", flush=True)
     n = ns(dur)
+
+    words = json.loads((ep_dir / "voice" / "words.json").read_text(encoding="utf-8"))
+    words_meta_path = ep_dir / "voice" / "words_meta.json"
+    words_meta = json.loads(words_meta_path.read_text(encoding="utf-8")) if words_meta_path.exists() else {}
+    captions_approximate = bool(words_meta.get("approximate", False))
+    if captions_approximate:
+        print("WARNING: word timings are the APPROXIMATE proportional fallback, not real alignment.", flush=True)
 
     if args.props_out:
         p_out = Path(args.props_out)
         p_out.parent.mkdir(parents=True, exist_ok=True)
-        p_out.write_text(json.dumps({"spec": ep}), encoding="utf-8")
+        p_out.write_text(json.dumps({"spec": ep, "captions": words, "captionsApproximate": captions_approximate}), encoding="utf-8")
 
     v_raw, sr = read_wav(str(voice_wav))
     if sr != SR:
@@ -191,8 +264,11 @@ def main():
     voice = np.zeros(n, dtype=np.float64)
     voice[: min(n, len(v_mono))] = v_mono[:n]
     voice_st = st(voice)
+    # Level the voice stem before mixing so SFX peaks never drag speech down later
+    v_lufs = integrated(voice_st)
+    if np.isfinite(v_lufs):
+        voice_st = voice_st * dbg(-17.0 - v_lufs)
 
-    words = json.loads((ep_dir / "voice" / "words.json").read_text(encoding="utf-8"))
     bg_path = Path(args.bg_audio).expanduser() if args.bg_audio else (Path(ep["bgAudio"]).expanduser() if ep.get("bgAudio") else None)
     if bg_path and bg_path.exists():
         print(f"Using viral background track: {bg_path.name}", flush=True)
@@ -208,18 +284,49 @@ def main():
         music *= dbg((v_lufs - 10.5) - m_lufs)
 
     sfx = build_sfx(dur, ep.get("cues", []))
-    mix = voice_st + music + sfx * dbg(-6.0)
+    # Trim SFX stem so one loud cue cannot own the limiter
+    sfx_peak = float(np.max(np.abs(sfx))) if sfx.size else 0.0
+    if sfx_peak > 0.5:
+        sfx = sfx * (0.5 / sfx_peak)
 
-    cur_lufs = integrated(mix)
-    if np.isfinite(cur_lufs):
-        mix *= dbg(-15.0 - cur_lufs)
-    mix = soft_limit(mix, -1.2)
+    mix = voice_st + music + sfx * dbg(-6.0)
+    mix = normalize_and_limit(mix, TARGET_LUFS, CEIL_DB)
 
     out_dir = ep_dir / "audio"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_wav = out_dir / "mix.wav"
     write_wav(str(out_wav), mix, bits=24)
-    print(f"Wrote {out_wav} ({dur:.2f}s, integrated={integrated(mix):.1f} LUFS, peak={true_peak(mix):.2f} dBTP)")
+
+    # Stems for remixing without re-running the whole pipeline
+    write_wav(str(out_dir / "stem_voice.wav"), voice_st, bits=24)
+    write_wav(str(out_dir / "stem_music.wav"), music, bits=24)
+    write_wav(str(out_dir / "stem_sfx.wav"), sfx, bits=24)
+
+    final_lufs = integrated(mix)
+    final_peak = true_peak(mix)
+    manifest = {
+        "episode": ep.get("slug", ep_dir.name),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "code_sha": git_sha(),
+        "episode_json_sha256": sha256_file(ep_dir / "episode.json"),
+        "voice_wav_sha256": sha256_file(voice_wav),
+        "words_sha256": sha256_file(ep_dir / "voice" / "words.json"),
+        "alignment": {"method": words_meta.get("method", "unknown"), "approximate": captions_approximate},
+        "voice_provider": words_meta.get("provider", "unknown"),
+        "voice_model": words_meta.get("model", "unknown"),
+        "timeline": {"fps": fps, "duration_frames": ep["durationFrames"], "duration_sec": round(dur, 3), "scale": round(scale, 6)},
+        "mix": {
+            "target_lufs": TARGET_LUFS,
+            "integrated_lufs": round(float(final_lufs), 2),
+            "true_peak_dbtp": round(float(final_peak), 2),
+            "ceil_db": CEIL_DB,
+            "seed_music": 42,
+            "seed_sfx": 99,
+        },
+        "bg_audio": str(bg_path) if bg_path and bg_path.exists() else None,
+    }
+    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    print(f"Wrote {out_wav} ({dur:.2f}s, integrated={final_lufs:.1f} LUFS, peak={final_peak:.2f} dBTP) + stems + manifest.json")
 
 
 if __name__ == "__main__":

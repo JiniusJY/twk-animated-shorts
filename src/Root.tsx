@@ -15,7 +15,7 @@ export const RemotionRoot: React.FC = () => {
           fps={ep.fps}
           width={1080}
           height={1920}
-          defaultProps={{ spec: ep }}
+          defaultProps={{ spec: ep, captions: null, captionsApproximate: false }}
           calculateMetadata={({ props }) => ({
             durationInFrames: props.spec.durationFrames,
             fps: props.spec.fps,

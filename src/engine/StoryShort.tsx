@@ -35,8 +35,10 @@ import {
   Expr,
   Prop as ToonProp,
 } from "./toon";
-import { buildWorldEnvironment, buildPropMesh, evalPropAt, makeSky, lerpV3 } from "./worlds";
-import type { EpisodeSpec, ShotDef, ActorDef, ActorMode, ActorPropKind, V3, WorldPreset } from "./types";
+import { buildWorldEnvironment, buildPropMesh, makeSky } from "./worlds";
+import { prepareActor, evalActorAt, prepareProp, evalPropAt, lerpV3, type ActorState } from "./eval";
+import { Captions } from "./Captions";
+import type { EpisodeSpec, ShotDef, ActorDef, V3, WorldPreset, StoryShortProps } from "./types";
 
 const OUTFIT_PRESETS: Record<string, Outfit> = {
   pilot: {
@@ -117,58 +119,6 @@ function lidAt(f: number, idx: number, swapFrames: number[]): number {
     s += Math.round(15 + 54 * hh(idx * 31 + n, 13));
   }
   return 0;
-}
-
-function evalActor(a: ActorDef, f: number) {
-  let pos: V3 = a.pos;
-  let expr: Expr = a.expr ?? "neutral";
-  let walk = a.walk ?? false;
-  let talk = a.talk ?? false;
-  let lean = a.lean ?? 0;
-  let facing: -1 | 0 | 1 = a.facing ?? 0;
-  let look: -1 | 0 | 1 = a.look ?? 0;
-  let mode: ActorMode | undefined = a.mode;
-  let side = a.side ?? false;
-  let mirror = a.mirror ?? false;
-  let prop: ActorPropKind = a.prop ?? null;
-  let moveDir: [number, number] = [0, 0];
-
-  if (a.keyframes && a.keyframes.length > 0) {
-    const kfs = [...a.keyframes].sort((x, y) => x.f - y.f);
-    for (let i = 0; i < kfs.length; i++) {
-      const k = kfs[i];
-      if (f >= k.f) {
-        if (k.pos) pos = k.pos;
-        if (k.expr !== undefined) expr = k.expr;
-        if (k.walk !== undefined) walk = k.walk;
-        if (k.talk !== undefined) talk = k.talk;
-        if (k.lean !== undefined) lean = k.lean;
-        if (k.facing !== undefined) facing = k.facing;
-        if (k.look !== undefined) look = k.look;
-        if (k.mode !== undefined) mode = k.mode;
-        if (k.side !== undefined) side = k.side;
-        if (k.mirror !== undefined) mirror = k.mirror;
-        if (k.prop !== undefined) prop = k.prop;
-      }
-      const next = kfs[i + 1];
-      if (next && f >= k.f && f < next.f) {
-        // Only interpolate position when the character is actively walking so actors never slide like ghosts
-        if (k.pos && next.pos && k.walk) {
-          const u = (f - k.f) / Math.max(1, next.f - k.f);
-          const s = u * u * (3 - 2 * u);
-          pos = lerpV3(k.pos, next.pos, s);
-          const dx = next.pos[0] - k.pos[0];
-          const dz = next.pos[2] - k.pos[2];
-          const len = Math.hypot(dx, dz);
-          if (len > 0.05) moveDir = [dx / len, dz / len];
-        }
-        break;
-      }
-    }
-  }
-
-  const resolvedMode: ActorMode = mode ?? (walk ? "march" : "stand");
-  return { pos, expr, walk, talk, lean, facing, look, mode: resolvedMode, side, mirror, prop, moveDir };
 }
 
 /** Quintic smootherstep from templates/bridge/story.ts */
@@ -276,7 +226,7 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   const skyGolden = useMemo(() => makeSky(LIGHTS.golden, "golden"), []);
 
   const propEntries = useMemo(
-    () => spec.props.map((p) => ({ def: p, built: buildPropMesh(p) })),
+    () => spec.props.map((p) => ({ def: p, prepared: prepareProp(p), built: buildPropMesh(p) })),
     [spec.props]
   );
 
@@ -328,16 +278,16 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
         alphaTest: 0.5,
         side: THREE.DoubleSide,
       });
-      const swapFrames = (a.keyframes ?? []).filter((k) => k.expr !== undefined && k.f > 0).map((k) => k.f);
       return {
         def: a,
+        prepared: prepareActor(a),
         outfit: resolveOutfit(a, idx),
         cv,
         tex,
         mat,
         dmat,
         seed: ((idx * 5 + 3) % 7) + 1,
-        swapFrames,
+        lastSig: null as string | null,
       };
     });
   }, [spec.actors]);
@@ -451,14 +401,16 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   fx.lens.cInf = shot.dof ?? 0;
   gradeFor(fx.grade, shot.light);
 
+  // Evaluate every actor ONCE per frame (pre-sorted keyframes) and reuse for draw + placement
+  const actorStates: ActorState[] = actorCards.map((ac) => evalActorAt(ac.prepared, f));
+
   // Redraw actor canvases at 1080x1800 resolution with dynamic 2D sun angle, blinks, side/front views, and props
   actorCards.forEach((ac, idx) => {
-    const st = evalActor(ac.def, f);
-    const ctx = ac.cv.getContext("2d")!;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, CHAR_W, CHAR_H);
-    ctx.setTransform(CHAR_SCALE, 0, 0, CHAR_SCALE, 0, 0);
-
+    if (ac.def.world && ac.def.world !== activeWorld) {
+      ac.lastSig = null;
+      return;
+    }
+    const st = actorStates[idx];
     // Determine if character is walking sideways relative to camera
     let useSide = st.side;
     let useMirror = st.mirror;
@@ -478,7 +430,22 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
     const sy = -sunDir.y;
     const light = Math.round(Math.atan2(sy, sx) / (Math.PI / 4)) * (Math.PI / 4);
 
-    const blink = st.expr !== "whistle" ? lidAt(f, idx + 1, ac.swapFrames) : 0;
+    const blink = st.expr !== "whistle" ? lidAt(f, idx + 1, ac.prepared.swapFrames) : 0;
+
+    // Static actors skip the 1080x1800 redraw + texture upload unless a visual input changed.
+    // Walking/talking/hammer actors animate every frame, so they always redraw.
+    const dynamic = st.walk || st.talk || st.prop === "hammer";
+    const sig = dynamic
+      ? null
+      : JSON.stringify([st.expr, blink, st.mode, useSide, useMirror, light, st.facing, st.look, st.lean, st.prop]);
+    if (sig !== null && sig === ac.lastSig) return;
+    ac.lastSig = sig;
+
+    const ctx = ac.cv.getContext("2d")!;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, CHAR_W, CHAR_H);
+    ctx.setTransform(CHAR_SCALE, 0, 0, CHAR_SCALE, 0, 0);
+
     const phase = st.walk ? ((f * 0.035 + idx * 0.17) % 1) : 0;
     const wave = st.talk && !st.prop ? Math.sin(f * 0.28 + idx * 1.3) * 0.65 : undefined;
 
@@ -557,7 +524,8 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   noInkFallback(scene);
 
   const composerRef = useRef<{ passes?: unknown[] } | null>(null);
-  const [readyHandle] = useState(() => delayRender("webgl-composer-ready"));
+  // Remotion throws a named timeout error if the composer never attaches — no more silently released unready frames
+  const [readyHandle] = useState(() => delayRender("webgl-composer-ready", { timeoutInMilliseconds: 30000 }));
   useEffect(() => {
     let cancelled = false;
     let rafId = 0;
@@ -579,10 +547,8 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
       rafId = requestAnimationFrame(tick);
     };
     rafId = requestAnimationFrame(tick);
-    const timer = setTimeout(finish, 8000);
     return () => {
       cancelled = true;
-      clearTimeout(timer);
       cancelAnimationFrame(rafId);
     };
   }, [readyHandle, advance, gl]);
@@ -591,8 +557,43 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
     return () => {
       fx.ink.dispose();
       fx.lens.dispose();
+      fx.bloom.dispose();
+      fx.tone.dispose();
+      fx.grade.dispose();
     };
   }, [fx]);
+
+  // Free per-episode GPU resources on unmount. Materials from the module-level
+  // toonMat cache are shared across episodes and deliberately NOT disposed.
+  useEffect(() => {
+    return () => {
+      for (const env of worldCacheRef.current.values()) {
+        env.traverse((o) => {
+          const mesh = o as THREE.Mesh;
+          if (mesh.isMesh && mesh.geometry) mesh.geometry.dispose();
+        });
+      }
+      worldCacheRef.current.clear();
+      for (const ac of actorCards) {
+        ac.tex.dispose();
+        ac.mat.dispose();
+        ac.dmat.dispose();
+      }
+      for (const fc of fxCards) {
+        fc.tex.dispose();
+        fc.mat.dispose();
+      }
+      for (const sky of [skyDay, skyGolden]) {
+        sky.geometry.dispose();
+        (sky.material as THREE.Material).dispose();
+      }
+      contactMat.map?.dispose();
+      contactMat.dispose();
+      tailMat.map?.dispose();
+      tailMat.dispose();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const post = useMemo(
     () => (
@@ -621,10 +622,11 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
       <primitive object={skyMesh} />
       <primitive object={worldEnv} />
 
-      {propEntries.map(({ def, built }) => {
+      {propEntries.map(({ def, prepared, built }) => {
         if (def.world && def.world !== activeWorld) return null;
-        const ps = evalPropAt(def, f);
+        const ps = evalPropAt(prepared, f);
         built.setLabel(ps.label, ps.sublabel);
+        built.setAction(ps.actions);
         return (
           <primitive
             key={def.id}
@@ -636,8 +638,9 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
         );
       })}
 
-      {actorCards.map((ac) => {
-        const st = evalActor(ac.def, f);
+      {actorCards.map((ac, ai) => {
+        if (ac.def.world && ac.def.world !== activeWorld) return null;
+        const st = actorStates[ai];
         const yaw = Math.atan2(camState.pos[0] - st.pos[0], camState.pos[2] - st.pos[2]);
         const sc = ac.def.scale ?? 1;
         let mirrorX = st.mirror;
@@ -712,7 +715,7 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   );
 };
 
-export const StoryShort: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
+export const StoryShort: React.FC<StoryShortProps> = ({ spec, captions }) => {
   const f = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const shot = findShot(spec.shots, f);
@@ -733,6 +736,7 @@ export const StoryShort: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
       {flashOn && (
         <AbsoluteFill style={{ backgroundColor: "#ffffff", opacity: flashOpacity, pointerEvents: "none" }} />
       )}
+      <Captions words={captions ?? null} config={spec.captions} />
     </AbsoluteFill>
   );
 };
