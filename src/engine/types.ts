@@ -209,6 +209,7 @@ export interface EpisodeSpec {
   script: string;
   /** Primary source backing the episode's factual claims. Required by schema validation. */
   sourceUrl?: string;
+  endCard?: { handle: string; seconds?: number };
   shots: ShotDef[];
   actors: ActorDef[];
   props: PropDef[];

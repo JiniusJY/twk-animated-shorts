@@ -38,6 +38,7 @@ import {
 import { buildWorldEnvironment, buildPropMesh, makeSky } from "./worlds";
 import { prepareActor, evalActorAt, prepareProp, evalPropAt, lerpV3, type ActorState } from "./eval";
 import { Captions } from "./Captions";
+import { EndCard } from "./EndCard";
 import { EditorialScene } from "./EditorialScene";
 import { MechanismGraphic } from "./MechanismGraphic";
 import type { EpisodeSpec, ShotDef, ActorDef, V3, WorldPreset, StoryShortProps } from "./types";
@@ -719,7 +720,9 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
 
 export const StoryShort: React.FC<StoryShortProps> = ({ spec, captions }) => {
   const f = useCurrentFrame();
-  const { width, height } = useVideoConfig();
+  const { width, height, fps } = useVideoConfig();
+  const endStart = spec.endCard ? spec.durationFrames - Math.round((spec.endCard.seconds ?? 2)*fps) : spec.durationFrames;
+  if (spec.endCard && f >= endStart) return <EndCard start={endStart} handle={spec.endCard.handle} />;
   const shot = findShot(spec.shots, f);
   const flashOn = shot.flashAt !== undefined && f >= shot.flashAt && f < shot.flashAt + 4;
   const flashOpacity = flashOn ? 1 - (f - shot.flashAt!) / 4 : 0;

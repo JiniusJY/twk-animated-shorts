@@ -260,12 +260,20 @@ function validateCaptions(c: unknown, errs: string[]): CaptionsConfig | undefine
 export function validateEpisode(raw: unknown, source: string): EpisodeSpec {
   const errs: string[] = [];
   if (!isObj(raw)) throw new Error(`${source}: episode is not an object`);
-  checkKeys(raw, ["slug", "title", "fps", "durationFrames", "world", "musicMood", "script", "sourceUrl", "shots", "actors", "props", "fx", "cues", "captions", "voice", "bgAudio", "topic_card", "creative_brief", "claim_ledger", "beats", "alternate_hook"], source, errs);
+  checkKeys(raw, ["slug", "title", "fps", "durationFrames", "world", "musicMood", "script", "sourceUrl", "shots", "actors", "props", "fx", "cues", "captions", "voice", "bgAudio", "topic_card", "creative_brief", "claim_ledger", "beats", "alternate_hook", "endCard"], source, errs);
 
   if (!isStr(raw.slug) || !/^[a-z0-9][a-z0-9-]*$/.test(raw.slug))
     errs.push(`${source}.slug: required, lowercase letters/digits/hyphens`);
   if (!isStr(raw.title) || !raw.title) errs.push(`${source}.title: required`);
   if (!isInt(raw.fps) || raw.fps < 1 || raw.fps > 120) errs.push(`${source}.fps: must be an integer 1..120`);
+  if (raw.endCard !== undefined) {
+    if (!isObj(raw.endCard)) errs.push("endCard must be an object");
+    else {
+      checkKeys(raw.endCard, ["handle", "seconds"], "endCard", errs);
+      if (!isStr(raw.endCard.handle) || !/^@[a-zA-Z0-9_.]{1,40}$/.test(raw.endCard.handle)) errs.push("endCard.handle invalid");
+      if (raw.endCard.seconds !== undefined && (!isNum(raw.endCard.seconds) || raw.endCard.seconds < 1 || raw.endCard.seconds > 4)) errs.push("endCard.seconds must be 1..4");
+    }
+  }
   const fps = isInt(raw.fps) ? raw.fps : 30;
   if (!isInt(raw.durationFrames) || raw.durationFrames < fps * 5)
     errs.push(`${source}.durationFrames: must be an integer of at least 5 seconds (${fps * 5})`);

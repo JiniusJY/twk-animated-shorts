@@ -29,3 +29,7 @@ python scripts/audition_voice.py --episode src/episodes/<slug> --dry-run
 ```
 
 Keep secrets, protected voice credentials and unlicensed assets out of source control. Use repository secrets for approved CI synthesis. A manual workflow being available is not permission to start it.
+
+## Follow end card
+
+New episodes include a two-second end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. The card is visual, not extra narration. New-episode creation supplies it by default; the audio timeline reserves its duration. Record follower conversion and retention as outcomes to measure, never guarantees.

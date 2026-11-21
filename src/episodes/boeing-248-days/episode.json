@@ -1602,5 +1602,9 @@
     "enabled": true,
     "maxWordsPerPage": 4,
     "theme": "editorial"
+  },
+  "endCard": {
+    "handle": "@techwhoknows",
+    "seconds": 2
   }
 }

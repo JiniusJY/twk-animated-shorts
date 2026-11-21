@@ -25,3 +25,7 @@ A number drum is an analogy, not a claim that a GCU contains physical reels. A b
 ## Proof required
 
 Inspect a complete rough cut, individual transitions, caption line breaks, critical labels and the final numerical state. Listen to the actual new voice take and final mix. Unit tests and a single still do not prove taste, performance or editorial accuracy. See `docs/CONTENT_SYSTEM.md` for the full workflow and `docs/RELEASE_CHECKLIST.md` for release gates.
+
+## Follow end card
+
+New episodes include a two-second end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. The card is visual, not extra narration. New-episode creation supplies it by default; the audio timeline reserves its duration. Record follower conversion and retention as outcomes to measure, never guarantees.

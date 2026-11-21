@@ -42,3 +42,7 @@ The manual `Voice audition` workflow can generate three short performances witho
 Real aligned words drive the shared shot/action/FX/SFX timeline. Editorial captions are short phrase pages with stable text and restrained active-word color. Procedural sound cues are a starting point and require listening review. Retain the dry voice, aligned words, mix, stems and manifests so retries and revisions do not require another synthesis call.
 
 The `Render Animated Short` workflow still exists, but do not dispatch new runs automatically. Follow current rerun instructions. A successful technical QA gate does not replace factual, visual, performance or final-edit review. The old published Boeing release is not replaced by the local rough cut.
+
+## Follow end card
+
+New episodes include a two-second end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. The card is visual, not extra narration. New-episode creation supplies it by default; the audio timeline reserves its duration. Record follower conversion and retention as outcomes to measure, never guarantees.

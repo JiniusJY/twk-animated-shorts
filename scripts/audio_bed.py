@@ -47,6 +47,8 @@ def sync_episode(ep: dict, fps: int, voice_dur: float, words=None) -> tuple[dict
     dur = max(15.0, voice_dur + 0.4)
     original = int(ep["durationFrames"])
     total = round(dur * fps)
+    content_total = total
+    card_seconds = float(ep.get("endCard", {}).get("seconds", 2.0)) if ep.get("endCard") else 0
     scale = total / max(1, original)
     anchored = any(s.get("anchor") for s in ep.get("shots", []))
     if anchored and not words:
@@ -68,6 +70,11 @@ def sync_episode(ep: dict, fps: int, voice_dur: float, words=None) -> tuple[dict
         fx["a"], fx["b"] = warp(fx["a"]), warp(fx["b"])
     for cue in ep.get("cues", []):
         cue["t"] = round(warp(float(cue["t"])*fps)/fps if anchored else float(cue["t"])*scale, 3)
+    if card_seconds:
+        total += round(card_seconds*fps)
+        dur += card_seconds
+        ep["shots"][-1]["b"] = total
+        ep.setdefault("cues", []).append({"t": content_total/fps+0.1, "kind": "chime", "gain": 0.22})
     ep["durationFrames"] = total
     return ep, dur, scale
 

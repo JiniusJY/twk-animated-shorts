@@ -67,3 +67,7 @@ After publication, record the hypothesis and compare actual retention with compa
 - Primary production sources and their limits are recorded in `QUALITY_RESEARCH.md`.
 
 These support a process, not a promise that a fixed editing formula will produce a hit. Avoid using stale platform-duration claims from older general editing articles as current posting rules.
+
+## Follow end card
+
+New episodes include a two-second end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. The card is visual, not extra narration. New-episode creation supplies it by default; the audio timeline reserves its duration. Record follower conversion and retention as outcomes to measure, never guarantees.
