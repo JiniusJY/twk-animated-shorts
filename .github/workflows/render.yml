@@ -202,6 +202,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4  # qa_gate.py lives in the repo
       - name: Install ffmpeg
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - name: Download prepared audio & rendered chunks
