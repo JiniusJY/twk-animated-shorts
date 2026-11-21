@@ -12,6 +12,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -34,56 +35,47 @@ def synth_fish_audio(text: str, out_mp3: Path, api_key: str, voice_id: str):
         "mp3_bitrate": 192,
         "latency": "normal",
     }).encode("utf-8")
-    req = urllib.request.Request(
-        "https://api.fish.audio/v1/tts",
-        data=payload,
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        },
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=90) as resp:
-        out_mp3.write_bytes(resp.read())
+
+    for model_hdr in ("s1", "s2.1-pro-free"):
+        req = urllib.request.Request(
+            "https://api.fish.audio/v1/tts",
+            data=payload,
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "User-Agent": "curl/8.7.1",
+                "model": model_hdr,
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=90) as resp:
+                out_mp3.write_bytes(resp.read())
+                print(f"Fish Audio synthesized using model={model_hdr}", flush=True)
+                return
+        except urllib.error.HTTPError as exc:
+            if exc.code == 402 and model_hdr != "s2.1-pro-free":
+                print("Fish paid model returned 402; switching to free model=s2.1-pro-free...", flush=True)
+                continue
+            raise
 
 
 def align_groq_whisper(audio_path: Path, api_key: str) -> list[dict]:
-    import mimetypes
-
-    boundary = "----TWKBoundary7MA4YWxkTrZu0gW"
-    ctype = mimetypes.guess_type(str(audio_path))[0] or "audio/mpeg"
-    parts = []
-
-    def add_field(name: str, value: str):
-        parts.append(
-            f"--{boundary}\r\nContent-Disposition: form-data; name=\"{name}\"\r\n\r\n{value}\r\n".encode("utf-8")
-        )
-
-    add_field("model", "whisper-large-v3-turbo")
-    add_field("response_format", "verbose_json")
-    add_field("timestamp_granularities[]", "word")
-    add_field("language", "en")
-
-    file_head = (
-        f"--{boundary}\r\n"
-        f"Content-Disposition: form-data; name=\"file\"; filename=\"{audio_path.name}\"\r\n"
-        f"Content-Type: {ctype}\r\n\r\n"
-    ).encode("utf-8")
-    parts.append(file_head + audio_path.read_bytes() + b"\r\n")
-    parts.append(f"--{boundary}--\r\n".encode("utf-8"))
-    body = b"".join(parts)
-
-    req = urllib.request.Request(
-        "https://api.groq.com/openai/v1/audio/transcriptions",
-        data=body,
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": f"multipart/form-data; boundary={boundary}",
-        },
-        method="POST",
+    raw = subprocess.check_output(
+        [
+            "curl", "-sS", "-f", "-X", "POST",
+            "https://api.groq.com/openai/v1/audio/transcriptions",
+            "-H", f"Authorization: Bearer {api_key}",
+            "-F", f"file=@{audio_path}",
+            "-F", "model=whisper-large-v3-turbo",
+            "-F", "response_format=verbose_json",
+            "-F", "timestamp_granularities[]=word",
+            "-F", "language=en",
+        ],
+        text=True,
+        timeout=90,
     )
-    with urllib.request.urlopen(req, timeout=90) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+    data = json.loads(raw)
 
     words = []
     for w in data.get("words", []):
