@@ -15,9 +15,6 @@
       "world": "tarmac",
       "light": "day",
       "dof": 0,
-      "kickAt": [
-        62
-      ],
       "cam": {
         "from": [
           -1.4,
@@ -41,7 +38,9 @@
         ],
         "fovFrom": 42,
         "fovTo": 42
-      }
+      },
+      "purpose": "hook",
+      "graphic": "hook"
     },
     {
       "id": 2,
@@ -50,7 +49,6 @@
       "world": "tarmac",
       "light": "day",
       "dof": 9,
-      "flashAt": 146,
       "cam": {
         "from": [
           0.25,
@@ -75,7 +73,10 @@
         "fovFrom": 40,
         "fovTo": 40,
         "rollDeg": -1.5
-      }
+      },
+      "anchor": "all four power generators",
+      "purpose": "stakes",
+      "graphic": "stakes"
     },
     {
       "id": 3,
@@ -107,7 +108,10 @@
         ],
         "fovFrom": 40,
         "fovTo": 40
-      }
+      },
+      "anchor": "Boeing engineers caught",
+      "purpose": "evidence",
+      "graphic": "lab"
     },
     {
       "id": 4,
@@ -139,7 +143,10 @@
         ],
         "fovFrom": 40,
         "fovTo": 40
-      }
+      },
+      "anchor": "A commercial jet",
+      "purpose": "question",
+      "graphic": "stakes"
     },
     {
       "id": 5,
@@ -172,7 +179,10 @@
         "fovFrom": 39,
         "fovTo": 39,
         "rollDeg": 1.6
-      }
+      },
+      "anchor": "Wait, how does",
+      "purpose": "curiosity reset",
+      "graphic": "question"
     },
     {
       "id": 6,
@@ -204,7 +214,10 @@
         ],
         "fovFrom": 40,
         "fovTo": 40
-      }
+      },
+      "anchor": "The leading theory:",
+      "purpose": "mechanism hypothesis",
+      "graphic": "clock"
     },
     {
       "id": 7,
@@ -236,7 +249,10 @@
         ],
         "fovFrom": 40,
         "fovTo": 40
-      }
+      },
+      "anchor": "If that count",
+      "purpose": "signed storage",
+      "graphic": "storage"
     },
     {
       "id": 8,
@@ -245,9 +261,6 @@
       "world": "server_room",
       "light": "day",
       "dof": 9,
-      "kickAt": [
-        712
-      ],
       "cam": {
         "from": [
           0.0,
@@ -272,7 +285,10 @@
         "fovFrom": 39,
         "fovTo": 39,
         "rollDeg": -1.5
-      }
+      },
+      "anchor": "it caps out",
+      "purpose": "capacity",
+      "graphic": "counter"
     },
     {
       "id": 9,
@@ -304,7 +320,10 @@
         ],
         "fovFrom": 40,
         "fovTo": 40
-      }
+      },
+      "anchor": "You see, it works",
+      "purpose": "analogy",
+      "graphic": "odometer"
     },
     {
       "id": 10,
@@ -313,9 +332,6 @@
       "world": "town",
       "light": "golden",
       "dof": 8,
-      "kickAt": [
-        992
-      ],
       "cam": {
         "from": [
           0.35,
@@ -340,7 +356,10 @@
         "fovFrom": 39,
         "fovTo": 39,
         "rollDeg": 1.8
-      }
+      },
+      "anchor": "The moment that counter",
+      "purpose": "overflow",
+      "graphic": "overflow"
     },
     {
       "id": 11,
@@ -349,9 +368,6 @@
       "world": "tarmac",
       "light": "golden",
       "dof": 0,
-      "kickAt": [
-        1142
-      ],
       "cam": {
         "from": [
           -0.4,
@@ -375,7 +391,10 @@
         ],
         "fovFrom": 40,
         "fovTo": 40
-      }
+      },
+      "anchor": "and the jet's failsafe",
+      "purpose": "consequence",
+      "graphic": "power"
     },
     {
       "id": 12,
@@ -384,10 +403,6 @@
       "world": "tarmac",
       "light": "day",
       "dof": 8,
-      "kickAt": [
-        1268,
-        1292
-      ],
       "cam": {
         "from": [
           -0.4,
@@ -411,7 +426,10 @@
         ],
         "fovFrom": 38,
         "fovTo": 38
-      }
+      },
+      "anchor": "Until Boeing shipped",
+      "purpose": "official remedy",
+      "graphic": "directive"
     },
     {
       "id": 13,
@@ -443,7 +461,10 @@
         ],
         "fovFrom": 38,
         "fovTo": 38
-      }
+      },
+      "anchor": "with the oldest fix",
+      "purpose": "payoff setup",
+      "graphic": "payoff"
     },
     {
       "id": 14,
@@ -475,7 +496,10 @@
         ],
         "fovFrom": 40,
         "fovTo": 44
-      }
+      },
+      "anchor": "airlines were legally",
+      "purpose": "payoff",
+      "graphic": "reset"
     }
   ],
   "actors": [
@@ -1396,61 +1420,100 @@
   "cues": [
     {
       "t": 0.2,
-      "kind": "whoosh"
+      "kind": "whoosh",
+      "gain": 0.3,
+      "pan": -0.25
     },
     {
-      "t": 2.1,
-      "kind": "boom"
+      "t": 2.066666666666667,
+      "kind": "relay",
+      "gain": 0.5
     },
     {
-      "t": 4.9,
-      "kind": "flash"
+      "t": 5.0,
+      "kind": "pop",
+      "gain": 0.25
     },
     {
-      "t": 8.5,
-      "kind": "whoosh"
+      "t": 11.833333333333334,
+      "kind": "whoosh",
+      "gain": 0.28,
+      "pan": 0.3
     },
     {
-      "t": 11.8,
-      "kind": "pop"
+      "t": 19.333333333333332,
+      "kind": "tick",
+      "gain": 0.18
     },
     {
-      "t": 15.2,
-      "kind": "tick"
+      "t": 23.333333333333332,
+      "kind": "riser",
+      "gain": 0.35
     },
     {
-      "t": 19.3,
-      "kind": "tick"
+      "t": 33.06666666666667,
+      "kind": "powerdown",
+      "gain": 0.65
     },
     {
-      "t": 23.7,
-      "kind": "boom"
+      "t": 38.06666666666667,
+      "kind": "relay",
+      "gain": 0.5
     },
     {
-      "t": 27.8,
-      "kind": "whoosh"
+      "t": 48.833333333333336,
+      "kind": "startup",
+      "gain": 0.45
     },
     {
-      "t": 33.0,
-      "kind": "snap"
-    },
-    {
-      "t": 37.8,
-      "kind": "boom"
-    },
-    {
-      "t": 42.3,
-      "kind": "pop"
-    },
-    {
-      "t": 46.2,
-      "kind": "chime"
+      "t": 50.333333333333336,
+      "kind": "chime",
+      "gain": 0.25
     }
   ],
   "voice": {
-    "temperature": 0.85,
+    "temperature": 0.8,
     "topP": 0.8,
-    "direction": "curious"
+    "speed": 1.0,
+    "direction": "curious and conversational",
+    "beats": [
+      {
+        "before": "all four power generators",
+        "direction": "serious, restrained urgency"
+      },
+      {
+        "before": "Boeing engineers caught",
+        "direction": "confident and clear"
+      },
+      {
+        "before": "Wait, how does",
+        "direction": "puzzled, genuinely curious"
+      },
+      {
+        "before": "The leading theory:",
+        "direction": "measured and explanatory"
+      },
+      {
+        "before": "You see, it works",
+        "direction": "warm, conversational"
+      },
+      {
+        "before": "The moment that counter",
+        "direction": "tense and deliberate"
+      },
+      {
+        "before": "Until Boeing shipped",
+        "direction": "calm and factual"
+      },
+      {
+        "before": "with the oldest fix",
+        "direction": "amused, dry delivery"
+      },
+      {
+        "before": "airlines were legally",
+        "direction": "confident, slightly amused"
+      }
+    ]
   },
   "topic_card": {
     "trend_timestamp": "2015-05-01",
@@ -1534,5 +1597,10 @@
         "faa-120-day-cycle"
       ]
     }
-  ]
+  ],
+  "captions": {
+    "enabled": true,
+    "maxWordsPerPage": 4,
+    "theme": "editorial"
+  }
 }

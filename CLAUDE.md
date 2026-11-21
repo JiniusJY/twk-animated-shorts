@@ -1,7 +1,9 @@
-# TWK Animated Shorts — Claude & Low-Token Guide
+# TWK project notes
 
-- **Never** commit `.env`, API keys (`BRIGHTDATA_API_KEY`, etc.), or scraped audio binaries — this repo is **PUBLIC**.
-- **Never** read `references/frames/` or `references/sheets/` or rewrite `src/engine/` on normal episode runs.
-- Shared 3D/2D engine lives in `src/engine/`. Every episode only adds `src/episodes/<slug>/episode.json` + registers it in `src/episodes/registry.ts` and `src/episodes/history.json`.
-- Cloud render pipeline runs on GitHub Actions (`.github/workflows/render.yml`): Fish Audio (`FISH_API_KEY` + `FISH_VOICE_ID`) + Groq Whisper (`GROQ_API_KEY`) + procedural `-15 LUFS` mix + Remotion 2K render → GitHub Releases.
-- Viral background audios scraped via `scripts/viral_audio_scraper.py` (Bright Data `mcp_serp`) are saved in Google Drive (`My Drive/Reel Studio/viral-audio/`), outside git.
+The current production standard is `docs/CONTENT_SYSTEM.md`, with release gates in `docs/RELEASE_CHECKLIST.md` and source notes in `docs/QUALITY_RESEARCH.md`.
+
+New work defaults to original, shot-specific editorial illustration. Keep the legacy cartoon renderer for existing compositions or an explicit creative choice. Do not force new stories into a repeated dashboard or generic character scene.
+
+Free Fish model only: `s2.1-pro-free`. Never add paid/legacy fallback. No automatic workflow dispatch or publication. A local picture rough cut with old narration is not a finished voice or sound revision.
+
+Protect secrets and asset rights. Check the actual rendered pixels and listen to the final mix. Review unsupported claims and analogy labels as carefully as narration.

@@ -4,6 +4,10 @@ Every episode must clear the automated gates AND the human review below before
 publishing. A high craft score never offsets a failed hard gate. This is TWK
 editorial policy from the content-system playbook, not a platform formula.
 
+## Editorial default
+
+Use the original editorial illustration system in `CONTENT_SYSTEM.md`. New episodes start from `scripts/new_episode.py` and an authored plan, not a repeated dashboard or a fixed cartoon scene. Review a real free-only voice audition and the whole assembled edit. A rough cut with old audio is not final.
+
 ## Automated gates (CI, blocking)
 
 - `npx tsx scripts/validate_episode.ts <episode.json>` - schema: required fields,
@@ -12,7 +16,7 @@ editorial policy from the content-system playbook, not a platform formula.
 - `npx tsx scripts/lint_episode.ts <episode.json>` - warnings for decorative-only
   staging, >4s without an informational state change (deliberate mechanism holds
   are fine - say why), pacing outside 45-65s, missing editorial metadata.
-- `npx vitest run && python3 tests/test_pipeline.py` - engine + pipeline tests.
+- `npx vitest run && python3 tests/test_pipeline.py && python3 -m unittest discover -s tests -p test_quality.py` - engine + pipeline tests.
 - `python3 scripts/qa_gate.py --video out/final.mp4 --expected-seconds <s>` -
   loudness -15 +/- 1.5 LUFS, true peak <= -1.0 dBTP, duration match, no black
   segment >0.6s, no frozen segment >2.0s. Release publish stops if this fails.

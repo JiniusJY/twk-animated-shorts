@@ -38,6 +38,8 @@ import {
 import { buildWorldEnvironment, buildPropMesh, makeSky } from "./worlds";
 import { prepareActor, evalActorAt, prepareProp, evalPropAt, lerpV3, type ActorState } from "./eval";
 import { Captions } from "./Captions";
+import { EditorialScene } from "./EditorialScene";
+import { MechanismGraphic } from "./MechanismGraphic";
 import type { EpisodeSpec, ShotDef, ActorDef, V3, WorldPreset, StoryShortProps } from "./types";
 
 const OUTFIT_PRESETS: Record<string, Outfit> = {
@@ -724,7 +726,7 @@ export const StoryShort: React.FC<StoryShortProps> = ({ spec, captions }) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
-      <ThreeCanvas
+      {!shot.graphic && <ThreeCanvas
         width={width}
         height={height}
         shadows
@@ -732,7 +734,8 @@ export const StoryShort: React.FC<StoryShortProps> = ({ spec, captions }) => {
         gl={{ preserveDrawingBuffer: true, antialias: false, stencil: false, powerPreference: "high-performance" }}
       >
         <SceneCore spec={spec} />
-      </ThreeCanvas>
+      </ThreeCanvas>}
+      {shot.graphic && (["counter", "overflow", "power", "reset"].includes(shot.graphic) ? <MechanismGraphic shot={shot} /> : <EditorialScene shot={shot} />)}
       {flashOn && (
         <AbsoluteFill style={{ backgroundColor: "#ffffff", opacity: flashOpacity, pointerEvents: "none" }} />
       )}

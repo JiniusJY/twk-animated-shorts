@@ -32,7 +32,7 @@ const EXPRS = [
   "relief_open", "dazed", "pained", "smile", "smile_closed", "lick",
 ];
 const FX_KINDS = ["burst", "stars", "notes", "puff", "ring", "splash", "creak"];
-const CUE_KINDS = ["whoosh", "pop", "cash", "boom", "snap", "flash", "chime", "tick"];
+const CUE_KINDS = ["whoosh", "pop", "cash", "boom", "snap", "flash", "chime", "tick", "riser", "powerdown", "startup", "relay"];
 const EASES = ["smooth", "out", "linear"];
 const ACTION_TYPES = ["leverAngle", "counterValue", "generatorState", "beaconIntensity", "clockHands", "wheelRotation"];
 
@@ -64,7 +64,9 @@ function checkKeys(o: Obj, allowed: string[], where: string, errs: string[]) {
 
 function validateShot(s: Obj, i: number, dur: number, errs: string[]): ShotDef | null {
   const where = `shots[${i}]`;
-  checkKeys(s, ["id", "a", "b", "world", "light", "dof", "flashAt", "kickAt", "sunAz", "sunEl", "cam", "purpose"], where, errs);
+  checkKeys(s, ["id", "a", "b", "world", "light", "dof", "flashAt", "kickAt", "sunAz", "sunEl", "cam", "purpose", "anchor", "graphic"], where, errs);
+  if (s.anchor !== undefined && (!isStr(s.anchor) || !s.anchor.trim())) errs.push(`${where}.anchor: must be a nonempty phrase`);
+  if (s.graphic !== undefined && !["counter", "overflow", "power", "reset", "hook", "lab", "stakes", "question", "clock", "storage", "odometer", "directive", "payoff"].includes(s.graphic as string)) errs.push(`${where}.graphic: invalid graphic`);
   if (s.purpose !== undefined && !isStr(s.purpose)) errs.push(`${where}.purpose: must be a string`);
   if (!isInt(s.id)) errs.push(`${where}.id: must be an integer`);
   if (!isInt(s.a) || !isInt(s.b)) {
@@ -226,11 +228,12 @@ function validateFx(fx: Obj, i: number, dur: number, errs: string[]): FxDef | nu
 
 function validateCue(c: Obj, i: number, durSec: number, errs: string[]): CueDef | null {
   const where = `cues[${i}]`;
-  checkKeys(c, ["t", "kind", "gain"], where, errs);
+  checkKeys(c, ["t", "kind", "gain", "pan"], where, errs);
   if (!isNum(c.t)) errs.push(`${where}.t: must be a time in SECONDS (not frames)`);
   else if (c.t < 0 || c.t > durSec + 0.5)
     errs.push(`${where}.t: ${c.t}s outside episode duration ${durSec.toFixed(2)}s — cues are seconds, not frames`);
   if (!CUE_KINDS.includes(c.kind as string)) errs.push(`${where}.kind: invalid cue kind "${String(c.kind)}"`);
+  if (c.pan !== undefined && (!isNum(c.pan) || Math.abs(c.pan) > 1)) errs.push(`${where}.pan: must be -1..1`);
   if (c.gain !== undefined && (!isNum(c.gain) || c.gain < 0 || c.gain > 1))
     errs.push(`${where}.gain: must be 0..1`);
   return c as unknown as CueDef;
@@ -242,7 +245,8 @@ function validateCaptions(c: unknown, errs: string[]): CaptionsConfig | undefine
     errs.push("captions: must be an object");
     return undefined;
   }
-  checkKeys(c, ["enabled", "maxWordsPerPage"], "captions", errs);
+  checkKeys(c, ["enabled", "maxWordsPerPage", "theme"], "captions", errs);
+  if (c.theme !== undefined && !["classic", "editorial"].includes(c.theme as string)) errs.push("captions.theme invalid");
   if (c.enabled !== undefined && !isBool(c.enabled)) errs.push("captions.enabled: must be boolean");
   if (c.maxWordsPerPage !== undefined && (!isInt(c.maxWordsPerPage) || c.maxWordsPerPage < 1 || c.maxWordsPerPage > 8))
     errs.push("captions.maxWordsPerPage: must be an integer 1..8");
@@ -273,8 +277,17 @@ export function validateEpisode(raw: unknown, source: string): EpisodeSpec {
   if (!isStr(raw.sourceUrl) || !/^https?:\/\//.test(raw.sourceUrl))
     errs.push(`${source}.sourceUrl: required — every episode must link the primary source backing its factual claims`);
   if (isObj(raw.voice)) {
-    checkKeys(raw.voice, ["temperature", "topP", "speed", "direction"], `${source}.voice`, errs);
+    checkKeys(raw.voice, ["temperature", "topP", "speed", "direction", "beats"], `${source}.voice`, errs);
     if (raw.voice.direction !== undefined && !isStr(raw.voice.direction)) errs.push(`${source}.voice.direction: must be a string (Fish S2 cue word)`);
+    if (raw.voice.beats !== undefined) {
+      if (!Array.isArray(raw.voice.beats)) errs.push("voice.beats must be an array");
+      else raw.voice.beats.forEach((b, i) => {
+        if (!isObj(b)) { errs.push(`voice.beats[${i}] must be an object`); return; }
+        checkKeys(b, ["before", "direction"], `voice.beats[${i}]`, errs);
+        if (!isStr(b.before) || !b.before.trim() || !isStr(raw.script) || raw.script.split(b.before).length !== 2) errs.push(`voice.beats[${i}].before must match once in script`);
+        if (!isStr(b.direction) || !/^[a-zA-Z ,.-]{2,120}$/.test(b.direction)) errs.push(`voice.beats[${i}].direction invalid`);
+      });
+    }
     const v = raw.voice;
     if (v.temperature !== undefined && (!isNum(v.temperature) || v.temperature < 0 || v.temperature > 1))
       errs.push(`${source}.voice.temperature: must be 0..1`);

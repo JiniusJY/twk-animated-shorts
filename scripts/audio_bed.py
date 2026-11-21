@@ -24,6 +24,7 @@ sys.path.insert(0, str(ROOT / "templates" / "audio"))
 
 from dsp import SR, ns, dbg, rng, read_wav, write_wav, st, place, integrated, true_peak, fades, lp, hp  # noqa: E402
 import instruments as I  # noqa: E402
+from editorial import narration_warp
 import sfx_gen as S  # noqa: E402
 
 TARGET_LUFS = -15.0
@@ -41,41 +42,33 @@ def duck_envelope(n_samples: int, words: list[dict], duck_db: float = -3.5) -> n
     return dbg(duck_db * smooth)
 
 
-def sync_episode(ep: dict, fps: int, voice_dur: float) -> tuple[dict, float, float]:
-    """Scale all authored timings to the voice duration. Returns (ep, dur_seconds, scale).
-
-    Shots, actor/prop keyframes and FX are in FRAMES and scale by `scale`.
-    Cues are in SECONDS against the authored script timeline, so they scale by
-    the SAME factor — this was the sync bug: cues used to keep authored seconds
-    while every visual beat moved.
-    """
+def sync_episode(ep: dict, fps: int, voice_dur: float, words=None) -> tuple[dict, float, float]:
+    """Narration anchors drive cuts. The same piecewise map drives every event."""
     dur = max(15.0, voice_dur + 0.4)
-    synced_frames = int(round(dur * fps))
-    scale = synced_frames / max(1, int(ep["durationFrames"]))
-    for s in ep.get("shots", []):
-        s["a"] = int(round(s["a"] * scale))
-        s["b"] = int(round(s["b"] * scale))
-        if "flashAt" in s:
-            s["flashAt"] = int(round(s["flashAt"] * scale))
-        if "kickAt" in s:
-            s["kickAt"] = [int(round(k * scale)) for k in s["kickAt"]]
-    if ep.get("shots"):
-        ep["shots"][-1]["b"] = synced_frames
-    for a in ep.get("actors", []):
-        for kf in a.get("keyframes", []):
-            kf["f"] = int(round(kf["f"] * scale))
-    for p in ep.get("props", []):
-        for kf in p.get("keyframes", []):
-            kf["f"] = int(round(kf["f"] * scale))
-            a = kf.get("action")
-            if a and "dur" in a:
-                a["dur"] = max(1, int(round(a["dur"] * scale)))
+    original = int(ep["durationFrames"])
+    total = round(dur * fps)
+    scale = total / max(1, original)
+    anchored = any(s.get("anchor") for s in ep.get("shots", []))
+    if anchored and not words:
+        raise ValueError("Anchored episode requires real word timings")
+    warp, points = narration_warp(ep, fps, dur, words) if anchored else (lambda f: round(f*scale), [])
+    for shot in ep.get("shots", []):
+        shot["a"], shot["b"] = warp(shot["a"]), warp(shot["b"])
+        for key in ["flashAt"]:
+            if key in shot: shot[key] = warp(shot[key])
+        if "kickAt" in shot: shot["kickAt"] = [warp(f) for f in shot["kickAt"]]
+    if ep.get("shots"): ep["shots"][-1]["b"] = total
+    for owner in ep.get("actors", []) + ep.get("props", []):
+        for k in owner.get("keyframes", []):
+            old = k["f"]
+            action = k.get("action", {})
+            if "dur" in action: action["dur"] = max(1, warp(old+action["dur"])-warp(old))
+            k["f"] = warp(old)
     for fx in ep.get("fx", []):
-        fx["a"] = int(round(fx["a"] * scale))
-        fx["b"] = int(round(fx["b"] * scale))
-    for c in ep.get("cues", []):
-        c["t"] = round(float(c["t"]) * scale, 3)
-    ep["durationFrames"] = synced_frames
+        fx["a"], fx["b"] = warp(fx["a"]), warp(fx["b"])
+    for cue in ep.get("cues", []):
+        cue["t"] = round(warp(float(cue["t"])*fps)/fps if anchored else float(cue["t"])*scale, 3)
+    ep["durationFrames"] = total
     return ep, dur, scale
 
 
@@ -121,6 +114,15 @@ def build_music(dur: float, mood: str, seed: int = 42) -> np.ndarray:
 
 
 def synth_cue(kind: str, r) -> np.ndarray:
+    if kind in ("riser", "powerdown", "startup", "relay"):
+        dur = {"riser": 0.8, "powerdown": 0.6, "startup": 0.45, "relay": 0.07}[kind]
+        t = np.arange(ns(dur)) / SR
+        if kind == "relay":
+            return fades(r.normal(0, 0.14, len(t)) * np.exp(-t*70), 0.001, 0.02)
+        f0, f1 = {"riser": (120, 1400), "powerdown": (800, 45), "startup": (160, 900)}[kind]
+        phase = 2*np.pi*(f0*t+(f1-f0)*t*t/(2*dur))
+        envelope = (t/dur)**1.6 if kind == "riser" else np.exp(-t*4)
+        return fades((np.sin(phase)*0.22 + np.sin(phase*2.01)*0.06)*envelope, 0.008, 0.05)
     if kind == "whoosh":
         return S.whoosh(0.28, r, peak=0.4, f_lo=300, f_hi=2400)
     if kind == "pop":
@@ -157,7 +159,9 @@ def build_sfx(dur: float, cues: list[dict], seed: int = 99) -> np.ndarray:
         t = float(c.get("t", 0.0))
         if 0.0 <= t < dur:
             snd = synth_cue(c.get("kind", "pop"), r)
-            place(buf, st(snd), t, gain=float(c.get("gain", 0.55)))
+            pan = float(c.get("pan", 0.0))
+            stereo = np.stack([snd * np.cos((pan+1)*np.pi/4), snd * np.sin((pan+1)*np.pi/4)])
+            place(buf, stereo, t, gain=float(c.get("gain", 0.55)))
     return buf
 
 
@@ -244,7 +248,12 @@ def main():
 
     voice_wav = ep_dir / "voice" / "voice.wav"
     voice_dur = get_wav_duration(voice_wav)
-    ep, dur, scale = sync_episode(ep, fps, voice_dur)
+    words = json.loads((ep_dir / "voice" / "words.json").read_text(encoding="utf-8"))
+    meta_file = ep_dir / "voice" / "words_meta.json"
+    meta_early = json.loads(meta_file.read_text()) if meta_file.exists() else {}
+    if meta_early.get("approximate") and any(s.get("anchor") for s in ep.get("shots", [])):
+        raise ValueError("Editorial anchors require real alignment, not approximate word timing")
+    ep, dur, scale = sync_episode(ep, fps, voice_dur, words)
     print(f"Timeline sync: voice {voice_dur:.2f}s -> {ep['durationFrames']} frames at {fps}fps (scale {scale:.4f}, cues scaled too)", flush=True)
     n = ns(dur)
 
@@ -292,7 +301,18 @@ def main():
     if sfx_peak > 0.5:
         sfx = sfx * (0.5 / sfx_peak)
 
-    mix = voice_st + music + sfx * dbg(-6.0)
+    # Deliberate contrast: drop music just before critical cues, then release.
+    for cue in ep.get("cues", []):
+        if cue.get("kind") == "powerdown":
+            a, b = max(0, ns(cue["t"]-0.22)), min(n, ns(cue["t"]+0.45))
+            length = b-a
+            if length > 1:
+                ramp = max(1, min(ns(0.025), length//2))
+                env = np.full(length, 0.06)
+                env[:ramp] = np.linspace(1, 0.06, ramp)
+                env[-ramp:] = np.linspace(0.06, 1, ramp)
+                music[:, a:b] *= env
+    mix = voice_st + music + sfx * duck_envelope(n, words, duck_db=-2.5) * dbg(-6.0)
     mix = normalize_and_limit(mix, TARGET_LUFS, CEIL_DB)
 
     out_dir = ep_dir / "audio"

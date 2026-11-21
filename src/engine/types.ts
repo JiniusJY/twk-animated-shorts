@@ -128,6 +128,9 @@ export interface ShotDef {
   b: number;
   /** Storyboard contract: what this shot is FOR (question / mechanism / payoff...). */
   purpose?: string;
+  /** Spoken phrase that starts this shot, matched to real aligned words. */
+  anchor?: string;
+  graphic?: "counter" | "overflow" | "power" | "reset" | "hook" | "lab" | "stakes" | "question" | "clock" | "storage" | "odometer" | "directive" | "payoff";
   world?: WorldPreset;
   light: LightMode;
   dof?: number;
@@ -176,8 +179,9 @@ export interface BeatClaims {
 
 export interface CueDef {
   t: number;
-  kind: "whoosh" | "pop" | "cash" | "boom" | "snap" | "flash" | "chime" | "tick";
+  kind: "whoosh" | "pop" | "cash" | "boom" | "snap" | "flash" | "chime" | "tick" | "riser" | "powerdown" | "startup" | "relay";
   gain?: number;
+  pan?: number; // -1 left to +1 right, equal-power stereo
 }
 
 /** Word timing from the voice pipeline (seconds), passed to the renderer via props JSON. */
@@ -190,6 +194,7 @@ export interface CaptionWord {
 export interface CaptionsConfig {
   /** Default true when caption words are present. Set false to render without captions. */
   enabled?: boolean;
+  theme?: "classic" | "editorial";
   /** Max words per caption page (default 4). */
   maxWordsPerPage?: number;
 }
@@ -223,6 +228,7 @@ export interface EpisodeSpec {
     speed?: number; // prosody speed multiplier, 0.5..2.0
     /** Default S2 delivery cue for the whole episode, e.g. "curious", "emphatic", "whispering". */
     direction?: string;
+    beats?: { before: string; direction: string }[];
   };
 }
 

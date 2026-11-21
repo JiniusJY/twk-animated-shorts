@@ -54,6 +54,7 @@ export const Captions: React.FC<{ words: CaptionWord[] | null; config?: Captions
   );
   if (config?.enabled === false || pages.length === 0) return null;
 
+  const editorial = config?.theme === "editorial";
   const t = f / fps;
   const page = pages.find((p) => t >= p.s - 0.04 && t < p.e + 0.18);
   if (!page) return null;
@@ -74,26 +75,29 @@ export const Captions: React.FC<{ words: CaptionWord[] | null; config?: Captions
           flexWrap: "wrap",
           justifyContent: "center",
           maxWidth: width * 0.86,
-          columnGap: 18,
+          columnGap: editorial ? 13 : 18,
           rowGap: 4,
+          padding: editorial ? "17px 24px" : 0,
+          background: editorial ? "#f1edddf2" : "transparent",
+          borderTop: editorial ? "2px solid #b8baa8" : "none",
         }}
       >
         {page.words.map((w, i) => {
           const active = t >= w.s - 0.03 && t < w.e + 0.1;
           const emphatic = isEmphaticWord(w.w, i);
           const age = f - w.s * fps;
-          const pop = active && emphatic ? 1 + 0.16 * Math.max(0, 1 - age / 6) : 1;
+          const pop = !editorial && active && emphatic ? 1 + 0.16 * Math.max(0, 1 - age / 6) : 1;
           return (
             <span
               key={i}
               style={{
                 fontFamily: "Inter, system-ui, -apple-system, sans-serif",
-                fontWeight: 900,
-                fontSize: 62,
-                letterSpacing: 0.5,
-                color: active ? "#ffd945" : "#ffffff",
-                WebkitTextStroke: "2.5px #241726",
-                textShadow: "0 4px 0 rgba(36,23,38,0.85), 0 8px 24px rgba(0,0,0,0.45)",
+                fontWeight: editorial ? 650 : 900,
+                fontSize: editorial ? 51 : 62,
+                letterSpacing: editorial ? -0.8 : 0.5,
+                color: editorial ? (active ? "#b83c29" : "#26352f") : active ? "#ffd945" : "#ffffff",
+                WebkitTextStroke: editorial ? "0px" : "2.5px #241726",
+                textShadow: editorial ? "none" : "0 4px 0 rgba(36,23,38,0.85), 0 8px 24px rgba(0,0,0,0.45)",
                 transform: `scale(${pop})`,
                 transformOrigin: "bottom center",
               }}

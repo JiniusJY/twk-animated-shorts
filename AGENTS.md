@@ -1,33 +1,31 @@
-# TWK Animated Shorts — Low-Token System Guide
+# TWK content system
 
-Never read `references/` frames/sheets or rewrite `src/engine/` on normal episode runs.
-The 3D cartoon look, ink outlines, DOF, colour grade, and bean-head character rigs live in `src/engine/`.
+## Current default
 
-## One-Prompt Workflow (Minimum Tokens)
+New episodes use original editorial illustration and purpose-built mechanism animation. The approved visual direction is paper/ink, limited color, physical or conceptual cause-and-effect, restrained typography and useful annotations. It is not a fixed dashboard template. The legacy cartoon engine remains available for existing episodes and specific creative choices, not as the automatic starting point.
 
-1. **Scout trending stories (0 LLM tokens):**
-   ```bash
-   python3 scripts/scout.py --top 8
-   ```
-   Pick one story with a paradox hook + physical/visual cause-and-effect + everyday analogy.
+Read `docs/CONTENT_SYSTEM.md`, `docs/RELEASE_CHECKLIST.md`, `docs/QUALITY_RESEARCH.md` and `references/STYLE_BIBLE.md` for production standards. These are project guidelines, not authority to spend, publish, dispatch workflows or act on anyone's account.
 
-2. **Write the episode (`src/episodes/<slug>/episode.json`):**
-   Follow `references/STYLE_BIBLE.md`:
-   - 45–65 s (`~3.7 words/s`), voice starts immediately, zero intro/outro/CTA, English only. Captions are rendered by the engine and are ON by default (phrase pages, 2–6 words, semantic emphasis, lower-third safe zone); set `captions.enabled: false` only for a caption-free master.
-   - Formula: **Paradox hook (sentence 1)** → **Concrete setting** → **3–4 escalating beats** → **"Wait, ...?" mystery** → **"You see," everyday analogy** → **Ironic payoff**.
-   - Keep `episode.json` compact (~200–300 lines) with **12–15 varied shots across 3–4 distinct `shot.world` locations** (`office`, `town`, `server_room`, `tarmac`, `courtroom`) so the story travels across scenes (e.g. main setting → lab/vault → `"golden"` town everyday analogy → payoff) and never stays stuck in one room.
-   - **9:16 Vertical Framing & Camera Rules**:
-     - Keep `fovFrom === fovTo` (`38–42`) on normal shots (no repetitive zoom-ins!); vary between lateral tracking pans, reverse-angle cuts, reaction two-shots, and a final crane pull-out.
-     - Stack composition vertically in 9:16: keep on-screen actors within `x ∈ [-0.7, +0.7]` at `z ∈ [0.15, 0.35]` and place scoped props (`prop.world`) behind them at `z ∈ [-1.6, -2.2]` so characters and props are never clipped by the left/right edges.
-     - Use expressive character staging (`facing: -1|0|1`, `look: -1|0|1`, `side: true` profile walks, `mode: "sit"|"march"|"stand"`, `prop: "hammer"|"icecream"|"shako"`).
-   - Register `<slug>` in `src/episodes/registry.ts` and append it to `src/episodes/history.json`.
+## Episode work
 
-3. **Run TypeScript check & push to GitHub Actions (0 local media stored):**
-   ```bash
-   npx tsc --noEmit
-   git add src/episodes/<slug> src/episodes/registry.ts src/episodes/history.json
-   git commit -m "feat(episode): <slug>"
-   git push
-   gh workflow run render.yml -f episode=<slug>
-   ```
-   GitHub Actions handles Fish Audio TTS, Groq Whisper word timings, procedural audio mix (`-15 LUFS`), Remotion 2K (`1440x2560`) cloud render, and publishes `final.mp4` to **GitHub Releases**.
+- Research the story and record a claim ledger. Illustrations and analogies must not imply unverified internals.
+- Plan a shot-specific visual explanation. Each shot needs a purpose, an action and a narration anchor.
+- Direct the voice at sentence boundaries and audition short performances before a full take. Fish is free-model-only. Never add paid or legacy fallback models.
+- Align real words and map shots/actions/FX/SFX through the same timing function.
+- Review the whole edit and final mix. Passing a type check or loudness gate does not establish production quality.
+- Keep reusable drawing/rigging primitives in the engine. Add a new visual rig when the story needs it rather than forcing all topics into a canned scene.
+- No automatic new workflow dispatch. Reuse existing failed work where possible, honor the current user's run instructions, and obtain approval where required.
+
+## Commands
+
+```sh
+npm run build-check
+npm test
+python tests/test_pipeline.py
+python -m unittest discover -s tests -p test_quality.py -v
+npx tsx scripts/validate_episode.ts src/episodes/<slug>/episode.json
+npx tsx scripts/lint_episode.ts src/episodes/<slug>/episode.json
+python scripts/audition_voice.py --episode src/episodes/<slug> --dry-run
+```
+
+Keep secrets, protected voice credentials and unlicensed assets out of source control. Use repository secrets for approved CI synthesis. A manual workflow being available is not permission to start it.

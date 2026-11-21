@@ -1,33 +1,44 @@
-# Claude Animated Shorts
+# TWK editorial shorts
 
-The free Claude skill from the video **"How to Make Viral Animated Shorts Using Claude (Full Workflow)"**.
+Create original, researched short explainers with narration-led editorial illustration in Remotion. The current default is the approved paper/ink visual direction, not generic cartoon rooms or neon dashboards.
 
-It makes 55-70 s vertical animated story shorts: 2D characters in a colourful 3D world, with ink outlines, a painted town, lens blur, gliding cameras, a march score and sound effects. Everything is rendered with three.js inside Remotion on your own PC, with no AI video generator.
+- Production guide: [docs/CONTENT_SYSTEM.md](docs/CONTENT_SYSTEM.md)
+- Research and limits: [docs/QUALITY_RESEARCH.md](docs/QUALITY_RESEARCH.md)
+- Release gates: [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md)
+- Visual language: [references/STYLE_BIBLE.md](references/STYLE_BIBLE.md)
 
-Proven on **The Bridge That Fell for a Song**, a 67 s short about the 1831 Broughton bridge.
+## Before creating an episode
 
-## What's inside
-| Path | What it is |
-|---|---|
-| `SKILL.md` | The skill: the full pipeline, every rule, every fix, and the final look values |
-| `templates/bridge/` | The full source of the bridge short: world, characters, ink, lens blur, grade, story/camera |
-| `templates/audio/` | The synthesized sound: SFX, march music, the mix with ducking and loudness |
-| `templates/scripts/` | Stills, side-by-side sheets, shot merge and frame-by-frame QA helpers |
-| `references/STYLE_BIBLE.md` | The script and visual formula measured from 20 reference shorts |
-| `references/reports/` | Seven measured reports: motion, depth, textures, characters, lighting, outlines, grade |
-| `references/frames/` | 38 full-size reference frames (540x960) to compare your frames against |
-| `references/sheets/` | 20 contact sheets, one per reference short, 60 frames each (1,200 frames) |
+Write a sourced script and storyboard plan first. Every shot needs a purpose, a visual action and a unique spoken phrase for its start. Build a new rig when the story requires it. The Boeing-specific scenes are a pilot, not a template for unrelated topics.
 
-## Install
-1. Copy this folder to `~/.claude/skills/cartoon-3d-short/` (clone it there, or download the ZIP).
-2. You need [Remotion](https://www.remotion.dev/) with `@remotion/three`, plus Node, Python 3 and ffmpeg.
-3. In Claude Code, say: *"Use the cartoon short skill and make a short about …"*.
+```sh
+npm ci
+npm run build-check
+npm test
+python tests/test_pipeline.py
+python -m unittest discover -s tests -p test_quality.py -v
+```
 
-Claude then follows `SKILL.md`: topic and facts, then script, then voice, then the shot plan in `story.ts`, then stills, then renders. Agents check your frames against the reports and the frames, and you get the final 2K render and sound mix.
+Start a new episode from an explicit authored plan:
 
-## Notes
-- Set `REMOTION_TMP` to a folder on a big drive. Every Remotion bundle copies `public/` (~1.3 GB) into the temp folder.
-- Story, characters and voice should always be your own. Use the references for the look, not the content.
+```sh
+python scripts/new_episode.py --plan path/to/plan.json
+```
 
-## License
-The code and docs are MIT (see `LICENSE`). The reference frames are included for style study only.
+The plan contains `slug`, `title`, `script`, `sourceUrl`, `durationFrames`, `shots`, `claim_ledger`, `topic_card` and `creative_brief`. Shot data must include implemented `graphic`, `purpose` and (after the hook) `anchor`. The script supplies editorial caption/voice defaults, refuses a missing storyboard and does not invent claims. Register the result in `src/episodes/registry.ts` separately after validation.
+
+## Voice
+
+Fish requests are hard-limited to `s2.1-pro-free`. No paid or legacy fallback. Model errors stop the task. Store keys in protected repository secrets, never source control.
+
+```sh
+python scripts/audition_voice.py --episode src/episodes/<slug> --dry-run
+```
+
+The manual `Voice audition` workflow can generate three short performances without a full render or release. Do not dispatch it without the applicable approval. A real listening check is required before selecting a take.
+
+## Picture and sound
+
+Real aligned words drive the shared shot/action/FX/SFX timeline. Editorial captions are short phrase pages with stable text and restrained active-word color. Procedural sound cues are a starting point and require listening review. Retain the dry voice, aligned words, mix, stems and manifests so retries and revisions do not require another synthesis call.
+
+The `Render Animated Short` workflow still exists, but do not dispatch new runs automatically. Follow current rerun instructions. A successful technical QA gate does not replace factual, visual, performance or final-edit review. The old published Boeing release is not replaced by the local rough cut.
