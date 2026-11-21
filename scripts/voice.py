@@ -177,6 +177,45 @@ def fallback_even_words(text: str, wav_path: Path) -> list[dict]:
     return [{"w": t, "s": round(i * step, 3), "e": round((i + 1) * step, 3)} for i, t in enumerate(tokens)]
 
 
+ONES = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+        "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+        "seventeen", "eighteen", "nineteen"]
+TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+NUM_WORDS = set(ONES) | set(TENS) | {"hundred", "thousand", "million", "billion"}
+
+
+def int_to_words(n: int) -> str:
+    """Spoken form without 'and' (matches whisper's usual style): 248 -> two hundred forty eight."""
+    if n < 0:
+        return "minus " + int_to_words(-n)
+    if n < 20:
+        return ONES[n]
+    if n < 100:
+        return (TENS[n // 10] + (" " + ONES[n % 10] if n % 10 else "")).strip()
+    if n < 1000:
+        rest = int_to_words(n % 100)
+        return (ONES[n // 100] + " hundred" + (" " + rest if n % 100 else "")).strip()
+    for scale, name in ((1_000_000_000, "billion"), (1_000_000, "million"), (1000, "thousand")):
+        if n >= scale:
+            rest = n % scale
+            return (int_to_words(n // scale) + " " + name + (" " + int_to_words(rest) if rest else "")).strip()
+    return str(n)
+
+
+def expand_tokens(tokens: list[str]) -> list[str]:
+    """Expand digit tokens into spoken words, and drop 'and' between number words
+    (whisper says 'two hundred AND forty eight'). Applied to BOTH streams."""
+    out: list[str] = []
+    for t in tokens:
+        if re.fullmatch(r"\d+", t):
+            out.extend(int_to_words(int(t)).split())
+        elif t == "and" and out and out[-1] in NUM_WORDS:
+            continue
+        else:
+            out.append(t)
+    return out
+
+
 def norm_token(t: str) -> str:
     return re.sub(r"[^a-z0-9']", "", t.lower())
 
@@ -189,17 +228,32 @@ def strip_cues(text: str) -> str:
 
 
 def validate_alignment(script: str, words: list[dict], wav_path: Path) -> list[str]:
-    """Check transcript-vs-script token match and timing coverage. Returns problems."""
+    """Check transcript-vs-script fidelity and timing coverage. Returns problems.
+
+    Fidelity uses order-aware sequence similarity (difflib) plus bag-of-words
+    overlap on number-normalized tokens - a positional zip cascades one inserted
+    word into a total mismatch, and whisper spells numbers as words. Small
+    timestamp inversions (<0.25s, a known whisper quirk) are clamped in place,
+    not failed."""
+    import difflib
+    from collections import Counter
+
     problems: list[str] = []
     if not words:
         return ["no words produced by the aligner"]
-    script_tokens = [norm_token(t) for t in strip_cues(script).split() if norm_token(t)]
-    word_tokens = [norm_token(w["w"]) for w in words if norm_token(w["w"])]
-    if script_tokens:
-        matched = sum(1 for a, b in zip(script_tokens, word_tokens) if a == b)
-        ratio = matched / max(1, min(len(script_tokens), len(word_tokens)))
-        if ratio < 0.7:
-            problems.append(f"transcript/script token match {ratio:.0%} < 70%")
+    script_tokens = expand_tokens([norm_token(t) for t in strip_cues(script).split() if norm_token(t)])
+    word_tokens = expand_tokens([norm_token(w["w"]) for w in words if norm_token(w["w"])])
+    if script_tokens and word_tokens:
+        seq_ratio = difflib.SequenceMatcher(None, script_tokens, word_tokens).ratio()
+        overlap = sum((Counter(script_tokens) & Counter(word_tokens)).values()) / max(len(script_tokens), len(word_tokens))
+        if seq_ratio < 0.6:
+            problems.append(f"transcript/script sequence match {seq_ratio:.0%} < 60%")
+        if overlap < 0.65:
+            problems.append(f"transcript/script word overlap {overlap:.0%} < 65%")
+        # cue words must never be spoken aloud
+        spoken_cues = [t for t in word_tokens[:4] if t in S2_CUES and t not in script_tokens]
+        if spoken_cues:
+            problems.append(f"cue word(s) spoken aloud at the start: {spoken_cues}")
     out = subprocess.check_output(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", str(wav_path)],
         text=True,
@@ -208,10 +262,18 @@ def validate_alignment(script: str, words: list[dict], wav_path: Path) -> list[s
     coverage = words[-1]["e"] / dur if dur > 0 else 0.0
     if coverage < 0.6:
         problems.append(f"alignment covers {coverage:.0%} of the audio (< 60%)")
+    clamped = 0
     for i in range(1, len(words)):
         if words[i]["s"] < words[i - 1]["s"]:
-            problems.append(f"word timings out of order at index {i}")
-            break
+            gap = words[i - 1]["s"] - words[i]["s"]
+            if gap > 0.25:
+                problems.append(f"word timings out of order at index {i} (>{gap:.2f}s back)")
+                break
+            words[i]["s"] = words[i - 1]["s"]
+            words[i]["e"] = max(words[i]["e"], words[i]["s"])
+            clamped += 1
+    if clamped:
+        print(f"note: clamped {clamped} minor timestamp inversion(s) (<0.25s)", flush=True)
     return problems
 
 
