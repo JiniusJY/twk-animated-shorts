@@ -263,17 +263,14 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   const preset: LightPreset = LIGHTS[shot.light];
   const look = LOOK[shot.light];
 
-  // Build & cache every world preset used by the episode's shots
-  const worldMap = useMemo(() => {
-    const used = new Set<WorldPreset>([spec.world]);
-    for (const s of spec.shots) if (s.world) used.add(s.world);
-    const map = new Map<string, THREE.Group>();
-    for (const w of used) {
-      map.set(`${w}_day`, buildWorldEnvironment(w, "day"));
-      map.set(`${w}_golden`, buildWorldEnvironment(w, "golden"));
-    }
-    return map;
-  }, [spec.world, spec.shots]);
+  // Lazily build & cache only the (world, light) preset active on the current shot so each shard starts in < 2s
+  const worldCacheRef = useRef<Map<string, THREE.Group>>(new Map());
+  const worldKey = `${activeWorld}_${shot.light}`;
+  let worldEnv = worldCacheRef.current.get(worldKey);
+  if (!worldEnv) {
+    worldEnv = buildWorldEnvironment(activeWorld, shot.light);
+    worldCacheRef.current.set(worldKey, worldEnv);
+  }
 
   const skyDay = useMemo(() => makeSky(LIGHTS.day, "day"), []);
   const skyGolden = useMemo(() => makeSky(LIGHTS.golden, "golden"), []);
@@ -611,7 +608,6 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
     [fx]
   );
 
-  const worldEnv = worldMap.get(`${activeWorld}_${shot.light}`) ?? worldMap.values().next().value!;
   const skyMesh = shot.light === "golden" ? skyGolden : skyDay;
   const shadowRotY = Math.atan2(sunDir.x, sunDir.z);
 

@@ -4,15 +4,14 @@ import {
   ctex,
   rep,
   rng,
-  grassHD,
-  cobbleHD,
-  planksHD,
-  beamHD,
+  grass,
+  cobble,
+  planks,
+  beam,
   brick,
-  stoneHD,
-  facadeHD,
-  roofHD,
-  cloudHD,
+  stone,
+  facade,
+  roof,
 } from "./paint";
 import { LOOK, LightPreset } from "./lights";
 import { NOINK } from "./ink";
@@ -257,16 +256,16 @@ function addGabledHouse(
   grp.rotation.y = yaw;
 
   const frontMat = toonMat(`hFront_${styleIdx}_${w}_${h}`, {
-    map: facadeHD(`hf_${styleIdx}_${w}_${h}`, w, h, { ...st, door: true }),
+    map: facade(`hf_${styleIdx}_${w}_${h}`, w, h, { ...st, door: true }),
   });
   const sideMat = toonMat(`hSide_${styleIdx}_${d}_${h}`, {
-    map: facadeHD(`hs_${styleIdx}_${d}_${h}`, d, h, st),
+    map: facade(`hs_${styleIdx}_${d}_${h}`, d, h, st),
   });
   const roofM = toonMat(`hRoof_${st.roof}`, {
-    map: rep(roofHD(st.roof, st.roof === "#8f97a8"), Math.max(1, Math.round(w / 4)), 2),
+    map: rep(roof(st.roof), Math.max(1, Math.round(w / 4)), 2),
     side: THREE.DoubleSide,
   });
-  const plinthM = toonMat("hPlinth", { map: stoneHD("plinthStone") });
+  const plinthM = toonMat("hPlinth", { map: stone("plinthStone") });
   const trimM = toonMat("hTrim", { color: "#efe3c8" });
   const chimM = toonMat("hChim", { map: rep(brick(), 1, 2) });
 
@@ -310,19 +309,44 @@ function addLantern(parent: THREE.Object3D, x: number, y: number, z: number) {
   addBox(parent, 0.54, 0.14, 0.54, x, y + 3.1, z, poleM);
 }
 
+function fastCloudTex(seed: number, pal: { lit: string; mid: string; shade: string }) {
+  return ctex(`fastCloud_${pal.lit}_${seed}`, 512, 256, (g) => {
+    const lobes: [number, number, number][] = [
+      [130, 155, 65],
+      [215, 120, 82],
+      [305, 128, 74],
+      [385, 158, 56],
+      [255, 168, 70],
+    ];
+    const drawLayer = (dx: number, dy: number, sc: number, col: string) => {
+      g.fillStyle = col;
+      g.beginPath();
+      for (const [x, y, r] of lobes) {
+        const cx = x + ((seed * 29) % 18) - 9 + dx;
+        const cy = y + dy;
+        g.moveTo(cx + r * sc, cy);
+        g.ellipse(cx, cy, r * sc, r * sc * 0.78, 0, 0, Math.PI * 2);
+      }
+      g.fill();
+    };
+    drawLayer(0, 6, 1.0, pal.shade);
+    drawLayer(-3, -4, 0.9, pal.mid);
+    drawLayer(-8, -12, 0.74, pal.lit);
+  });
+}
+
 function addCloudsAndHills(parent: THREE.Object3D, mode: "day" | "golden", withHills = true) {
   const pal = LOOK[mode].cloud;
-  for (let i = 0; i < 8; i++) {
-    const tex = cloudHD(i % 4, pal);
+  for (let i = 0; i < 6; i++) {
+    const tex = fastCloudTex(i % 3, pal);
     const mat = new THREE.MeshBasicMaterial({
       map: tex,
       transparent: true,
       depthWrite: false,
       fog: false,
-      color: new THREE.Color(1.05, 1.05, 1.05),
     });
-    const a = (i / 8) * Math.PI * 1.4 - Math.PI * 0.7;
-    const dist = 180 + (i % 3) * 35;
+    const a = (i / 6) * Math.PI * 1.3 - Math.PI * 0.65;
+    const dist = 175 + (i % 3) * 35;
     const w = 48 + (i % 3) * 14;
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, w * 0.5), mat);
     m.position.set(Math.sin(a) * dist, 34 + (i % 3) * 6, -Math.cos(a) * dist);
@@ -332,7 +356,7 @@ function addCloudsAndHills(parent: THREE.Object3D, mode: "day" | "golden", withH
   }
 
   if (withHills) {
-    const hillGeo = new THREE.SphereGeometry(1, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2);
+    const hillGeo = new THREE.SphereGeometry(1, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2);
     const hCols = ["#78b257", "#6aa24e", "#8bbf63"];
     const hills: [number, number, number, number, number][] = [
       [-140, -170, 95, 24, 60],
@@ -354,10 +378,10 @@ function addCloudsAndHills(parent: THREE.Object3D, mode: "day" | "golden", withH
 export function buildWorldEnvironment(preset: WorldPreset, mode: "day" | "golden"): THREE.Group {
   const g = new THREE.Group();
   const groundSize = 360;
-  const grassTex = rep(grassHD(), 45, 45);
-  const cobbleTex = rep(cobbleHD(), 24, 24);
-  const plankTex = rep(planksHD(), 16, 16);
-  const stoneTex = rep(stoneHD("worldStone"), 28, 28);
+  const grassTex = rep(grass(), 45, 45);
+  const cobbleTex = rep(cobble(), 24, 24);
+  const plankTex = rep(planks(), 16, 16);
+  const stoneTex = rep(stone("worldStone"), 28, 28);
 
   if (preset === "tarmac") {
     addCloudsAndHills(g, mode, true);
@@ -394,7 +418,7 @@ export function buildWorldEnvironment(preset: WorldPreset, mode: "day" | "golden
     addGabledHouse(g, -3.5, 0, -27, 11, 8, 6.4, 0, 3);
 
     // Control Tower
-    const towerBase = toonMat("towerWall", { map: facadeHD("ctrlTower", 6, 13, { wall: "#e8dac0", shutter: "#3f6fb5", brick: true }) });
+    const towerBase = toonMat("towerWall", { map: facade("ctrlTower", 6, 13, { wall: "#e8dac0", shutter: "#3f6fb5", brick: true }) });
     const towerCab = toonMat("towerCab", { color: "#6e88c9" });
     const towerRoof = toonMat("towerRoof", { color: "#c85a48" });
     addBox(g, 5.2, 13, 5.2, 15, 6.5, -24, towerBase);
@@ -432,13 +456,13 @@ export function buildWorldEnvironment(preset: WorldPreset, mode: "day" | "golden
     g.add(floor);
 
     const backWallMat = toonMat("labBackWall", {
-      map: facadeHD("labWallBack", 24, 8.4, { wall: "#ecdab2", shutter: "#3f6fb5", timber: true }),
+      map: facade("labWallBack", 24, 8.4, { wall: "#ecdab2", shutter: "#3f6fb5", timber: true }),
     });
     const sideWallMat = toonMat("labSideWall", {
-      map: facadeHD("labWallSide", 18, 8.4, { wall: "#e3d2b8", shutter: "#2f6a43", brick: true }),
+      map: facade("labWallSide", 18, 8.4, { wall: "#e3d2b8", shutter: "#2f6a43", brick: true }),
     });
-    const beamMat = toonMat("labBeam", { map: beamHD() });
-    const plinthM = toonMat("labPlinth", { map: stoneHD("labPlinth") });
+    const beamMat = toonMat("labBeam", { map: beam() });
+    const plinthM = toonMat("labPlinth", { map: stone("labPlinth") });
 
     addBox(g, 26, 9, 0.8, 0, 4.5, -10.5, backWallMat);
     addBox(g, 0.8, 9, 20, -13, 4.5, -1, sideWallMat);
@@ -451,7 +475,7 @@ export function buildWorldEnvironment(preset: WorldPreset, mode: "day" | "golden
     }
 
     // Lab equipment benches & shelving along the back wall
-    const benchWood = toonMat("benchWood", { map: beamHD(), color: "#c9925e" });
+    const benchWood = toonMat("benchWood", { map: beam(), color: "#c9925e" });
     const rackMetal = toonMat("rackMetal", { color: "#3d485c" });
     const screenGlow = toonMat("oscScreen", { color: "#68d89b" });
     for (const bx of [-7.2, 7.2]) {
@@ -474,7 +498,7 @@ export function buildWorldEnvironment(preset: WorldPreset, mode: "day" | "golden
     g.add(floor);
 
     const wallMat = toonMat("vaultWall", {
-      map: facadeHD("vaultBack", 24, 9, { wall: "#c8cfdc", shutter: "#35435c", brick: true }),
+      map: facade("vaultBack", 24, 9, { wall: "#c8cfdc", shutter: "#35435c", brick: true }),
     });
     addBox(g, 28, 10, 0.8, 0, 5, -12.5, wallMat);
 
@@ -508,9 +532,9 @@ export function buildWorldEnvironment(preset: WorldPreset, mode: "day" | "golden
     g.add(floor);
 
     const wallMat = toonMat("courtWall", {
-      map: facadeHD("courtWallHD", 24, 9, { wall: "#ebd9b7", shutter: "#5a3b2a", timber: true }),
+      map: facade("courtWallHD", 24, 9, { wall: "#ebd9b7", shutter: "#5a3b2a", timber: true }),
     });
-    const woodMat = toonMat("courtWood", { map: beamHD(), color: "#8c5832" });
+    const woodMat = toonMat("courtWood", { map: beam(), color: "#8c5832" });
     addBox(g, 28, 10, 0.8, 0, 5, -12, wallMat);
     addBox(g, 9.5, 2.4, 2.8, 0, 1.2, -7.5, woodMat);
     addBox(g, 16, 1.2, 0.45, 0, 0.6, -2.2, woodMat);
@@ -529,14 +553,14 @@ export function buildWorldEnvironment(preset: WorldPreset, mode: "day" | "golden
     // Cobblestone road running along X in the foreground/midground + stone kerbs
     const road = new THREE.Mesh(
       new THREE.PlaneGeometry(120, 7.6),
-      toonMat("townCobbleRoad", { map: rep(cobbleHD(), 24, 3) })
+      toonMat("townCobbleRoad", { map: rep(cobble(), 24, 3) })
     );
     road.rotation.x = -Math.PI / 2;
     road.position.set(0, 0.015, 0.8);
     road.receiveShadow = true;
     g.add(road);
 
-    const kerbMat = toonMat("townKerb", { map: stoneHD("kerbStone") });
+    const kerbMat = toonMat("townKerb", { map: stone("kerbStone") });
     addBox(g, 120, 0.16, 0.45, 0, 0.08, -3.1, kerbMat);
     addBox(g, 120, 0.16, 0.45, 0, 0.08, 4.7, kerbMat);
 
@@ -888,7 +912,7 @@ export function buildPropMesh(p: PropDef): { group: THREE.Group; setLabel: (l: s
     for (const lx of [-1.0, 1.0]) for (const lz of [-0.45, 0.45]) addBox(g, 0.14, 0.95, 0.14, lx, 0.475, lz, mDark);
   } else if (p.kind === "screen" || p.kind === "sign" || p.kind === "chart") {
     // Compact wooden signpost (1.48m wide) elevated to y = 1.85m so characters stand right beside it in 9:16
-    const postM = toonMat("signWoodPost", { map: beamHD(), color: "#8a5a3a" });
+    const postM = toonMat("signWoodPost", { map: beam(), color: "#8a5a3a" });
     addBox(g, 1.48, 0.94, 0.14, 0, 1.82, 0, postM);
     addBox(g, 1.56, 1.02, 0.11, 0, 1.82, -0.02, mDark);
     faceMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.36, 0.82), makeFaceMat(p.label ?? "", p.sublabel ?? ""));
