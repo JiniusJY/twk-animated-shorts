@@ -8,9 +8,9 @@ on:
         required: true
         default: "amazon-bot-book"
       scale:
-        description: "Output scale (1 = 1080x1920, 1.3333 = 1440x2560 2K)"
+        description: "Output scale (1 = 1080x1920 HD, 1.3333333333333333 = 1440x2560 2K)"
         required: false
-        default: "1.3333"
+        default: "1"
 
 permissions:
   contents: write
