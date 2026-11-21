@@ -157,5 +157,7 @@ jobs:
         run: |
           TAG="ep-${{ inputs.episode }}-${{ github.run_number }}"
           gh release create "$TAG" out/final.mp4 \
+            --repo "${{ github.repository }}" \
+            --target "${{ github.sha }}" \
             --title "${{ inputs.episode }} (#${{ github.run_number }})" \
             --notes "Automated parallel cloud render for episode ${{ inputs.episode }}."
