@@ -15,12 +15,12 @@ export const EditorialScene:React.FC<{shot:ShotDef}>=({shot})=>{
  <text x="64" y="255" fill={I} fontSize={m==="question"?63:73} letterSpacing="-3">{headline[m??""]}</text>
  <path d="M65 292Q320 298 590 289" fill="none" stroke={R} strokeWidth="3"/>
  {(m==="hook"||m==="stakes")&&<>
-  <g transform={`translate(0 ${(1-reveal)*70})`}><Plane y={630} s={1.05}/></g>
+  <g transform={`translate(0 ${(1-reveal)*70})`}><Plane x={490+100*u} y={630} s={1.05}/></g>
   <path d="M110 945H970" stroke={I} strokeWidth="4"/>
   {Array.from({length:12},(_,i)=><path key={i} d={`M${110+i*78} 930v30`} stroke={I} strokeWidth="2"/>)}
   <text x="110" y="1014" fill={I} fontFamily="Arial,sans-serif" fontSize="24">POWER ON</text><text x="970" y="1014" textAnchor="end" fill={R} fontFamily="Arial,sans-serif" fontSize="24">248 DAYS</text>
   <circle cx={110+860*Math.min(1,u*1.2)} cy="945" r="14" fill={R}/>
-  <text x="540" y="1210" textAnchor="middle" fill={R} fontSize={m==="hook"?190:140}>{m==="hook"?Math.floor(248*Math.min(1,u*2.2)):"4 → 0"}</text>
+  <text x="540" y="1210" textAnchor="middle" fill={R} fontSize={m==="hook"?190:140}>{m==="hook"?Math.floor(248*u):"4 → 0"}</text>
   <text x="540" y="1290" textAnchor="middle" fill={I} fontSize="39" fontStyle="italic">{m==="hook"?"days without a shutdown":"AC generators, simultaneously"}</text>
  </>}
  {m==="lab"&&<>
@@ -60,10 +60,10 @@ export const EditorialScene:React.FC<{shot:ShotDef}>=({shot})=>{
   <text x="540" y="1370" fill={I} textAnchor="middle" fontFamily="Arial,sans-serif" fontSize="25">ILLUSTRATION OF THE SIGNED-COUNTER THEORY</text>
  </>}
  {m==="odometer"&&<>
-  <path d="M110 810L210 690H745L890 810H975V1010H90V880Z" fill={R} stroke={I} strokeWidth="5"/>
+  <g transform={`translate(${Math.sin(u*Math.PI)*30} 0)`}><path d="M110 810L210 690H745L890 810H975V1010H90V880Z" fill={R} stroke={I} strokeWidth="5"/>
   <path d="M255 720H480V810H180ZM510 720H715L820 810H510Z" fill="#d7e1d3" stroke={I} strokeWidth="4"/>
-  {[270,790].map(x=><g key={x} transform={`translate(${x} 1010) rotate(${t*2})`}><circle r="99" fill={I}/><circle r="62" fill="#b4b9a6"/>{[0,60,120].map(a=><path key={a} transform={`rotate(${a})`} d="M-52 0H52" stroke={I} strokeWidth="9"/>)}</g>)}
-  <g transform={`translate(0 ${(1-reveal)*80})`}><rect x="145" y="430" width="790" height="180" rx="8" fill={I}/>
+  {[270,790].map(x=><g key={x} transform={`translate(${x} 1010) rotate(${t*3})`}><circle r="99" fill={I}/><circle r="62" fill="#b4b9a6"/>{[0,60,120].map(a=><path key={a} transform={`rotate(${a})`} d="M-52 0H52" stroke={I} strokeWidth="9"/>)}</g>)}
+  </g><g transform={`translate(0 ${(1-reveal)*80})`}><rect x="145" y="430" width="790" height="180" rx="8" fill={I}/>
   {(u>.6?"000000":"999999").split("").map((n,i)=><g key={i}><rect x={166+i*127} y="450" width="112" height="140" fill={P}/><text x={222+i*127} y="552" fill={I} fontSize="98" textAnchor="middle" fontFamily="'Courier New',monospace">{n}</text></g>)}</g>
   <path d="M540 620V675" fill="none" stroke={I} strokeWidth="3" strokeDasharray="8 8"/>
   <text x="540" y="1285" fill={I} textAnchor="middle" fontSize="48" fontStyle="italic">Like an odometer running out of digits.</text>
@@ -73,6 +73,7 @@ export const EditorialScene:React.FC<{shot:ShotDef}>=({shot})=>{
   <path d="M835 420V520H930" fill="#ddd9c9" stroke={I} strokeWidth="3"/>
   <text x="260" y="570" fill={I} fontFamily="Arial,sans-serif" fontSize="28">FEDERAL AVIATION ADMINISTRATION</text>
   <path d="M260 610H850" stroke={I} strokeWidth="3"/>
+  <rect x="250" y="860" width={Math.max(0,Math.min(610,u*710))} height="145" fill="#d7c875" opacity=".35"/>
   <text x="260" y="720" fill={I} fontSize="58">Airworthiness</text><text x="260" y="792" fill={I} fontSize="58">Directive</text>
   <text x="260" y="902" fill={R} fontSize="47" fontStyle="italic">Power cycle</text><text x="260" y="970" fill={R} fontSize="47" fontStyle="italic">at least every 120 days.</text>
   {[1070,1110,1150,1190].map((y,i)=><path key={y} d={`M260 ${y}h${i===3?230:520}`} stroke={I} strokeWidth="3" opacity=".25"/>)}

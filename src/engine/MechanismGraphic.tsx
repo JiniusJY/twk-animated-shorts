@@ -71,7 +71,8 @@ export const MechanismGraphic: React.FC<{shot:ShotDef}>=({shot})=>{
    <path d="M540 792V981M164 1070V981H916V1070M415 981V1070M666 981V1070" fill="none" stroke={INK} strokeWidth="9" strokeLinejoin="round"/>
    {live&&<path d="M540 792V981M164 1070V981H916V1070M415 981V1070M666 981V1070" fill="none" stroke={GREEN} strokeWidth="4" strokeDasharray="9 32" strokeDashoffset={-t*3}/>}
    {[164,415,666,916].map((x,i)=>{
-     const rot=live?t*4+i*30:i*30;
+     const coast=mode==="power"?Math.max(0,t-span*.12):mode==="overflow"?Math.max(0,t-span*.32):0;
+     const rot=live?t*4+i*30:(t-coast)*4+100*(1-Math.exp(-coast/40))+i*30;
      return <g key={i} transform={`translate(${x} 1140)`}>
       <ellipse cy="105" rx="92" ry="17" fill={INK} opacity=".08"/>
       <path d="M-73-12h146v101H-73Z" fill="#c0c5b1" stroke={INK} strokeWidth="3"/>
@@ -87,6 +88,7 @@ export const MechanismGraphic: React.FC<{shot:ShotDef}>=({shot})=>{
       <text y="155" fill={INK} fontFamily="Arial,sans-serif" fontSize="24" textAnchor="middle">{String(i+1).padStart(2,"0")}</text>
      </g>;
    })}
+   <path d={`M135 1470H${135+810*u}`} stroke={live?GREEN:RED} strokeWidth="7"/>
    <text x="540" y="1403" fill={off?RED:INK} fontSize="44" textAnchor="middle" fontStyle="italic">{reset?(live?"Back to zero. Back to work.":"First, switch it off."):off?"Four generators. Zero AC power.":"Tick. Tick. Tick."}</text>
    <text x="540" y="1798" fill={INK} opacity=".65" fontFamily="Arial,sans-serif" fontSize="20" textAnchor="middle">{isCounter?"Counter theory. Conceptual illustration, not aircraft wiring.":"Simplified illustration · FAA directive, 2015"}</text>
   </svg>

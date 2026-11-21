@@ -70,4 +70,10 @@ These support a process, not a promise that a fixed editing formula will produce
 
 ## Follow end card
 
-New episodes include a two-second end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. The card is visual, not extra narration. New-episode creation supplies it by default; the audio timeline reserves its duration. Record follower conversion and retention as outcomes to measure, never guarantees.
+New episodes include a short branded end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. The card is visual, not extra narration. New-episode creation supplies it by default; the audio timeline reserves its duration. Record follower conversion and retention as outcomes to measure, never guarantees.
+
+## Evidence media and brand assets
+
+Use real screenshots or video excerpts when they supply evidence or context the illustration cannot. Preserve the original URL, author/account, publication date, capture time, exact excerpt and a rights/usage note in the episode asset ledger. A public X post is not automatically licensed for unrestricted reuse. Prefer permission, licensed media, official press assets or a limited, justified editorial excerpt. Do not bypass paywalls, remove watermarks or expose private messages. Attribute clearly on screen, distinguish a claim from a verified fact, and avoid crops or edits that change meaning. Do not invent a screenshot, quote, metric or engagement count. Keep text legible on a phone. Source media is optional per story, not decorative B-roll.
+
+The end card uses the actual TechWhoKnows logo from the website brand asset, stored at `public/brand/twk-logo.svg`. Do not redraw or improvise the logo. Preserve its proportions and contrast. Website logo provenance is documented in `public/brand/README.md`. The current Boeing render does not add unrelated social footage.

@@ -51,7 +51,7 @@ class TimingTests(unittest.TestCase):
         ep=copy.deepcopy(self.ep);ep["endCard"]={"handle":"@techwhoknows","seconds":2}
         out,dur,_=sync_episode(ep,30,12,self.words)
         self.assertEqual(out["durationFrames"],510)
-        self.assertAlmostEqual(dur,14.4 if False else 17.0)
+        self.assertAlmostEqual(dur,17.0)
 
     def test_missing_words_stop(self):
         with self.assertRaises(ValueError):sync_episode(copy.deepcopy(self.ep),30,12)

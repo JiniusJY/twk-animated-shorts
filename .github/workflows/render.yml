@@ -137,6 +137,14 @@ jobs:
           FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python3 scripts/voice.py --episode "src/episodes/${{ inputs.episode }}"
+      - name: Retain generated take and alignment even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-${{ inputs.episode }}-${{ github.run_id }}
+          path: src/episodes/${{ inputs.episode }}/voice/
+          if-no-files-found: warn
+          retention-days: 7
       - name: Build procedural audio mix (-15 LUFS) & sync timings
         run: |
           mkdir -p out

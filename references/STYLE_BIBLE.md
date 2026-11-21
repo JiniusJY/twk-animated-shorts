@@ -28,4 +28,4 @@ Inspect a complete rough cut, individual transitions, caption line breaks, criti
 
 ## Follow end card
 
-New episodes include a two-second end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. The card is visual, not extra narration. New-episode creation supplies it by default; the audio timeline reserves its duration. Record follower conversion and retention as outcomes to measure, never guarantees.
+New episodes include a short branded end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. The card is visual, not extra narration. New-episode creation supplies it by default; the audio timeline reserves its duration. Record follower conversion and retention as outcomes to measure, never guarantees.

@@ -18,7 +18,7 @@ def build_episode(plan):
         if not s.get('purpose'):raise ValueError(f'Shot {i}: missing editorial purpose')
         if i and not s.get('anchor'):raise ValueError(f'Shot {i}: missing narration anchor')
     out={'fps':30,'world':'office','musicMood':'mystery','actors':[],'props':[],'fx':[],'cues':[],**plan}
-    out['endCard']={'handle':'@techwhoknows','seconds':2,**plan.get('endCard',{})}
+    out['endCard']={'handle':'@techwhoknows','seconds':3.2,**plan.get('endCard',{})}
     out['captions']={'enabled':True,'maxWordsPerPage':4,'theme':'editorial',**plan.get('captions',{})}
     out['voice']={'temperature':0.8,'topP':0.8,'speed':1.0,'direction':'curious and conversational','beats':[],**plan.get('voice',{})}
     return out

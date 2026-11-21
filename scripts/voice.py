@@ -352,7 +352,13 @@ def main():
             run_ffmpeg_to_wav(mp3_path, wav_path)
             if groq_key:
                 print("Aligning word timings with Groq Whisper...", flush=True)
-                words = align_groq_whisper(mp3_path, groq_key)
+                for attempt in range(3):
+                    words = align_groq_whisper(mp3_path, groq_key)
+                    # Preserve evidence even on failure; never silently clamp a large jump.
+                    (voice_dir / "alignment_raw.json").write_text(json.dumps(words, indent=2))
+                    issues = validate_alignment(script, words, wav_path)
+                    if not issues: break
+                    print(f"Alignment attempt {attempt+1} rejected: {issues}", flush=True)
                 method = "groq-whisper"
             else:
                 print("GROQ_API_KEY not set; falling back to APPROXIMATE proportional word timings (not real alignment).", flush=True)
@@ -368,9 +374,16 @@ def main():
             method = "edge-tts"
             if groq_key:
                 print("Refining word timings with Groq Whisper...", flush=True)
-                words = align_groq_whisper(mp3_path, groq_key)
+                for attempt in range(3):
+                    words = align_groq_whisper(mp3_path, groq_key)
+                    # Preserve evidence even on failure; never silently clamp a large jump.
+                    (voice_dir / "alignment_raw.json").write_text(json.dumps(words, indent=2))
+                    issues = validate_alignment(script, words, wav_path)
+                    if not issues: break
+                    print(f"Alignment attempt {attempt+1} rejected: {issues}", flush=True)
                 method = "groq-whisper"
 
+    words_path.write_text(json.dumps(words, indent=2), encoding="utf-8")
     problems = validate_alignment(script, words, wav_path)
     if problems:
         print("ALIGNMENT VALIDATION FAILED: " + "; ".join(problems), file=sys.stderr, flush=True)
