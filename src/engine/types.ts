@@ -16,7 +16,11 @@ export type PropKind =
   | "pile"
   | "sign"
   | "chart"
-  | "crate";
+  | "crate"
+  | "car"
+  | "clock"
+  | "gcu"
+  | "switch";
 
 export interface PropKeyframe {
   f: number;
@@ -39,8 +43,12 @@ export interface PropDef {
   sublabel?: string;
   bob?: number;
   spin?: number;
+  world?: WorldPreset;
   keyframes?: PropKeyframe[];
 }
+
+export type ActorMode = "march" | "stroll" | "stand" | "sit" | "fall";
+export type ActorPropKind = "icecream" | "shako" | "hammer" | null;
 
 export interface ActorKeyframe {
   f: number;
@@ -50,23 +58,36 @@ export interface ActorKeyframe {
   walk?: boolean;
   talk?: boolean;
   lean?: number;
+  facing?: -1 | 0 | 1;
+  look?: -1 | 0 | 1;
+  mode?: ActorMode;
+  side?: boolean;
+  mirror?: boolean;
+  prop?: ActorPropKind;
 }
 
 export interface ActorDef {
   id: string;
-  preset?: "worker" | "boss" | "engineer" | "pilot" | "bot" | "kid" | "parent";
+  preset?: "worker" | "boss" | "engineer" | "pilot" | "bot" | "kid" | "parent" | "officer" | "soldier";
   outfit?: Partial<Outfit>;
   pos: V3;
   rotY?: number;
+  scale?: number;
   expr?: Expr;
   walk?: boolean;
   talk?: boolean;
   lean?: number;
+  facing?: -1 | 0 | 1;
+  look?: -1 | 0 | 1;
+  mode?: ActorMode;
+  side?: boolean;
+  mirror?: boolean;
+  prop?: ActorPropKind;
   keyframes?: ActorKeyframe[];
 }
 
 export interface FxDef {
-  kind: "burst" | "stars" | "notes" | "puff" | "ring" | "splash";
+  kind: "burst" | "stars" | "notes" | "puff" | "ring" | "splash" | "creak";
   pos: V3;
   a: number;
   b: number;
@@ -89,6 +110,7 @@ export interface ShotDef {
   id: number;
   a: number;
   b: number;
+  world?: WorldPreset;
   light: LightMode;
   dof?: number;
   xfade?: number;

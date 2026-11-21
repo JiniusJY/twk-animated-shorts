@@ -12,25 +12,111 @@ import { LIGHTS, LOOK, LightPreset } from "./lights";
 import { TONE, CHAR, untone } from "./shade";
 import { cardShade, blobMaterial, CARD_K } from "./cardshade";
 import {
-  Pen, bodyFront, fxBurst, fxStars, fxNote, fxPuff, fxRing, fxSplash, fxContact,
-  KID, PARENT, townsfolk, Outfit, Expr,
+  Pen,
+  bodyFront,
+  bodySide,
+  fxBurst,
+  fxStars,
+  fxNote,
+  fxPuff,
+  fxRing,
+  fxSplash,
+  fxCreak,
+  fxContact,
+  fxShadow,
+  OFFICER,
+  RIFLEMAN,
+  KID,
+  PARENT,
+  SKINS,
+  townsfolk,
+  soldier,
+  Outfit,
+  Expr,
+  Prop as ToonProp,
 } from "./toon";
 import { buildWorldEnvironment, buildPropMesh, evalPropAt, makeSky, lerpV3 } from "./worlds";
-import type { EpisodeSpec, ShotDef, ActorDef, FxDef, V3 } from "./types";
+import type { EpisodeSpec, ShotDef, ActorDef, ActorMode, ActorPropKind, V3, WorldPreset } from "./types";
 
 const OUTFIT_PRESETS: Record<string, Outfit> = {
-  worker: { jacket: "#3a6ea5", pants: "#2f3644", boots: "#241726", hat: "hair", hair: "#4a3020" },
-  boss: { jacket: "#2c2f3a", pants: "#22242d", boots: "#1a141c", hat: "hair", hair: "#7b7d85", build: "stout" },
-  engineer: { jacket: "#e07a38", pants: "#384459", boots: "#241726", hat: "cap", cap: "#3a6ea5" },
-  pilot: { jacket: "#263b5e", pants: "#212b3d", boots: "#1d1721", hat: "cap", cap: "#f0c850" },
-  bot: { jacket: "#00b4d8", pants: "#394859", boots: "#241726", hat: "cap", cap: "#241726", skin: "#dce6f2" },
+  pilot: {
+    jacket: "#263d66",
+    pants: "#202b40",
+    boots: "#1d1721",
+    hat: "shako",
+    belt: "#f1efe6",
+    buttons: "#e8c45a",
+    skin: SKINS[0],
+  },
+  engineer: {
+    jacket: "#d96b38",
+    pants: "#364152",
+    boots: "#241726",
+    hat: "cap",
+    cap: "#356199",
+    belt: "#f1efe6",
+    buttons: "#e8c45a",
+    skin: SKINS[1],
+  },
+  worker: {
+    jacket: "#3a6ea5",
+    pants: "#333b4a",
+    boots: "#241726",
+    hat: "hair",
+    hair: "#4a3020",
+    buttons: "#d9dde0",
+    skin: SKINS[2],
+  },
+  boss: {
+    ...OFFICER,
+    jacket: "#2d3548",
+    pants: "#232733",
+    sash: "#c0353a",
+    buttons: "#e8c45a",
+    moustache: "#4a3020",
+    build: "stout",
+    skin: SKINS[0],
+  },
+  officer: OFFICER,
+  soldier: RIFLEMAN,
+  bot: {
+    jacket: "#2d8bba",
+    pants: "#394859",
+    boots: "#241726",
+    hat: "tophat",
+    buttons: "#e8c45a",
+    skin: "#e3ebf5",
+  },
   kid: KID,
   parent: PARENT,
 };
 
 function resolveOutfit(a: ActorDef, idx: number): Outfit {
-  const base = a.preset ? OUTFIT_PRESETS[a.preset] ?? townsfolk(idx) : townsfolk(idx);
+  const base = a.preset
+    ? OUTFIT_PRESETS[a.preset] ?? (idx % 2 === 0 ? townsfolk(idx) : soldier(idx))
+    : townsfolk(idx);
   return { ...base, ...(a.outfit ?? {}) };
+}
+
+const hh = (i: number, s = 0) => {
+  const v = Math.sin(i * 127.1 + s * 311.7) * 43758.5453;
+  return v - Math.floor(v);
+};
+
+const LID_FRAMES = [0.5, 1, 1, 0.5];
+/** Natural 4-frame eyelid blink every 0.5-2.3s plus a blink across every expression change (cast.ts) */
+function lidAt(f: number, idx: number, swapFrames: number[]): number {
+  for (const sf of swapFrames) {
+    const k = f - (sf - 1);
+    if (k >= 0 && k < 4) return LID_FRAMES[k];
+  }
+  let s = Math.round(-60 * hh(idx, 9));
+  for (let n = 0; s <= f && n < 400; n++) {
+    const k = f - s;
+    if (k >= 0 && k < 4) return LID_FRAMES[k];
+    s += Math.round(15 + 54 * hh(idx * 31 + n, 13));
+  }
+  return 0;
 }
 
 function evalActor(a: ActorDef, f: number) {
@@ -39,49 +125,81 @@ function evalActor(a: ActorDef, f: number) {
   let walk = a.walk ?? false;
   let talk = a.talk ?? false;
   let lean = a.lean ?? 0;
+  let facing: -1 | 0 | 1 = a.facing ?? 0;
+  let look: -1 | 0 | 1 = a.look ?? 0;
+  let mode: ActorMode | undefined = a.mode;
+  let side = a.side ?? false;
+  let mirror = a.mirror ?? false;
+  let prop: ActorPropKind = a.prop ?? null;
+  let moveDir: [number, number] = [0, 0];
 
   if (a.keyframes && a.keyframes.length > 0) {
     const kfs = [...a.keyframes].sort((x, y) => x.f - y.f);
     for (let i = 0; i < kfs.length; i++) {
       const k = kfs[i];
       if (f >= k.f) {
+        if (k.pos) pos = k.pos;
         if (k.expr !== undefined) expr = k.expr;
         if (k.walk !== undefined) walk = k.walk;
         if (k.talk !== undefined) talk = k.talk;
         if (k.lean !== undefined) lean = k.lean;
+        if (k.facing !== undefined) facing = k.facing;
+        if (k.look !== undefined) look = k.look;
+        if (k.mode !== undefined) mode = k.mode;
+        if (k.side !== undefined) side = k.side;
+        if (k.mirror !== undefined) mirror = k.mirror;
+        if (k.prop !== undefined) prop = k.prop;
       }
       const next = kfs[i + 1];
       if (next && f >= k.f && f < next.f) {
-        const u = (f - k.f) / Math.max(1, next.f - k.f);
-        const s = u * u * (3 - 2 * u);
-        if (k.pos && next.pos) pos = lerpV3(k.pos, next.pos, s);
-        else if (k.pos) pos = k.pos;
+        // Only interpolate position when the character is actively walking so actors never slide like ghosts
+        if (k.pos && next.pos && k.walk) {
+          const u = (f - k.f) / Math.max(1, next.f - k.f);
+          const s = u * u * (3 - 2 * u);
+          pos = lerpV3(k.pos, next.pos, s);
+          const dx = next.pos[0] - k.pos[0];
+          const dz = next.pos[2] - k.pos[2];
+          const len = Math.hypot(dx, dz);
+          if (len > 0.05) moveDir = [dx / len, dz / len];
+        }
         break;
-      } else if (!next && f >= k.f && k.pos) {
-        pos = k.pos;
       }
     }
   }
-  return { pos, expr, walk, talk, lean };
+
+  const resolvedMode: ActorMode = mode ?? (walk ? "march" : "stand");
+  return { pos, expr, walk, talk, lean, facing, look, mode: resolvedMode, side, mirror, prop, moveDir };
+}
+
+/** Quintic smootherstep from templates/bridge/story.ts */
+function glide(u: number): number {
+  const x = Math.max(0, Math.min(1, u));
+  return x * x * x * (x * (6 * x - 15) + 10);
 }
 
 function evalShotCam(shot: ShotDef, f: number) {
   const span = Math.max(1, shot.b - shot.a);
   const rawU = Math.max(0, Math.min(1, (f - shot.a) / span));
   const ease = shot.cam.ease ?? "smooth";
-  const u = ease === "linear" ? rawU : ease === "out" ? 1 - (1 - rawU) ** 3 : rawU * rawU * (3 - 2 * rawU);
-  let pos = lerpV3(shot.cam.from, shot.cam.to, u);
+  const u = ease === "linear" ? rawU : ease === "out" ? 1 - (1 - rawU) ** 3 : glide(rawU);
+  const pos = lerpV3(shot.cam.from, shot.cam.to, u);
   let look = lerpV3(shot.cam.lookFrom, shot.cam.lookTo, u);
-  const fov = (shot.cam.fovFrom ?? 38) + ((shot.cam.fovTo ?? shot.cam.fovFrom ?? 38) - (shot.cam.fovFrom ?? 38)) * u;
+  const fovFrom = shot.cam.fovFrom ?? 40;
+  const fovTo = shot.cam.fovTo ?? fovFrom;
+  const fov = fovFrom + (fovTo - fovFrom) * u;
   let roll = ((shot.cam.rollDeg ?? 0) * Math.PI) / 180;
 
   if (shot.kickAt) {
     for (const kf of shot.kickAt) {
-      const dt = f - kf;
-      if (dt >= 0 && dt < 8) {
-        const decay = (1 - dt / 8) * (dt % 2 === 0 ? 1 : -1);
-        pos = [pos[0] + decay * 0.16, pos[1] + decay * 0.1, pos[2]];
-        roll += decay * 0.035;
+      const n = f - kf;
+      if (n >= 0 && n < 7) {
+        const a = (n % 2 ? -1 : 1) * (1 - n / 7) ** 1.5;
+        const d: V3 = [look[0] - pos[0], look[1] - pos[1], look[2] - pos[2]];
+        const L = Math.hypot(...d);
+        const h = Math.hypot(d[0], d[2]) || 1;
+        const m = (3.5 / 640) * Math.tan((fov * Math.PI) / 360) * L * a;
+        look = [look[0] - (d[2] / h) * m, look[1] + 0.6 * m, look[2] + (d[0] / h) * m];
+        roll += a * 0.006;
       }
     }
   }
@@ -117,24 +235,46 @@ const BODY_GEO = (() => {
   g.translate(0, (975 - 500) * SU, 0);
   return g;
 })();
-const BLOB_GEO = (() => {
-  const g = new THREE.PlaneGeometry(1.4, 1.4);
+const CONTACT_GEO = (() => {
+  const g = new THREE.PlaneGeometry(0.54, 0.42);
   g.rotateX(-Math.PI / 2);
-  g.translate(0, 0.02, 0);
+  g.translate(0, 0.022, 0);
   return g;
 })();
-const FX_GEO = new THREE.PlaneGeometry(1.6, 1.6);
+const TAIL_GEO = (() => {
+  const g = new THREE.PlaneGeometry(0.74, 1.65);
+  g.rotateX(-Math.PI / 2);
+  g.translate(0, 0.018, 0.48);
+  return g;
+})();
+const FX_GEO = new THREE.PlaneGeometry(1.5, 1.5);
+
+// High-resolution character canvas (1080 x 1800 = 1.8x the 600 x 1000 design grid, matching templates/bridge/cast.ts)
+const CHAR_W = 1080;
+const CHAR_H = 1800;
+const CHAR_SCALE = 1.8;
 
 const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   const f = useCurrentFrame();
   const { height } = useVideoConfig();
   const { camera, scene, advance, gl } = useThree();
   const shot = findShot(spec.shots, f);
+  const activeWorld: WorldPreset = shot.world ?? spec.world;
   const preset: LightPreset = LIGHTS[shot.light];
   const look = LOOK[shot.light];
 
-  const envDay = useMemo(() => buildWorldEnvironment(spec.world, "day"), [spec.world]);
-  const envGolden = useMemo(() => buildWorldEnvironment(spec.world, "golden"), [spec.world]);
+  // Build & cache every world preset used by the episode's shots
+  const worldMap = useMemo(() => {
+    const used = new Set<WorldPreset>([spec.world]);
+    for (const s of spec.shots) if (s.world) used.add(s.world);
+    const map = new Map<string, THREE.Group>();
+    for (const w of used) {
+      map.set(`${w}_day`, buildWorldEnvironment(w, "day"));
+      map.set(`${w}_golden`, buildWorldEnvironment(w, "golden"));
+    }
+    return map;
+  }, [spec.world, spec.shots]);
+
   const skyDay = useMemo(() => makeSky(LIGHTS.day, "day"), []);
   const skyGolden = useMemo(() => makeSky(LIGHTS.golden, "golden"), []);
 
@@ -143,55 +283,103 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
     [spec.props]
   );
 
-  // Blob shadow texture
-  const blobTex = useMemo(() => {
-    const cv = document.createElement("canvas");
-    cv.width = 128;
-    cv.height = 128;
-    fxContact(new Pen(cv.getContext("2d")!), "#524a52");
-    const t = new THREE.CanvasTexture(cv);
-    t.colorSpace = THREE.SRGBColorSpace;
-    return t;
-  }, []);
-  const blobMat = useMemo(() => blobMaterial(blobTex), [blobTex]);
+  // Two-stage ground shadow textures from templates/bridge/cast.ts (generateMipmaps = false so grazing angles never wash out)
+  const { contactMat, tailMat } = useMemo(() => {
+    const cvC = document.createElement("canvas");
+    cvC.width = 128;
+    cvC.height = 128;
+    fxContact(new Pen(cvC.getContext("2d")!), "#353754");
+    const texC = new THREE.CanvasTexture(cvC);
+    texC.colorSpace = THREE.SRGBColorSpace;
+    texC.generateMipmaps = false;
+    texC.minFilter = THREE.LinearFilter;
+    texC.needsUpdate = true;
 
-  // One reusable canvas + texture per actor
+    const cvT = document.createElement("canvas");
+    cvT.width = 128;
+    cvT.height = 256;
+    fxShadow(new Pen(cvT.getContext("2d")!), "#6b709e");
+    const texT = new THREE.CanvasTexture(cvT);
+    texT.colorSpace = THREE.SRGBColorSpace;
+    texT.generateMipmaps = false;
+    texT.minFilter = THREE.LinearFilter;
+    texT.needsUpdate = true;
+
+    return { contactMat: blobMaterial(texC), tailMat: blobMaterial(texT) };
+  }, []);
+
+  // High-res character cards with cardShade + customDepthMaterial (matching templates/bridge/cast.ts Actor class)
   const actorCards = useMemo(() => {
     return spec.actors.map((a, idx) => {
       const cv = document.createElement("canvas");
-      cv.width = 300;
-      cv.height = 500;
+      cv.width = CHAR_W;
+      cv.height = CHAR_H;
       const tex = new THREE.CanvasTexture(cv);
       tex.colorSpace = THREE.SRGBColorSpace;
-      tex.anisotropy = 4;
-      const mat = cardShade(new THREE.MeshLambertMaterial({ map: tex, transparent: true, alphaTest: 0.05, side: THREE.DoubleSide }));
-      return { def: a, outfit: resolveOutfit(a, idx), cv, tex, mat, seed: idx + 1 };
+      tex.anisotropy = 8;
+      const mat = cardShade(
+        new THREE.MeshLambertMaterial({
+          map: tex,
+          alphaTest: 0.5,
+          side: THREE.DoubleSide,
+        })
+      );
+      mat.alphaToCoverage = false;
+      const dmat = new THREE.MeshDepthMaterial({
+        depthPacking: THREE.RGBADepthPacking,
+        map: tex,
+        alphaTest: 0.5,
+        side: THREE.DoubleSide,
+      });
+      const swapFrames = (a.keyframes ?? []).filter((k) => k.expr !== undefined && k.f > 0).map((k) => k.f);
+      return {
+        def: a,
+        outfit: resolveOutfit(a, idx),
+        cv,
+        tex,
+        mat,
+        dmat,
+        seed: ((idx * 5 + 3) % 7) + 1,
+        swapFrames,
+      };
     });
   }, [spec.actors]);
 
   const fxCards = useMemo(() => {
     return (spec.fx ?? []).map((fx) => {
       const cv = document.createElement("canvas");
-      cv.width = 256;
-      cv.height = 256;
+      cv.width = 500;
+      cv.height = 500;
       const tex = new THREE.CanvasTexture(cv);
       tex.colorSpace = THREE.SRGBColorSpace;
-      const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, side: THREE.DoubleSide });
+      tex.anisotropy = 4;
+      const isSoft = fx.kind === "puff";
+      const mat = new THREE.MeshBasicMaterial({
+        map: tex,
+        transparent: isSoft,
+        alphaTest: isSoft ? 0.02 : 0.5,
+        depthWrite: !isSoft,
+        side: THREE.DoubleSide,
+      });
+      mat.alphaToCoverage = false;
       return { def: fx, cv, tex, mat };
     });
   }, [spec.fx]);
 
-  const sunRef = useMemo(() => {
-    const dl = new THREE.DirectionalLight("#ffffff", 2.8);
-    dl.castShadow = true;
-    dl.shadow.mapSize.set(1024, 1024);
-    dl.shadow.camera.near = 1;
-    dl.shadow.camera.far = 140;
-    dl.shadow.camera.left = -28;
-    dl.shadow.camera.right = 28;
-    dl.shadow.camera.top = 28;
-    dl.shadow.camera.bottom = -28;
-    return dl;
+  // Lighting rig matching templates/bridge/world.ts (HemisphereLight + warm DirectionalLight sun + cool fill light)
+  const lights = useMemo(() => {
+    const hemi = new THREE.HemisphereLight("#cfe6ff", "#6c5c8c", 1.1);
+    const sun = new THREE.DirectionalLight("#fff0d6", 2.6);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(1024, 1024);
+    sun.shadow.camera.near = 1;
+    sun.shadow.camera.far = 140;
+    sun.shadow.camera.left = -26;
+    sun.shadow.camera.right = 26;
+    sun.shadow.camera.top = 26;
+    sun.shadow.camera.bottom = -26;
+    const fill = new THREE.DirectionalLight("#9fb8ff", 0.35);
+    return { hemi, sun, fill };
   }, []);
 
   const fx = useMemo(
@@ -214,8 +402,9 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   persp.rotation.z += camState.roll;
   persp.updateProjectionMatrix();
 
-  // Camera-relative sun
+  // Camera-relative sun & fill
   const fwd = new THREE.Vector3(...camState.look).sub(new THREE.Vector3(...camState.pos)).normalize();
+  const camRight = new THREE.Vector3().crossVectors(fwd, new THREE.Vector3(0, 1, 0)).normalize();
   const baseYaw = Math.atan2(fwd.x, fwd.z);
   const az = ((shot.sunAz ?? preset.az) * Math.PI) / 180 + baseYaw;
   const el = ((shot.sunEl ?? preset.el) * Math.PI) / 180;
@@ -223,12 +412,22 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
     Math.sin(az) * Math.cos(el),
     Math.sin(el),
     Math.cos(az) * Math.cos(el)
-  );
-  sunRef.position.copy(new THREE.Vector3(...camState.look).addScaledVector(sunDir, 55));
-  sunRef.target.position.set(...camState.look);
-  sunRef.target.updateMatrixWorld();
-  sunRef.shadow.bias = preset.bias;
-  sunRef.shadow.normalBias = preset.normalBias;
+  ).normalize();
+
+  const lookVec = new THREE.Vector3(...camState.look);
+  lights.hemi.color.set(preset.sky);
+  lights.hemi.groundColor.set(preset.ground);
+  lights.hemi.intensity = preset.hemiI;
+  lights.sun.color.set(preset.sunCol);
+  lights.sun.intensity = preset.sunI;
+  lights.sun.position.copy(lookVec.clone().addScaledVector(sunDir, 55));
+  lights.sun.target.position.copy(lookVec);
+  lights.sun.target.updateMatrixWorld();
+  lights.sun.shadow.bias = preset.bias;
+  lights.sun.shadow.normalBias = preset.normalBias;
+  lights.fill.position.copy(lookVec.clone().addScaledVector(sunDir, -40).setY(25));
+  lights.fill.target.position.copy(lookVec);
+  lights.fill.target.updateMatrixWorld();
 
   // Update two-tone & card uniforms
   TONE.uLitCol.value.set(...preset.lit);
@@ -252,46 +451,109 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   const fVec = new THREE.Vector3();
   persp.getWorldDirection(fVec);
   fx.lens.focus = Math.max(0.3, new THREE.Vector3(...camState.look).sub(persp.position).dot(fVec));
-  fx.lens.cInf = shot.dof ?? 6;
+  fx.lens.cInf = shot.dof ?? 0;
   gradeFor(fx.grade, shot.light);
 
-  // Redraw actor canvases for frame f
+  // Redraw actor canvases at 1080x1800 resolution with dynamic 2D sun angle, blinks, side/front views, and props
   actorCards.forEach((ac, idx) => {
     const st = evalActor(ac.def, f);
     const ctx = ac.cv.getContext("2d")!;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, ac.cv.width, ac.cv.height);
-    ctx.setTransform(0.5, 0, 0, 0.5, 0, 0);
-    const blink = (f + idx * 17) % 68 < 4;
-    const phase = st.walk ? ((f * 0.04) % 1) : 0;
-    const wave = st.talk ? Math.sin(f * 0.35 + idx) * 0.35 : undefined;
-    bodyFront(new Pen(ctx), ac.outfit, {
-      mode: st.walk ? "march" : "stand",
-      phase,
-      expr: st.expr,
-      blink,
-      tilt: st.lean,
-      wave,
-      seed: ac.seed,
-    });
+    ctx.clearRect(0, 0, CHAR_W, CHAR_H);
+    ctx.setTransform(CHAR_SCALE, 0, 0, CHAR_SCALE, 0, 0);
+
+    // Determine if character is walking sideways relative to camera
+    let useSide = st.side;
+    let useMirror = st.mirror;
+    if (!useSide && st.walk && (st.moveDir[0] !== 0 || st.moveDir[1] !== 0)) {
+      const tx = camState.pos[0] - st.pos[0];
+      const tz = camState.pos[2] - st.pos[2];
+      const tl = Math.hypot(tx, tz) || 1;
+      const c = Math.abs((tx * st.moveDir[0] + tz * st.moveDir[1]) / tl);
+      if (c < 0.65) {
+        useSide = true;
+        useMirror = st.moveDir[0] * camRight.x + st.moveDir[1] * camRight.z < 0;
+      }
+    }
+
+    // 2D sun light direction on the upright card in 45-deg steps (templates/bridge/cast.ts light2D)
+    const sx = sunDir.dot(camRight) * (useSide && useMirror ? -1 : 1);
+    const sy = -sunDir.y;
+    const light = Math.round(Math.atan2(sy, sx) / (Math.PI / 4)) * (Math.PI / 4);
+
+    const blink = st.expr !== "whistle" ? lidAt(f, idx + 1, ac.swapFrames) : 0;
+    const phase = st.walk ? ((f * 0.035 + idx * 0.17) % 1) : 0;
+    const wave = st.talk && !st.prop ? Math.sin(f * 0.28 + idx * 1.3) * 0.65 : undefined;
+
+    let toonProp: ToonProp = null;
+    if (st.prop === "icecream") toonProp = "icecream";
+    else if (st.prop === "shako") toonProp = "shako";
+    else if (st.prop === "hammer") {
+      // Smooth hammer strike cycle every 22 frames when talking/acting
+      const cyc = (f % 24) / 24;
+      const strike = cyc < 0.35 ? cyc / 0.35 : cyc < 0.55 ? 0 : 1;
+      toonProp = ["hammer", strike];
+    }
+
+    const pen = new Pen(ctx);
+    if (useSide) {
+      bodySide(pen, ac.outfit, {
+        mode: st.walk ? "march" : "stand",
+        phase,
+        expr: st.expr,
+        blink,
+        stomp: 1.0,
+        stride: 0.9,
+        light,
+        seed: ac.seed,
+      });
+    } else {
+      bodyFront(pen, ac.outfit, {
+        mode: st.mode,
+        phase,
+        expr: st.expr,
+        look: st.look,
+        facing: st.facing,
+        blink,
+        tilt: st.lean,
+        wave,
+        prop: toonProp,
+        light,
+        seed: ac.seed,
+      });
+    }
     ac.tex.needsUpdate = true;
   });
 
-  // Redraw active FX canvases
+  // Redraw active FX canvases at 500x500 resolution
   fxCards.forEach((fc) => {
     if (f < fc.def.a || f >= fc.def.b) return;
     const u = (f - fc.def.a) / Math.max(1, fc.def.b - fc.def.a);
     const ctx = fc.cv.getContext("2d")!;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, 256, 256);
-    ctx.setTransform(0.5, 0, 0, 0.5, 0, 0);
+    ctx.clearRect(0, 0, 500, 500);
     const pen = new Pen(ctx);
-    if (fc.def.kind === "burst") fxBurst(pen, u, fc.def.color ?? "#fff3b0");
-    else if (fc.def.kind === "stars") fxStars(pen, u);
-    else if (fc.def.kind === "notes") fxNote(pen, Math.floor(f / 6) % 2, fc.def.color ?? "#1f2a44");
-    else if (fc.def.kind === "puff") fxPuff(pen, u);
-    else if (fc.def.kind === "ring") fxRing(pen, u);
-    else if (fc.def.kind === "splash") fxSplash(pen, u);
+    if (fc.def.kind === "burst") {
+      fxBurst(pen, u, fc.def.color ?? "#fff3b0");
+    } else if (fc.def.kind === "stars") {
+      ctx.setTransform(500 / 420, 0, 0, 500 / 420, 0, 120);
+      fxStars(pen, (u * 2) % 1);
+    } else if (fc.def.kind === "notes") {
+      ctx.setTransform(2, 0, 0, 2, 40, 20);
+      fxNote(pen, Math.floor(f / 6) % 2, fc.def.color ?? "#1f2a44");
+    } else if (fc.def.kind === "puff") {
+      ctx.setTransform(500 / 300, 0, 0, 500 / 300, 0, 0);
+      fxPuff(pen, u);
+    } else if (fc.def.kind === "ring") {
+      ctx.setTransform(500 / 600, 0, 0, 500 / 600, 0, 0);
+      fxRing(pen, u);
+    } else if (fc.def.kind === "splash") {
+      ctx.setTransform(500 / 800, 0, 0, 500 / 800, 0, 0);
+      fxSplash(pen, u);
+    } else if (fc.def.kind === "creak") {
+      ctx.setTransform(500 / 300, 0, 0, 500 / 300, 0, 0);
+      fxCreak(pen, u);
+    }
     fc.tex.needsUpdate = true;
   });
 
@@ -312,8 +574,6 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
       if (cancelled) return;
       const comp = composerRef.current;
       if (comp && Array.isArray(comp.passes) && comp.passes.length > 1) {
-        // ManualFrameRenderer runs its first advance() before EffectComposer mounts passes;
-        // render once synchronously now that all passes are attached, then swap buffers cleanly.
         advance(performance.now());
         gl.getContext().finish();
         rafId = requestAnimationFrame(finish);
@@ -351,17 +611,22 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
     [fx]
   );
 
-  const worldEnv = shot.light === "golden" ? envGolden : envDay;
+  const worldEnv = worldMap.get(`${activeWorld}_${shot.light}`) ?? worldMap.values().next().value!;
   const skyMesh = shot.light === "golden" ? skyGolden : skyDay;
+  const shadowRotY = Math.atan2(sunDir.x, sunDir.z);
 
   return (
     <>
-      <primitive object={sunRef} />
-      <primitive object={sunRef.target} />
+      <primitive object={lights.hemi} />
+      <primitive object={lights.sun} />
+      <primitive object={lights.sun.target} />
+      <primitive object={lights.fill} />
+      <primitive object={lights.fill.target} />
       <primitive object={skyMesh} />
       <primitive object={worldEnv} />
 
       {propEntries.map(({ def, built }) => {
+        if (def.world && def.world !== activeWorld) return null;
         const ps = evalPropAt(def, f);
         built.setLabel(ps.label, ps.sublabel);
         return (
@@ -378,10 +643,52 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
       {actorCards.map((ac) => {
         const st = evalActor(ac.def, f);
         const yaw = Math.atan2(camState.pos[0] - st.pos[0], camState.pos[2] - st.pos[2]);
+        const sc = ac.def.scale ?? 1;
+        let mirrorX = st.mirror;
+        if (!st.side && st.walk && (st.moveDir[0] !== 0 || st.moveDir[1] !== 0)) {
+          const tx = camState.pos[0] - st.pos[0];
+          const tz = camState.pos[2] - st.pos[2];
+          const tl = Math.hypot(tx, tz) || 1;
+          const c = Math.abs((tx * st.moveDir[0] + tz * st.moveDir[1]) / tl);
+          if (c < 0.65) {
+            mirrorX = st.moveDir[0] * camRight.x + st.moveDir[1] * camRight.z < 0;
+          }
+        }
         return (
           <group key={ac.def.id} position={st.pos}>
-            <mesh geometry={BLOB_GEO} material={blobMat} layers={NOINK} renderOrder={0} />
-            <mesh geometry={BODY_GEO} material={ac.mat} rotation={[0, yaw, 0]} layers={NOINK} renderOrder={1} />
+            {shot.light === "day" && (
+              <mesh
+                geometry={TAIL_GEO}
+                material={tailMat}
+                rotation={[0, shadowRotY, 0]}
+                scale={[sc, 1, sc]}
+                layers={NOINK}
+                renderOrder={0.4}
+              />
+            )}
+            <mesh
+              geometry={CONTACT_GEO}
+              material={contactMat}
+              rotation={[0, shadowRotY, 0]}
+              scale={[sc, 1, sc]}
+              layers={NOINK}
+              renderOrder={0.5}
+            />
+            <mesh
+              geometry={BODY_GEO}
+              material={ac.mat}
+              customDepthMaterial={ac.dmat}
+              rotation={[0, yaw, 0]}
+              scale={[mirrorX ? -sc : sc, sc, sc]}
+              receiveShadow
+              castShadow={shot.light === "golden"}
+              layers={NOINK}
+              renderOrder={1}
+              onBeforeRender={(renderer) => {
+                const rt = renderer.getRenderTarget();
+                CARD_K.uPx.value = (rt ? rt.height : renderer.domElement.height) / 1920;
+              }}
+            />
           </group>
         );
       })}
