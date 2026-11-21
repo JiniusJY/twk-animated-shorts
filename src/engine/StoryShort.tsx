@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, continueRender, delayRender, useCurrentFrame, useVideoConfig } from "remotion";
 import { ThreeCanvas } from "@remotion/three";
 import { useThree } from "@react-three/fiber";
 import { EffectComposer } from "@react-three/postprocessing";
@@ -295,13 +295,52 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
     fc.tex.needsUpdate = true;
   });
 
+  noInkFallback(scene);
+
+  const [readyHandle] = useState(() => delayRender("webgl-composer-ready"));
   useEffect(() => {
-    noInkFallback(scene);
+    let done = false;
+    const finish = () => {
+      if (!done) {
+        done = true;
+        continueRender(readyHandle);
+      }
+    };
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        requestAnimationFrame(finish);
+      });
+    });
+    const timer = setTimeout(finish, 400);
+    return () => {
+      done = true;
+      clearTimeout(timer);
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, [readyHandle]);
+
+  useEffect(() => {
     return () => {
       fx.ink.dispose();
       fx.lens.dispose();
     };
-  }, [scene, fx]);
+  }, [fx]);
+
+  const post = useMemo(
+    () => (
+      <EffectComposer multisampling={0}>
+        <primitive object={fx.ink} dispose={null} />
+        <primitive object={fx.lens.pre} dispose={null} />
+        <primitive object={fx.lens.main} dispose={null} />
+        <primitive object={fx.bloom} dispose={null} />
+        <primitive object={fx.tone} dispose={null} />
+        <primitive object={fx.grade} dispose={null} />
+      </EffectComposer>
+    ),
+    [fx]
+  );
 
   const worldEnv = shot.light === "golden" ? envGolden : envDay;
   const skyMesh = shot.light === "golden" ? skyGolden : skyDay;
@@ -356,14 +395,7 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
         );
       })}
 
-      <EffectComposer multisampling={0}>
-        <primitive object={fx.ink} dispose={null} />
-        <primitive object={fx.lens.pre} dispose={null} />
-        <primitive object={fx.lens.main} dispose={null} />
-        <primitive object={fx.bloom} dispose={null} />
-        <primitive object={fx.tone} dispose={null} />
-        <primitive object={fx.grade} dispose={null} />
-      </EffectComposer>
+      {post}
     </>
   );
 };
@@ -377,7 +409,13 @@ export const StoryShort: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
-      <ThreeCanvas width={width} height={height} shadows dpr={1}>
+      <ThreeCanvas
+        width={width}
+        height={height}
+        shadows
+        dpr={1}
+        gl={{ preserveDrawingBuffer: true, antialias: false, stencil: false, powerPreference: "high-performance" }}
+      >
         <SceneCore spec={spec} />
       </ThreeCanvas>
       {flashOn && (
