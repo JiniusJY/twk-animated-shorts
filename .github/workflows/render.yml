@@ -14,7 +14,7 @@ on:
       shards:
         description: "Parallel render shards (up to 16 on free public runners)"
         required: false
-        default: "10"
+        default: "15"
 
 concurrency:
   group: render-${{ github.event.inputs.episode || 'default' }}

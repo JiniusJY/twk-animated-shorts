@@ -162,7 +162,20 @@ def main():
         for s in ep["shots"]:
             s["a"] = int(round(s["a"] * scale))
             s["b"] = int(round(s["b"] * scale))
+            if "flashAt" in s:
+                s["flashAt"] = int(round(s["flashAt"] * scale))
+            if "kickAt" in s:
+                s["kickAt"] = [int(round(k * scale)) for k in s["kickAt"]]
         ep["shots"][-1]["b"] = synced_frames
+        for a in ep.get("actors", []):
+            for kf in a.get("keyframes", []):
+                kf["f"] = int(round(kf["f"] * scale))
+        for p in ep.get("props", []):
+            for kf in p.get("keyframes", []):
+                kf["f"] = int(round(kf["f"] * scale))
+        for fx in ep.get("fx", []):
+            fx["a"] = int(round(fx["a"] * scale))
+            fx["b"] = int(round(fx["b"] * scale))
     ep["durationFrames"] = synced_frames
     n = ns(dur)
 
