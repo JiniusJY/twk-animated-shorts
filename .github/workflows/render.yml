@@ -15,16 +15,7 @@ on:
         description: "Parallel render shards (up to 16 on free public runners)"
         required: false
         default: "15"
-          - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Audio and editorial regression tests (no secrets or network synthesis)
-        run: |
-          pip install numpy scipy
-          python tests/test_pipeline.py
-          python -m unittest discover -s tests -p test_quality.py -v
-
-  storyboard:
+      storyboard:
         description: "Render a 4-still storyboard preview before the paid render"
         required: false
         default: "true"
@@ -71,6 +62,15 @@ jobs:
           npx vitest run
           npx tsx scripts/validate_episode.ts "src/episodes/${{ inputs.episode }}/episode.json"
           npx tsx scripts/lint_episode.ts "src/episodes/${{ inputs.episode }}/episode.json"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Audio and editorial regression tests (no secrets or network synthesis)
+        run: |
+          pip install numpy scipy
+          python tests/test_pipeline.py
+          python -m unittest discover -s tests -p test_quality.py -v
 
   storyboard:
     needs: validate
