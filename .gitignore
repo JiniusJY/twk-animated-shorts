@@ -1,0 +1,13 @@
+.DS_Store
+node_modules/
+out/
+dist/
+remotion-tmp/
+*.mp4
+*.mov
+*.wav
+*.log
+__pycache__/
+*.pyc
+.venv/
+.env
