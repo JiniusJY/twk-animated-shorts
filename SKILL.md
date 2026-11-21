@@ -16,9 +16,12 @@ The style reference is a channel studied privately (`references/`: STYLE_BIBLE.m
 - Never say the channel's name in a voice-over or description.
 
 User rules that apply:
-- No captions or labels in the video.
+- Captions ON by default: engine-rendered phrase pages (2-6 words), semantic emphasis only
+  (page-first / sentence-final / ALL-CAPS pop), lower-third safe zone. Keep diagram labels
+  separate and short. Set `captions.enabled: false` for a caption-free master.
 - English only.
-- Voice: one steady tone.
+- Voice: directed, not flat - per-beat intent (curious/explain/skeptical/payoff) via
+  `voice.direction` + Fish S2 cues; audition the hook in 3 directions before a full render.
 - Jokes are researched real facts.
 - Standard mix: music +3 dB, SFX -6 dB, voice unchanged.
 - Final export 2K vertical: 1440x2560, `--scale 1.3333`.
