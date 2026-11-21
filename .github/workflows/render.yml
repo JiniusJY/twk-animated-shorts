@@ -63,7 +63,7 @@ jobs:
           npx remotion render src/index.ts "${{ inputs.episode }}" out/video.mp4 \
             --codec h264 --crf 16 --scale "${{ inputs.scale }}" \
             --props=out/props.json \
-            --gl=angle --angle=swiftshader
+            --gl=swangle
 
       - name: Mux video + mastered audio
         run: |

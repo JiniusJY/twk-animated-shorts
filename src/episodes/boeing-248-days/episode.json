@@ -1,0 +1,168 @@
+{
+  "slug": "boeing-248-days",
+  "title": "Why You Must Reboot a Boeing 787",
+  "fps": 30,
+  "durationFrames": 1560,
+  "world": "tarmac",
+  "musicMood": "tense",
+  "sourceUrl": "https://www.theguardian.com/business/2015/may/01/us-aviation-authority-boeing-787-dreamliner-bug-could-cause-loss-of-control",
+  "script": "If you left a Boeing 787 turned on for 248 days straight, all four power generators would shut off at the exact same time, even mid-flight. Boeing engineers caught this in lab testing back in 2015, and aviation regulators panicked. A commercial jet could lose all electrical power simply because nobody turned it off. Wait, how does staying awake break four generators? Inside each generator control unit, a tiny software clock ticks up one hundred times every second. The programmers stored that count in a 32-bit signed integer, which caps out at roughly two billion ticks, or 248 and a half days. You see, it works like a car odometer rolling past 999,999. The moment that counter overflows, the number flips negative, and the jet's failsafe shuts off all AC power at once. Until Boeing shipped a software update, the FAA issued an official federal directive with the oldest fix in IT history: airlines were legally required to turn the entire airplane off and on again every 120 days.",
+  "shots": [
+    {
+      "id": 1,
+      "a": 0,
+      "b": 150,
+      "light": "day",
+      "dof": 12,
+      "flashAt": 146,
+      "kickAt": [75],
+      "cam": { "from": [-2.2, 2.4, 8.8], "to": [-1.2, 2.1, 6.2], "lookFrom": [0, 1.8, 0.2], "lookTo": [0, 1.9, 0.2], "fovFrom": 40, "fovTo": 36, "rollDeg": -2.5 }
+    },
+    {
+      "id": 2,
+      "a": 150,
+      "b": 380,
+      "light": "day",
+      "dof": 8,
+      "cam": { "from": [4.2, 2.3, 6.8], "to": [1.8, 2.1, 5.2], "lookFrom": [1.0, 1.5, 1.4], "lookTo": [1.4, 1.5, 1.4], "fovFrom": 38, "fovTo": 36 }
+    },
+    {
+      "id": 3,
+      "a": 380,
+      "b": 680,
+      "light": "day",
+      "dof": 11,
+      "kickAt": [540],
+      "cam": { "from": [2.4, 2.2, 5.6], "to": [2.7, 2.0, 4.1], "lookFrom": [2.8, 1.5, 1.2], "lookTo": [2.8, 1.55, 1.2], "fovFrom": 38, "fovTo": 34 }
+    },
+    {
+      "id": 4,
+      "a": 680,
+      "b": 980,
+      "light": "golden",
+      "dof": 10,
+      "kickAt": [830],
+      "cam": { "from": [-4.8, 2.3, 6.2], "to": [-3.0, 2.0, 4.5], "lookFrom": [-3.2, 1.5, 1.5], "lookTo": [-3.2, 1.55, 1.5], "fovFrom": 38, "fovTo": 34, "rollDeg": 2 }
+    },
+    {
+      "id": 5,
+      "a": 980,
+      "b": 1240,
+      "light": "golden",
+      "dof": 6,
+      "kickAt": [1010, 1100],
+      "cam": { "from": [0.8, 3.0, 9.6], "to": [0.2, 2.3, 6.4], "lookFrom": [0, 1.8, -0.5], "lookTo": [0, 1.8, -0.5], "fovFrom": 44, "fovTo": 38, "rollDeg": -3.5 }
+    },
+    {
+      "id": 6,
+      "a": 1240,
+      "b": 1560,
+      "light": "day",
+      "dof": 9,
+      "kickAt": [1410],
+      "cam": { "from": [0.5, 2.1, 6.5], "to": [0.1, 1.9, 5.0], "lookFrom": [0.2, 1.55, 2.2], "lookTo": [0.2, 1.55, 2.2], "fovFrom": 40, "fovTo": 36, "rollDeg": 2 }
+    }
+  ],
+  "actors": [
+    {
+      "id": "pilot",
+      "preset": "pilot",
+      "pos": [-1.8, 0, 3.0],
+      "expr": "shock",
+      "keyframes": [
+        { "f": 0, "expr": "shock", "talk": true },
+        { "f": 150, "expr": "nervous", "talk": false },
+        { "f": 980, "expr": "dazed", "talk": true },
+        { "f": 1240, "expr": "pained", "talk": false },
+        { "f": 1410, "expr": "laugh", "talk": true }
+      ]
+    },
+    {
+      "id": "engineer",
+      "preset": "engineer",
+      "pos": [1.0, 0, 2.6],
+      "expr": "nervous",
+      "keyframes": [
+        { "f": 150, "pos": [1.8, 0, 2.4], "expr": "nervous", "walk": true, "talk": true },
+        { "f": 380, "pos": [1.4, 0, 2.2], "expr": "shock", "walk": false, "talk": false },
+        { "f": 680, "expr": "nervous", "talk": true },
+        { "f": 980, "expr": "shock", "talk": false },
+        { "f": 1240, "expr": "relief", "talk": true }
+      ]
+    },
+    {
+      "id": "faaBoss",
+      "preset": "boss",
+      "pos": [0.2, 0, 3.4],
+      "expr": "stern",
+      "keyframes": [
+        { "f": 0, "pos": [6.5, 0, 3.4], "expr": "stern" },
+        { "f": 1240, "pos": [0.1, 0, 3.2], "expr": "stern", "walk": true, "talk": true },
+        { "f": 1380, "pos": [0.1, 0, 3.2], "expr": "grin", "walk": false, "talk": true }
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "jet787",
+      "kind": "plane",
+      "pos": [0, 0, -2.5],
+      "rotY": 0.45,
+      "color": "#2b6cb0",
+      "keyframes": [
+        { "f": 0, "pos": [0, 0.4, -2.5], "rotY": 0.45 },
+        { "f": 980, "pos": [0, 0.0, -2.5], "rotY": 0.45 },
+        { "f": 1030, "pos": [0, -0.15, -2.5], "rotY": 0.52 }
+      ]
+    },
+    {
+      "id": "counterBoard",
+      "kind": "screen",
+      "pos": [2.8, 0, 1.2],
+      "rotY": -0.35,
+      "color": "#262b38",
+      "accent": "#fff8e8",
+      "label": "787 POWER",
+      "sublabel": "4x GENERATORS",
+      "keyframes": [
+        { "f": 0, "label": "787 POWER", "sublabel": "4x GENERATORS" },
+        { "f": 200, "label": "LAB TEST 2015", "sublabel": "248 DAYS ON" },
+        { "f": 400, "label": "32-BIT CLOCK", "sublabel": "100 TICKS / SEC" },
+        { "f": 540, "label": "2,147,483,647", "sublabel": "MAX INTEGER" },
+        { "f": 980, "label": "DAY 248.5", "sublabel": "ALL AC POWER OFF" },
+        { "f": 1240, "label": "FAA ORDER", "sublabel": "REBOOT < 120 DAYS" }
+      ]
+    },
+    {
+      "id": "odometerSign",
+      "kind": "sign",
+      "pos": [-3.2, 0, 1.5],
+      "rotY": 0.35,
+      "color": "#3b4252",
+      "accent": "#ffefd6",
+      "label": "999,999",
+      "sublabel": "ODOMETER",
+      "keyframes": [
+        { "f": 680, "label": "999,999", "sublabel": "ODOMETER" },
+        { "f": 830, "label": "-2,147,483,648", "sublabel": "NEGATIVE OVERFLOW" }
+      ]
+    }
+  ],
+  "fx": [
+    { "kind": "burst", "pos": [0, 2.5, 0], "a": 68, "b": 105, "scale": 1.8 },
+    { "kind": "stars", "pos": [-3.2, 2.6, 1.6], "a": 825, "b": 885, "scale": 1.5 },
+    { "kind": "ring", "pos": [0, 2.2, -1.0], "a": 995, "b": 1045, "scale": 2.2 },
+    { "kind": "puff", "pos": [0.1, 2.1, 3.1], "a": 1405, "b": 1445, "scale": 1.3 }
+  ],
+  "cues": [
+    { "t": 0.2, "kind": "whoosh" },
+    { "t": 2.5, "kind": "boom" },
+    { "t": 4.9, "kind": "flash" },
+    { "t": 13.0, "kind": "tick" },
+    { "t": 18.0, "kind": "pop" },
+    { "t": 27.5, "kind": "snap" },
+    { "t": 33.2, "kind": "boom" },
+    { "t": 41.5, "kind": "chime" },
+    { "t": 47.0, "kind": "pop" }
+  ]
+}
