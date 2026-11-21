@@ -1,0 +1,38 @@
+name: Voice audition (free only, no release)
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: Episode slug
+        required: true
+        default: boeing-248-days
+permissions:
+  contents: read
+jobs:
+  audition:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate episode path
+        env:
+          EPISODE: ${{ inputs.episode }}
+        run: |
+          set -euo pipefail
+          [[ "$EPISODE" =~ ^[a-z0-9][a-z0-9-]{0,63}$ ]]
+          test -f "src/episodes/$EPISODE/episode.json"
+      - name: Generate three short free-model performances
+        env:
+          EPISODE: ${{ inputs.episode }}
+          FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
+          FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
+        run: python scripts/audition_voice.py --episode "src/episodes/$EPISODE" --seconds 7 --out out/auditions
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: free-voice-auditions-${{ github.run_id }}
+          path: out/auditions/
+          if-no-files-found: error
+          retention-days: 7

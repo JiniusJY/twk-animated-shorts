@@ -2,7 +2,7 @@
 """
 Cloud TTS + Cloud Word Alignment (zero local AI models).
 
-Primary: Fish Audio (FISH_API_KEY + FISH_VOICE_ID) -> voice.wav
+Primary: free-only Fish Audio (FISH_API_KEY + FISH_VOICE_ID) -> voice.wav
          Groq Whisper (GROQ_API_KEY) -> words.json
 Fallback (if secrets are missing): Edge-TTS (free cloud voice + built-in word timings).
 
@@ -10,7 +10,7 @@ Expressiveness (Fish S2, the production model per https://docs.fish.audio/develo
 - episode.json "voice": {"temperature": 0.8, "topP": 0.8, "speed": 1.0}
 - S2 [bracket] emotion cues in the script text, e.g. "[excited] ...", "[whispering] ..."
   S2 does NOT interpret S1 (parenthesis) cues; this script converts known (paren) cues
-  to [bracket] when an S2 model is used, and strips unknown cues so they are never spoken.
+  to [bracket] when an S2 model is used; concise natural-language directions are supported.
 
 Caching: voice + alignment are reused while the script and voice params are unchanged
 (hash in voice/voice_manifest.json). --force regenerates. This keeps render retries
@@ -32,20 +32,23 @@ from pathlib import Path
 
 # Fish S2 emotion/style cues (bracket syntax). Subset of the documented 64+; unknown
 # cues are stripped so they are never read aloud.
+MODEL_ORDER = ("s2.1-pro-free",)  # Hard free-only policy. Never fall through to paid/legacy.
+VOICE_PIPELINE_VERSION = "directed-free-v3"
+
 S2_CUES = {
     "happy", "sad", "angry", "excited", "calm", "whispering", "shouting", "laughing",
     "crying", "curious", "surprised", "sarcastic", "serious", "fearful", "disgusted",
     "emphatic", "pause", "long pause", "sigh", "breath",
 }
 PAREN_TO_BRACKET = re.compile(r"\(([a-zA-Z ]{2,24})\)")
-BRACKET_CUE = re.compile(r"\[([a-zA-Z ]{2,24})\]")
+BRACKET_CUE = re.compile(r"\[([^]\n]{1,160})\]")
 
 
 def normalize_cues(text: str, model: str) -> str:
-    """Match cue syntax to the model family; drop cues we don't trust."""
+    """Match S2 cue syntax; fallback voices receive plain speech only."""
     def clean_bracket(m: re.Match) -> str:
         cue = m.group(1).strip().lower()
-        return f"[{cue}]" if cue in S2_CUES else m.group(0) if cue.startswith("http") else ""
+        return f"[{cue}]" if re.fullmatch(r"[a-zA-Z ,.-]{2,120}", cue) else ""
 
     if model.startswith("s2"):
         # convert known S1 (paren) cues to S2 [bracket] cues
@@ -56,7 +59,27 @@ def normalize_cues(text: str, model: str) -> str:
         text = PAREN_TO_BRACKET.sub(paren, text)
         return BRACKET_CUE.sub(clean_bracket, text)
     # S1/edge: strip [bracket] cues entirely (S1 would read them literally)
-    return BRACKET_CUE.sub(lambda m: f"({m.group(1)})" if m.group(1).strip().lower() in S2_CUES else "", text)
+    return strip_cues(text)
+
+
+def direct_script(text: str, cfg: dict) -> str:
+    """Direction remains out of display/captions. Anchors must occur exactly once."""
+    edits = []
+    for beat in cfg.get("beats", []):
+        phrase, direction = beat["before"], beat["direction"]
+        if text.count(phrase) != 1:
+            raise ValueError(f"Voice direction anchor must occur once: {phrase!r}")
+        if not re.fullmatch(r"[a-zA-Z ,.-]{2,120}", direction):
+            raise ValueError("Invalid voice direction")
+        edits.append((text.index(phrase), f"[{direction}] "))
+    for at, cue in sorted(edits, reverse=True):
+        text = text[:at] + cue + text[at:]
+    direction = cfg.get("direction", "")
+    if direction:
+        if not re.fullmatch(r"[a-zA-Z ,.-]{2,120}", direction):
+            raise ValueError("Invalid voice direction")
+        text = f"[{direction}] " + text
+    return text
 
 
 def run_ffmpeg_to_wav(src: Path, dst: Path):
@@ -70,10 +93,8 @@ def run_ffmpeg_to_wav(src: Path, dst: Path):
 
 
 def synth_fish_audio(text: str, out_mp3: Path, api_key: str, voice_id: str, voice_cfg: dict) -> tuple[str, str]:
-    """Returns (provider, model_used). Tries production S2 first, then free S2, then legacy S1."""
-    direction = str(voice_cfg.get("direction", "")).strip().lower()
-    if direction and direction in S2_CUES:
-        text = f"[{direction}] " + text
+    """Returns (provider, model_used). Free-only; model errors stop rather than incur a charge."""
+    text = direct_script(text, voice_cfg)
     payload_base = {
         "text": text,
         "reference_id": voice_id,
@@ -88,7 +109,7 @@ def synth_fish_audio(text: str, out_mp3: Path, api_key: str, voice_id: str, voic
         payload_base["prosody"] = {"speed": speed}
 
     last_exc: Exception | None = None
-    for model_hdr in ("s2.1-pro", "s2.1-pro-free", "s1"):
+    for model_hdr in MODEL_ORDER:
         payload = dict(payload_base)
         payload["text"] = normalize_cues(text, model_hdr)
         req = urllib.request.Request(
@@ -109,9 +130,8 @@ def synth_fish_audio(text: str, out_mp3: Path, api_key: str, voice_id: str, voic
                 return "fish-audio", model_hdr
         except urllib.error.HTTPError as exc:
             last_exc = exc
-            if exc.code == 402 and model_hdr != "s1":
-                print(f"Fish model {model_hdr} returned 402; trying next model...", flush=True)
-                continue
+            if exc.code == 402:
+                raise RuntimeError("Free Fish model unavailable for this plan; paid fallback is disabled") from exc
             raise
     raise RuntimeError(f"All Fish Audio models failed: {last_exc}")
 
@@ -279,6 +299,8 @@ def validate_alignment(script: str, words: list[dict], wav_path: Path) -> list[s
 
 def script_hash(script: str, voice_id: str, voice_cfg: dict, aligner: str) -> str:
     h = hashlib.sha256()
+    h.update(VOICE_PIPELINE_VERSION.encode())
+    h.update(repr(MODEL_ORDER).encode())
     h.update(script.encode("utf-8"))
     h.update(voice_id.encode("utf-8"))
     h.update(json.dumps(voice_cfg, sort_keys=True).encode("utf-8"))
@@ -334,7 +356,7 @@ def main():
                 method = "groq-whisper"
             else:
                 print("GROQ_API_KEY not set; falling back to APPROXIMATE proportional word timings (not real alignment).", flush=True)
-                words = fallback_even_words(re.sub(r"[\[\]\(\)]", "", script), wav_path)
+                words = fallback_even_words(strip_cues(script), wav_path)
                 method = "proportional-fallback"
                 approximate = True
         else:

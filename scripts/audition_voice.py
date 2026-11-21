@@ -49,12 +49,13 @@ def main():
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
     manifest = []
+    failures = 0
 
     for name in [d.strip() for d in args.directions.split(",") if d.strip()]:
         direction = DIRECTIONS.get(name, name)
-        cued = voice.apply_cues(text, direction=direction, model_family="s2")
+        cued = voice.direct_script(text, {"direction": direction})
         payload = {
-            "model": voice_cfg.get("model", voice.MODEL_ORDER[0]),
+            "model": voice.MODEL_ORDER[0],
             "direction": direction,
             "temperature": voice_cfg.get("temperature", 0.85),
             "top_p": voice_cfg.get("topP", 0.8),
@@ -67,14 +68,20 @@ def main():
             continue
         dest = out_dir / f"{ep_path.parent.name}-hook-{name}.mp3"
         try:
-            voice.synthesize(cued, dest, {**voice_cfg, "direction": direction})
+            provider, model = voice.synth_fish_audio(text, dest, os.environ["FISH_API_KEY"], os.environ["FISH_VOICE_ID"], {**voice_cfg, "beats": [], "direction": direction})
         except Exception as exc:
             print(f"[{name}] failed: {exc}", file=sys.stderr)
+            failures += 1
             continue
-        manifest.append({"direction": name, "file": str(dest)})
+        if not dest.is_file() or dest.stat().st_size == 0:
+            failures += 1
+            continue
+        manifest.append({"direction": name, "file": str(dest), "provider": provider, "model": model})
         print(f"[{name}] -> {dest}")
 
     (out_dir / "audition_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    if failures:
+        raise SystemExit(f"{failures} audition(s) failed; do not treat partial output as an approved take")
     print("Listen, pick a direction, then set voice.direction in episode.json.")
 
 
