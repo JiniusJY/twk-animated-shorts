@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { AbsoluteFill, continueRender, delayRender, useCurrentFrame, useVideoConfig } from "remotion";
 import { ThreeCanvas } from "@remotion/three";
@@ -128,7 +128,7 @@ const FX_GEO = new THREE.PlaneGeometry(1.6, 1.6);
 const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   const f = useCurrentFrame();
   const { height } = useVideoConfig();
-  const { camera, scene } = useThree();
+  const { camera, scene, advance, gl } = useThree();
   const shot = findShot(spec.shots, f);
   const preset: LightPreset = LIGHTS[shot.light];
   const look = LOOK[shot.light];
@@ -297,29 +297,38 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
 
   noInkFallback(scene);
 
+  const composerRef = useRef<{ passes?: unknown[] } | null>(null);
   const [readyHandle] = useState(() => delayRender("webgl-composer-ready"));
   useEffect(() => {
-    let done = false;
+    let cancelled = false;
+    let rafId = 0;
     const finish = () => {
-      if (!done) {
-        done = true;
+      if (!cancelled) {
+        cancelled = true;
         continueRender(readyHandle);
       }
     };
-    let raf2 = 0;
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => {
-        requestAnimationFrame(finish);
-      });
-    });
-    const timer = setTimeout(finish, 400);
-    return () => {
-      done = true;
-      clearTimeout(timer);
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
+    const tick = () => {
+      if (cancelled) return;
+      const comp = composerRef.current;
+      if (comp && Array.isArray(comp.passes) && comp.passes.length > 1) {
+        // ManualFrameRenderer runs its first advance() before EffectComposer mounts passes;
+        // render once synchronously now that all passes are attached, then swap buffers cleanly.
+        advance(performance.now());
+        gl.getContext().finish();
+        rafId = requestAnimationFrame(finish);
+        return;
+      }
+      rafId = requestAnimationFrame(tick);
     };
-  }, [readyHandle]);
+    rafId = requestAnimationFrame(tick);
+    const timer = setTimeout(finish, 8000);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      cancelAnimationFrame(rafId);
+    };
+  }, [readyHandle, advance, gl]);
 
   useEffect(() => {
     return () => {
@@ -330,7 +339,7 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
 
   const post = useMemo(
     () => (
-      <EffectComposer multisampling={0}>
+      <EffectComposer ref={composerRef as never} multisampling={0}>
         <primitive object={fx.ink} dispose={null} />
         <primitive object={fx.lens.pre} dispose={null} />
         <primitive object={fx.lens.main} dispose={null} />
