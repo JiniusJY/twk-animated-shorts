@@ -152,8 +152,8 @@ export const BoardEpisode: React.FC = () => {
   // v4: framing keeps the active card fully in frame; stakes whips back along the strings,
   // then pulls wide on "five alarm fire" so the whole lit network reads as the payoff.
   const lookX = interpolate(f,
-    [0, 110, 203, 503, 628, 678, 729, 865, 930, 1100, 1160, 1331, 1415, 1624, 1712, 1788, 1828, 2014],
-    [600, 640, 1550, 2600, 2640, 2660, 3620, 3640, 4450, 4486, 5280, 5300, 6100, 6110, 1500, 1500, 1640, 1650],
+    [0, 110, 203, 390, 480, 503, 628, 678, 729, 865, 930, 1100, 1160, 1331, 1415, 1624, 1712, 1788, 1828, 2014],
+    [600, 640, 1550, 1550, 2600, 2600, 2640, 2660, 3620, 3640, 4450, 4486, 5280, 5300, 6100, 6110, 1500, 1500, 1640, 1650],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const lookY = interpolate(f,
     [0, 895, 1040, 1085, 1100, 1331, 1415, 1624, 1712, 1788, 1828, 2014],
