@@ -35,6 +35,27 @@ export function lintEpisodeErrors(spec: EpisodeSpec): string[] {
     }
   });
 
+  // Voice-direction contract must match scripts/voice.py direct_script():
+  // cues are [a-zA-Z ,.-]{2,120} and each beat anchor occurs exactly once in
+  // the script. voice.py raises ValueError on violation - which is how run
+  // 44990349750 died in the prepare job AFTER validation had passed. Fail
+  // fast here instead, in the validate job, before any money is spent.
+  const cueRe = /^[a-zA-Z ,.-]{2,120}$/;
+  if (spec.voice?.direction !== undefined && !cueRe.test(spec.voice.direction)) {
+    errors.push(
+      `voice.direction: invalid cue (must be 2-120 chars of letters/spaces/,.-; got ${spec.voice.direction.length} chars)`
+    );
+  }
+  spec.voice?.beats?.forEach((b) => {
+    if (!cueRe.test(b.direction)) {
+      errors.push(`voice beat ${JSON.stringify(b.before)}: invalid direction ${JSON.stringify(b.direction)}`);
+    }
+    const count = spec.script.split(b.before).length - 1;
+    if (count !== 1) {
+      errors.push(`voice beat anchor ${JSON.stringify(b.before)}: occurs ${count} times in script (must be exactly 1)`);
+    }
+  });
+
   return errors;
 }
 

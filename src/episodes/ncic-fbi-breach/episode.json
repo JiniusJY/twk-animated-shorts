@@ -1582,8 +1582,8 @@
  "voice": {
   "temperature": 0.8,
   "topP": 0.8,
-  "speed": 1.0,
-  "direction": "serious, emphatic storyteller with wide dynamic range - hushed lows, emphatic peaks, a person telling a story they find fascinating",
+  "speed": 1.04,
+  "direction": "serious, emphatic storyteller, wide dynamic range - hushed lows to emphatic peaks",
   "beats": [
    {
     "before": "Someone may have just broken into",
@@ -1603,7 +1603,7 @@
    },
    {
     "before": "And it never closes",
-    "direction": "long pause, grave"
+    "direction": "grave"
    },
    {
     "before": "That's the weakness",
@@ -1636,6 +1636,34 @@
    {
     "before": "That's why even a possible breach",
     "direction": "building urgency, emphatic"
+   },
+   {
+    "before": "since January 1967",
+    "direction": "long-break"
+   },
+   {
+    "before": "broken into",
+    "direction": "emphasis"
+   },
+   {
+    "before": "one FBI system",
+    "direction": "emphasis"
+   },
+   {
+    "before": "twenty-one drawers",
+    "direction": "emphasis"
+   },
+   {
+    "before": "every connection",
+    "direction": "emphasis"
+   },
+   {
+    "before": "second time",
+    "direction": "emphasis"
+   },
+   {
+    "before": "five-alarm fire",
+    "direction": "emphasis"
    }
   ]
  },
