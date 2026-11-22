@@ -72,7 +72,7 @@ const Paper:React.FC<{children:React.ReactNode}>=({children})=>{
 
 const Headline:React.FC<{text:string;size?:number}>=({text,size=73})=>(
  <>
-  <text x="64" y="255" fill={I} fontSize={size} letterSpacing="-3">{text}</text>
+  <text x="64" y="255" fill={I} fontSize={fitSize(text,952,size,"400","Georgia,serif")} letterSpacing="-3">{text}</text>
   <path d="M65 292Q320 298 590 289" fill="none" stroke={R} strokeWidth="3"/>
  </>
 );
@@ -156,8 +156,8 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
    {/* plate card */}
    <g transform={`translate(150 ${560+(1-pop)*-30})`}>
     <rect x="0" y="0" width="220" height="110" rx="10" fill={P} stroke={I} strokeWidth="4"/>
-    <text x="110" y="70" textAnchor="middle" fill={I} fontFamily="'Courier New',monospace" fontWeight="700" fontSize="52">8JXK-204</text>
-    <text x="110" y="150" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="20">PLATE CHECK · ILLUSTRATION</text>
+    <text x="110" y="70" textAnchor="middle" fill={I} fontFamily="'Courier New',monospace" fontWeight="700" fontSize={fitSize("8JXK-204",196,52,"700","'Courier New',monospace")}>8JXK-204</text>
+    <text x="110" y="150" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize={fitSize("PLATE CHECK",196,20,"400")}>PLATE CHECK</text>
    </g>
    {/* NCIC building */}
    <g transform="translate(700 580)">
@@ -197,7 +197,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
      </g>;
     })}
    </g>
-   <text x="540" y="1400" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">plus identity theft, gangs and suspected terrorists (FBI, 2017)</text>
+   <text x="540" y="1400" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">plus identity theft, gangs and suspected terrorists</text>
   </Paper>;
  }
 
@@ -215,14 +215,14 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
       <text x="36" y={95+jiggle} textAnchor="middle" fill={I} fontFamily="'Courier New',monospace" fontWeight="700" fontSize="66">{ch}</text>
      </g>;
     })}
-    <text x="95" y="200" fill={P} fontFamily="Arial,sans-serif" fontSize="30" letterSpacing="4">{approx?"≈ ":""}{label}</text>
+    <text x="95" y="200" fill={P} fontFamily="Arial,sans-serif" fontSize={fitSize((approx?"≈ ":"")+label,560,30)} letterSpacing="4">{approx?"≈ ":""}{label}</text>
     <text x="985" y="200" textAnchor="end" fill="#a4af9f" fontFamily="Arial,sans-serif" fontSize="22">{sub}</text>
    </g>;
   };
   return <Paper>
    <Headline text="Built to be checked."/>
-   {drum(520,"ACTIVE RECORDS","FBI, 2017","12,000,000")}
-   {drum(890,"CHECKS PER DAY","DOJ TESTIMONY, 2024","10,000,000",true)}
+   {drum(520,"ACTIVE RECORDS","","12,000,000")}
+   {drum(890,"CHECKS PER DAY","","10,000,000",true)}
    <text x="540" y="1300" textAnchor="middle" fill={R} fontSize="46" fontStyle="italic">one answer can change a stop</text>
   </Paper>;
  }
@@ -271,7 +271,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     </g>;
    })}
    <Core x={540} y={810} s={0.9}/>
-   <text x="540" y="1300" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">connected to 90,000+ criminal-justice agencies (FBI, 2017)</text>
+   <text x="540" y="1300" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">connected to 90,000+ criminal-justice agencies</text>
    <text x="540" y="1380" textAnchor="middle" fill={R} fontSize="48" fontStyle="italic">every connection is a way in</text>
   </Paper>;
  }
@@ -305,7 +305,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
      </g>
     ))}
    </g>}
-   <text x="540" y="1460" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="24">AP: apparent breach, discovered in recent days. Nov 2026.</text>
+   <text x="540" y="1460" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="24">Apparent breach discovered in recent days. Nov 2026.</text>
   </Paper>;
  }
 
@@ -315,12 +315,11 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
    <g transform={`translate(${x} 520) rotate(${hot?2:-2})`}>
     <path d="M0 0H380L430 55V560H0Z" fill="#fffcf1" stroke={I} strokeWidth="4"/>
     <path d="M380 0V55H430" fill="#ddd9c9" stroke={I} strokeWidth="3"/>
-    <text x="36" y="80" fill={hot?R:I} fontFamily="Arial,sans-serif" fontWeight="700" fontSize="34" letterSpacing="2">{head}</text>
+    <text x="36" y="80" fill={hot?R:I} fontFamily="Arial,sans-serif" fontWeight="700" fontSize={fitSize(head,340,34)} letterSpacing="2">{head}</text>
     <path d="M36 110H370" stroke={I} strokeWidth="3"/>
-    <text x="36" y="180" fill={I} fontSize="40" fontWeight="700">{l1}</text>
-    <text x="36" y="250" fill={I} fontFamily="Arial,sans-serif" fontSize="30">{l2}</text>
-    <text x="36" y="310" fill={I} fontFamily="Arial,sans-serif" fontSize="30">{l3}</text>
-    <text x="36" y="520" fill={I} opacity=".6" fontFamily="Arial,sans-serif" fontSize="19">ILLUSTRATION · NOT AN ORIGINAL DOCUMENT</text>
+    <text x="36" y="180" fill={I} fontSize={fitSize(l1,340,40,"700","Georgia,serif")} fontWeight="700">{l1}</text>
+    <text x="36" y="250" fill={I} fontFamily="Arial,sans-serif" fontSize={fitSize(l2,340,30,"400")}>{l2}</text>
+    <text x="36" y="310" fill={I} fontFamily="Arial,sans-serif" fontSize={fitSize(l3,340,30,"400")}>{l3}</text>
    </g>
   );
   const link=Math.max(0,Math.min(1,(u-0.5)/0.25));
@@ -332,7 +331,6 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <path d="M520 660Q540 600 560 660" fill="none" stroke={R} strokeWidth="5" markerEnd="url(#ncic-arrow)"/>
     <text x="540" y="1200" textAnchor="middle" fill={R} fontSize="42" fontStyle="italic">same agency. no evidence the two are linked.</text>
    </g>}
-   <text x="540" y="1330" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">BleepingComputer / CNN reporting, Nov 21 2026</text>
   </Paper>;
  }
 
@@ -348,7 +346,6 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <circle cx="140" cy="140" r="52" fill={I}/>
     <path d="M70 280Q140 200 210 280Z" fill={I}/>
     <text x="280" y="88" fill={I} fontFamily="Arial,sans-serif" fontSize="25" letterSpacing="2">NCIC RECORD</text>
-    <text x="280" y="122" fill={I} opacity=".6" fontFamily="Arial,sans-serif" fontSize="18" letterSpacing="2">ILLUSTRATION</text>
     <text x="280" y="160" fill={I} fontSize="46" fontWeight="700">WANTED</text>
     {[330,410,490].map((y,i)=><g key={y}>
       <text x="60" y={y} fill={I} fontFamily="Arial,sans-serif" fontSize="24">{["NAME","OFFENSE","LAST SEEN"][i]}</text>
@@ -373,10 +370,10 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
    <text x="64" y="300" fill={I} fontFamily="Arial,sans-serif" fontSize="26" letterSpacing="6">THE SYSTEM HAS A NAME</text>
    <g transform="translate(64 430)">
     <rect x="0" y="0" width="952" height="560" rx="18" fill="#fffcf1" stroke={I} strokeWidth="5"/>
-    <text x="70" y="150" fill={I} fontSize="82" fontWeight="700" style={{clipPath:clip(w1)}}>NATIONAL CRIME</text>
-    <text x="70" y="330" fill={I} fontSize="82" fontWeight="700" style={{clipPath:clip(w2)}}>INFORMATION CENTER</text>
+    <text x="70" y="150" fill={I} fontSize={fitSize("NATIONAL CRIME",812,82,"700","Georgia,serif")} fontWeight="700" style={{clipPath:clip(w1)}}>NATIONAL CRIME</text>
+    <text x="70" y="330" fill={I} fontSize={fitSize("INFORMATION CENTER",812,82,"700","Georgia,serif")} fontWeight="700" style={{clipPath:clip(w2)}}>INFORMATION CENTER</text>
     <rect x="70" y="400" width={812*line} height="14" fill={R}/>
-    <text x="70" y="500" fill={I} fontFamily="Arial,sans-serif" fontSize="30">run by the FBI · built for the street, not the lab</text>
+    <text x="70" y="500" fill={I} fontFamily="Arial,sans-serif" fontSize={fitSize("run by the FBI · built for the street, not the lab",812,30,"400")}>run by the FBI · built for the street, not the lab</text>
    </g>
    <text x="540" y="1160" textAnchor="middle" fill={R} fontSize="52" fontStyle="italic" opacity={line}>every cop knows it as NCIC</text>
   </Paper>;

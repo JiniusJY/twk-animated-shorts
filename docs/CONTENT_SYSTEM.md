@@ -173,3 +173,8 @@ Feedback loop: cover performance is training data. For every published episode, 
 ## Publishing package
 
 Every episode also follows [PUBLISHING_SYSTEM.md](PUBLISHING_SYSTEM.md): platform-specific titles, captions and relevant hashtags; truthful hooks; per-platform music selection and rights; approved publishing manifests; destination and processing checks; and post-release measurement. These rules govern future releases. They do not mean an uploader or metrics monitor is already implemented.
+
+## Text-in-graphics rules (owner, 22 Nov 2026)
+- No "ILLUSTRATION" tags or inline source citations on original graphics. Labels/citations are used ONLY when imagery is pulled from the internet or real footage is used. Uncertainty labels that carry meaning (e.g. "APPARENT BREACH", "no evidence the two are linked") are content, not citations - they stay.
+- Every text element inside a container is measured to fit (canvas fitSize against real font metrics). Never estimate glyph widths.
+- Release verification: full-res sweep over every shot before a cut is considered gate-ready; the owner must never be the QC layer.
