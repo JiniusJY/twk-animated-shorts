@@ -42,6 +42,28 @@ Use the original editorial illustration system in `CONTENT_SYSTEM.md`. New episo
 | Captions and mobile clarity | 10 |
 | Sound and finishing | 5 |
 
+## Owner precision bar (2026-11-22, standing)
+
+Owner's verbatim gate: "i wan precision details in everything from visuals, to
+script, to transition, motion, graphic, layout, words, placement, design,
+captions, cta, music sound effects EVERYTHIN". Gate target is 100/100, not the
+pilot 85. Every rubric category above is scored with this checklist:
+
+- Visuals/graphic: every element placed deliberately; no generic fills; real
+  texture weight; mixed media (credited photos) where it adds meaning.
+- Script/words: every line earns its place; honesty ledger intact.
+- Transition/motion: cuts land on motion; springs and rig moves motivated, not
+  decorative; nothing crosses live text in motion.
+- Layout/placement/design: measured text fit everywhere; safe zones clear of
+  platform UI; occlusion impossible by construction.
+- Captions: word-timed, max 4 words per page, editorial theme, never covering
+  scene text.
+- CTA: end card present with handle, readable at feed size.
+- Music + SFX: motion-mapped cues on every beat; no dead air under VO.
+
+The owner is never the QC layer: the gate runs over every frame at full res
+before any cut reaches him.
+
 ## Learning loop
 
 Log every published variant with `python3 scripts/experiments.py log` (one
