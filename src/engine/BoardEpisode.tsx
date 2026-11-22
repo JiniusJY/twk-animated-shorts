@@ -82,7 +82,7 @@ export const BoardEpisode: React.FC = () => {
 
   // ---- camera journey ----
   const lookX = interpolate(f,
-    [0, 105, 390, 470, 730, 890, 985, 1280, 1410, 1695, 1780, 1851, 2046],
+    [0, 105, 390, 470, 730, 890, 985, 1280, 1365, 1695, 1780, 1851, 2046],
     [600, 600, 1550, 2450, 2450, 3300, 4200, 4800, 4950, 5600, 3300, 1580, 1580],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const lookY = interpolate(f,
@@ -290,7 +290,7 @@ export const BoardEpisode: React.FC = () => {
         {["WHO GOT IN?", "HOW?", "ANYTHING TAKEN?"].map((q, i) => (
           <PaperCard key={q} x={APCARD.x - 60 + i * 260} y={APCARD.y + 520 + (i % 2) * 60} rot={[-3, 2, -1][i]} f={f}
             enter={1298 + i * 14} w={300} stamp="UNKNOWN">
-            <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 30, color: "#26352f"}}>{q}</div>
+            <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 30, color: "#26352f", paddingRight: 20, paddingBottom: 52}}>{q}</div>
           </PaperCard>
         ))}
 
