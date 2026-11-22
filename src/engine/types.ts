@@ -236,6 +236,11 @@ export interface EpisodeSpec {
   fx?: FxDef[];
   cues?: CueDef[];
   captions?: CaptionsConfig;
+  /** Optional composition override: renders a registered hand-authored composition (e.g. "board")
+   *  under this episode's slug instead of the StoryShort engine. Default (unset) = StoryShort. */
+  composition?: string;
+  /** Frame count for the override composition; defaults to durationFrames. */
+  compositionFrames?: number;
   topic_card?: TopicCard;
   creative_brief?: CreativeBrief;
   /** Every load-bearing factual claim, with the source that supports it and its limits. */

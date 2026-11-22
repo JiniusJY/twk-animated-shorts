@@ -1898,5 +1898,7 @@
   "maxWordsPerPage": 4,
   "theme": "editorial"
  },
- "style": "editorial"
+ "style": "editorial",
+ "composition": "board",
+ "compositionFrames": 2046
 }

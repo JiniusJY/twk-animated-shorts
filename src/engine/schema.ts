@@ -262,7 +262,7 @@ function validateCaptions(c: unknown, errs: string[]): CaptionsConfig | undefine
 export function validateEpisode(raw: unknown, source: string): EpisodeSpec {
   const errs: string[] = [];
   if (!isObj(raw)) throw new Error(`${source}: episode is not an object`);
-  checkKeys(raw, ["slug", "title", "style", "fps", "durationFrames", "world", "musicMood", "script", "sourceUrl", "shots", "actors", "props", "fx", "cues", "captions", "voice", "bgAudio", "topic_card", "creative_brief", "claim_ledger", "beats", "alternate_hook", "endCard"], source, errs);
+  checkKeys(raw, ["slug", "title", "style", "fps", "durationFrames", "world", "musicMood", "script", "sourceUrl", "shots", "actors", "props", "fx", "cues", "captions", "voice", "bgAudio", "composition", "compositionFrames", "topic_card", "creative_brief", "claim_ledger", "beats", "alternate_hook", "endCard"], source, errs);
 
   if (!isStr(raw.slug) || !/^[a-z0-9][a-z0-9-]*$/.test(raw.slug))
     errs.push(`${source}.slug: required, lowercase letters/digits/hyphens`);
@@ -276,6 +276,10 @@ export function validateEpisode(raw: unknown, source: string): EpisodeSpec {
       if (raw.endCard.seconds !== undefined && (!isNum(raw.endCard.seconds) || raw.endCard.seconds < 1 || raw.endCard.seconds > 4)) errs.push("endCard.seconds must be 1..4");
     }
   }
+  if (raw.composition !== undefined && (typeof raw.composition !== "string" || !/^[a-z][a-z0-9-]*$/.test(raw.composition)))
+    errs.push(`${source}.composition: must be a lowercase composition key (e.g. "board")`);
+  if (raw.compositionFrames !== undefined && (!isInt(raw.compositionFrames) || raw.compositionFrames < 30))
+    errs.push(`${source}.compositionFrames: must be an integer >= 30`);
   const fps = isInt(raw.fps) ? raw.fps : 30;
   if (!isInt(raw.durationFrames) || raw.durationFrames < fps * 5)
     errs.push(`${source}.durationFrames: must be an integer of at least 5 seconds (${fps * 5})`);
