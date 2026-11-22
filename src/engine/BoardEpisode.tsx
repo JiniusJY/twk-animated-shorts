@@ -197,18 +197,7 @@ export const BoardEpisode: React.FC = () => {
     transformOrigin: "0 0", filter: blur ? `blur(${blur}px)` : undefined,
   });
 
-  const headline = f < 110 ? "Someone may have just broken in."
-    : f < 423 ? "One FBI system answers."
-    : f < 678 ? "A filing cabinet with 22 drawers."
-    : f < 895 ? "It never closes."
-    : f < 1100 ? "Every connection is a door."
-    : f < 1375 ? "An apparent breach."
-    : f < 1683 ? "The second time in two months."
-    : f < 1851 ? "Every line can put a real person in handcuffs."
-    : "";
-  const beatStart = f < 110 ? 0 : f < 423 ? 113 : f < 678 ? 426 : f < 895 ? 681 : f < 1100 ? 898 : f < 1375 ? 1103 : f < 1624 ? 1418 : f < 1851 ? 1628 : 1854;
-  // v4: one text track at a time - the headline sets context, then hands the frame to captions
-  const headlineOp = beatStart === 0 ? 1 : clamp01((f - beatStart) / 14) * (1 - clamp01((f - beatStart - 80) / 14));
+  // headline chain + kicker removed (owner 22 Nov: show not tell, no on-screen sentence labels); captions carry the words
 
   const drawerOn = (i: number) => clamp01((f - (433 + i * 6)) / 10);
   const agencyPop = (i: number) => spring({frame: Math.max(0, f - (980 + i * 4)), fps: 30, config: {damping: 13, stiffness: 240, mass: 0.6}});
@@ -429,14 +418,6 @@ export const BoardEpisode: React.FC = () => {
 
       {/* dim (weakness beat) + punch dim */}
       <div style={{position: "absolute", inset: 0, background: "#050a08", opacity: Math.max(dim, punchDim), pointerEvents: "none"}}/>
-
-      {/* FIXED safe overlay: kicker + per-beat headline */}
-      <div style={{position: "absolute", left: 64, top: 84, pointerEvents: "none"}}>
-        <div style={{fontFamily: "Arial,sans-serif", fontSize: 24, letterSpacing: 4, color: RED, opacity: clamp01(f / 18)}}>AMERICA'S CRIME DATABASE</div>
-        <div key={headline} style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 70, color: INK, marginTop: 14,
-          opacity: headlineOp, maxWidth: 900}}>{headline}</div>
-        <div style={{width: 340 * clamp01((f - 10) / 22) * headlineOp, height: 6, background: RED, marginTop: 16}}/>
-      </div>
 
       {/* FIXED overlay punches, locked to spoken words; sit above scene dim, below captions */}
       {punch && (
