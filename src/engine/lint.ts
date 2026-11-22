@@ -5,6 +5,25 @@
  */
 import type { EpisodeSpec } from "./types";
 
+/**
+ * Hard structural failures. Unlike lint warnings, these BLOCK the render in CI
+ * (lint_episode.ts exits non-zero). Owner ruling, 22 November 2026.
+ */
+export function lintEpisodeErrors(spec: EpisodeSpec): string[] {
+  const errors: string[] = [];
+
+  // An episode where every shot carries a graphic never renders the 3D world:
+  // no actors, no camera moves, no toon environments. That is the regression
+  // the owner rejected on the NCIC episode ("overall visual degraded from ep 1").
+  if (spec.shots.length > 0 && spec.shots.every((s) => s.graphic)) {
+    errors.push(
+      "all-2D episode: every shot has a graphic, so the 3D world never renders. Story beats must play in the 3D world (actors + camera moves); 2D editorial cards are for data beats only."
+    );
+  }
+
+  return errors;
+}
+
 export function lintEpisode(spec: EpisodeSpec): string[] {
   const warnings: string[] = [];
   const fps = spec.fps;

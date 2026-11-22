@@ -943,6 +943,12 @@ export function buildPropMesh(p: PropDef): BuiltProp {
     faceMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.85), makeFaceMat(p.label ?? "", p.sublabel ?? ""));
     faceMesh.position.set(0, 2.55, 0.77);
     g.add(faceMesh);
+
+    // Rooftop alert beacon driven by the beaconIntensity action (same behaviour as the clock/GCU console)
+    beaconMat = new THREE.MeshLambertMaterial({ color: "#e0483e", emissive: "#5c1410", emissiveIntensity: 0.2 });
+    beaconMesh = new THREE.Mesh(new THREE.SphereGeometry(0.2, 14, 12), beaconMat);
+    beaconMesh.position.set(0, 3.95, 0);
+    g.add(beaconMesh);
   } else if (p.kind === "coin") {
     const cyl = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.28, 24), mBase);
     cyl.rotation.x = Math.PI / 2;

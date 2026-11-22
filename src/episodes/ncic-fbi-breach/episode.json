@@ -2,33 +2,430 @@
   "fps": 30,
   "world": "office",
   "musicMood": "tense",
-  "actors": [],
-  "props": [
+  "actors": [
     {
-      "id": "ncicCore",
-      "kind": "server",
-      "world": "office",
+      "id": "analyst",
+      "preset": "engineer",
       "pos": [
+        0.85,
         0,
-        0,
-        -6
+        0.25
       ],
-      "scale": 1,
+      "expr": "shock",
+      "facing": -1,
       "keyframes": [
         {
           "f": 0,
           "pos": [
+            0.85,
             0,
-            0,
-            -6
+            0.25
           ],
+          "expr": "shock",
+          "talk": true,
+          "facing": -1,
+          "look": -1,
+          "mode": "stand"
+        },
+        {
+          "f": 92,
+          "pos": [
+            -18.0,
+            0,
+            0.0
+          ],
+          "walk": false,
+          "talk": false
+        },
+        {
+          "f": 334,
+          "pos": [
+            -1.7,
+            0,
+            -0.6
+          ],
+          "expr": "neutral",
+          "walk": true,
+          "talk": true,
+          "facing": 1,
+          "look": 1,
+          "mode": "stroll"
+        },
+        {
+          "f": 480,
+          "pos": [
+            1.9,
+            0,
+            -0.6
+          ],
+          "walk": true,
+          "talk": true,
+          "facing": 1,
+          "look": 1
+        },
+        {
+          "f": 509,
+          "pos": [
+            18.0,
+            0,
+            0.0
+          ],
+          "walk": false,
+          "talk": false
+        },
+        {
+          "f": 909,
+          "pos": [
+            0.8,
+            0,
+            0.2
+          ],
+          "expr": "nervous",
+          "talk": true,
+          "facing": -1,
+          "look": -1,
+          "mode": "stand"
+        },
+        {
+          "f": 1059,
+          "pos": [
+            0.8,
+            0,
+            0.2
+          ],
+          "expr": "shock",
+          "talk": false,
+          "facing": -1,
+          "look": -1
+        },
+        {
+          "f": 1151,
+          "pos": [
+            -18.0,
+            0,
+            0.0
+          ],
+          "expr": "nervous",
+          "talk": false,
+          "facing": -1,
+          "look": -1,
+          "mode": "stand"
+        },
+        {
+          "f": 1359,
+          "pos": [
+            -18.0,
+            0,
+            0.0
+          ],
+          "walk": false,
+          "talk": false
+        }
+      ]
+    },
+    {
+      "id": "officer",
+      "preset": "officer",
+      "pos": [
+        -18.0,
+        0,
+        0.0
+      ],
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            -18.0,
+            0,
+            0.0
+          ],
+          "walk": false,
+          "talk": false
+        },
+        {
+          "f": 92,
+          "pos": [
+            -1.5,
+            0,
+            0.35
+          ],
+          "expr": "neutral",
+          "walk": true,
+          "facing": 1,
+          "mode": "stroll"
+        },
+        {
+          "f": 180,
+          "pos": [
+            -0.3,
+            0,
+            0.35
+          ],
+          "walk": false,
+          "facing": 1,
+          "look": 1,
+          "mode": "stand"
+        },
+        {
+          "f": 260,
+          "pos": [
+            -0.3,
+            0,
+            0.35
+          ],
+          "expr": "stern",
+          "talk": true,
+          "facing": 1
+        },
+        {
+          "f": 334,
+          "pos": [
+            -18.0,
+            0,
+            0.0
+          ],
+          "walk": false,
+          "talk": false
+        }
+      ]
+    },
+    {
+      "id": "intruder",
+      "preset": "bot",
+      "pos": [
+        -18.0,
+        0,
+        -1.2
+      ],
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            -18.0,
+            0,
+            -1.2
+          ],
+          "walk": false,
+          "talk": false
+        },
+        {
+          "f": 909,
+          "pos": [
+            -18.0,
+            0,
+            -1.2
+          ],
+          "walk": true
+        },
+        {
+          "f": 960,
+          "pos": [
+            -2.0,
+            0,
+            -1.6
+          ],
+          "expr": "grin",
+          "walk": true,
+          "facing": 1,
+          "mode": "stroll"
+        },
+        {
+          "f": 1060,
+          "pos": [
+            -1.1,
+            0,
+            -2.2
+          ],
+          "walk": false,
+          "facing": 1,
+          "look": 1,
+          "mode": "stand"
+        },
+        {
+          "f": 1151,
+          "pos": [
+            -18.0,
+            0,
+            -1.2
+          ],
+          "walk": false
+        }
+      ]
+    },
+    {
+      "id": "kid",
+      "preset": "kid",
+      "pos": [
+        -18.0,
+        0,
+        0.0
+      ],
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            -18.0,
+            0,
+            0.0
+          ],
+          "walk": false,
+          "talk": false
+        },
+        {
+          "f": 1359,
+          "pos": [
+            -0.55,
+            0,
+            0.35
+          ],
+          "expr": "grin",
+          "walk": false,
+          "facing": 1,
+          "look": 1,
+          "mode": "stand"
+        },
+        {
+          "f": 1450,
+          "pos": [
+            -0.55,
+            0,
+            0.35
+          ],
+          "expr": "laugh",
+          "talk": true,
+          "facing": 1
+        }
+      ]
+    },
+    {
+      "id": "parent",
+      "preset": "parent",
+      "pos": [
+        18.0,
+        0,
+        0.0
+      ],
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            18.0,
+            0,
+            0.0
+          ],
+          "walk": false,
+          "talk": false
+        },
+        {
+          "f": 1359,
+          "pos": [
+            0.5,
+            0,
+            0.15
+          ],
+          "expr": "relief",
+          "walk": false,
+          "facing": -1,
+          "look": -1,
+          "mode": "stand"
+        },
+        {
+          "f": 1480,
+          "pos": [
+            0.5,
+            0,
+            0.15
+          ],
+          "expr": "grin",
+          "talk": true,
+          "facing": -1
+        }
+      ]
+    },
+    {
+      "id": "neighbor",
+      "preset": "worker",
+      "pos": [
+        18.0,
+        0,
+        0.0
+      ],
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            18.0,
+            0,
+            0.0
+          ],
+          "walk": false,
+          "talk": false
+        },
+        {
+          "f": 1359,
+          "pos": [
+            1.15,
+            0,
+            0.3
+          ],
+          "expr": "grin",
+          "walk": false,
+          "facing": -1,
+          "look": 0,
+          "mode": "stand"
+        },
+        {
+          "f": 1500,
+          "pos": [
+            1.15,
+            0,
+            0.3
+          ],
+          "expr": "laugh",
+          "talk": false,
+          "facing": -1
+        }
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "ncicCore",
+      "kind": "server",
+      "world": "server_room",
+      "pos": [
+        0,
+        0,
+        -3.4
+      ],
+      "color": "#2f3a4e",
+      "accent": "#f8f1de",
+      "label": "NCIC",
+      "sublabel": "FBI CRIME DATABASE",
+      "keyframes": [
+        {
+          "f": 0,
+          "label": "NCIC",
+          "sublabel": "FBI CRIME DATABASE",
           "action": {
             "type": "beaconIntensity",
             "value": 0
           }
         },
         {
+          "f": 509,
+          "label": "12M RECORDS",
+          "sublabel": "ONE SYSTEM"
+        },
+        {
+          "f": 601,
+          "label": "NCIC",
+          "sublabel": "FBI CRIME DATABASE"
+        },
+        {
           "f": 909,
+          "label": "APPARENT BREACH",
+          "sublabel": "FBI INVESTIGATING",
           "action": {
             "type": "beaconIntensity",
             "value": 0.2,
@@ -56,67 +453,530 @@
     {
       "id": "checkCounter",
       "kind": "screen",
-      "world": "office",
+      "world": "server_room",
       "pos": [
-        1.8,
+        18.0,
         0,
-        -6
+        -2.0
       ],
+      "color": "#323b4d",
+      "accent": "#f8f1de",
+      "label": "CHECKS PER DAY",
+      "sublabel": "CLIMBING LIVE",
       "keyframes": [
         {
-          "f": 509,
-          "action": {
-            "type": "counterValue",
-            "value": 0
-          }
+          "f": 93,
+          "pos": [
+            18.0,
+            0,
+            -2.0
+          ]
         },
         {
-          "f": 601,
+          "f": 500,
+          "pos": [
+            1.5,
+            0,
+            -2.0
+          ],
           "action": {
             "type": "counterValue",
             "value": 10000000,
-            "dur": 60
+            "dur": 95
           }
         },
         {
-          "f": 1400,
-          "action": {
-            "type": "counterValue",
-            "value": 12000000,
-            "dur": 90
-          }
+          "f": 740,
+          "pos": [
+            1.5,
+            0,
+            -2.0
+          ]
+        },
+        {
+          "f": 900,
+          "pos": [
+            18.0,
+            0,
+            -2.0
+          ]
         }
       ]
     },
     {
       "id": "dutyClock",
       "kind": "clock",
-      "world": "office",
+      "world": "server_room",
       "pos": [
-        -1.8,
+        -18.0,
         0,
-        -6
+        -2.0
       ],
+      "color": "#323b4d",
+      "accent": "#f8f1de",
+      "label": "ALWAYS ON",
+      "sublabel": "24 x 7 x 365",
       "keyframes": [
         {
-          "f": 601,
-          "action": {
-            "type": "clockHands",
-            "value": 0
-          }
+          "f": 93,
+          "pos": [
+            -18.0,
+            0,
+            -2.0
+          ]
         },
         {
-          "f": 734,
+          "f": 520,
+          "pos": [
+            -1.5,
+            0,
+            -2.0
+          ]
+        },
+        {
+          "f": 601,
+          "pos": [
+            -1.5,
+            0,
+            -2.0
+          ],
+          "label": "RUNNING SINCE",
+          "sublabel": "JANUARY 1967",
           "action": {
             "type": "clockHands",
             "value": 720,
-            "dur": 100
+            "dur": 124
           }
+        },
+        {
+          "f": 740,
+          "pos": [
+            -1.5,
+            0,
+            -2.0
+          ]
+        },
+        {
+          "f": 900,
+          "pos": [
+            -18.0,
+            0,
+            -2.0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "plateSign",
+      "kind": "sign",
+      "world": "town",
+      "pos": [
+        -1.1,
+        0,
+        -4.5
+      ],
+      "color": "#467765",
+      "accent": "#f8f1de",
+      "label": "TRAFFIC STOP",
+      "sublabel": "ROUTINE PLATE CHECK",
+      "keyframes": [
+        {
+          "f": 92,
+          "label": "TRAFFIC STOP",
+          "sublabel": "ROUTINE PLATE CHECK"
+        },
+        {
+          "f": 200,
+          "label": "ONE FBI SYSTEM",
+          "sublabel": "ANSWERS THE CHECK"
+        },
+        {
+          "f": 734,
+          "label": "90,000 AGENCIES",
+          "sublabel": "EVERY ONE A DOOR IN"
+        },
+        {
+          "f": 1359,
+          "label": "REAL PEOPLE",
+          "sublabel": "BEHIND EVERY RECORD"
+        }
+      ]
+    },
+    {
+      "id": "patrolCar",
+      "kind": "car",
+      "world": "town",
+      "pos": [
+        1.8,
+        0,
+        -3.2
+      ],
+      "rotY": -0.45,
+      "color": "#3d5a80",
+      "keyframes": [
+        {
+          "f": 92,
+          "pos": [
+            1.8,
+            0,
+            -3.2
+          ],
+          "rotY": -0.45
+        }
+      ]
+    },
+    {
+      "id": "filesSign",
+      "kind": "sign",
+      "world": "office",
+      "pos": [
+        0,
+        0,
+        -24.0
+      ],
+      "color": "#8a5a3a",
+      "accent": "#f8f1de",
+      "label": "THE CABINET",
+      "sublabel": "21 FILES INSIDE",
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            0,
+            0,
+            -4.6
+          ]
+        },
+        {
+          "f": 334,
+          "pos": [
+            0,
+            0,
+            -4.6
+          ],
+          "label": "THE CABINET",
+          "sublabel": "21 FILES INSIDE"
+        },
+        {
+          "f": 509,
+          "pos": [
+            0,
+            0,
+            -4.6
+          ]
+        },
+        {
+          "f": 1151,
+          "pos": [
+            0,
+            0,
+            -24.0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fileWanted",
+      "kind": "box",
+      "world": "office",
+      "pos": [
+        -21.4,
+        0,
+        -2.9
+      ],
+      "scale": 0.6,
+      "color": "#b0483a",
+      "accent": "#f8f1de",
+      "label": "WANTED",
+      "sublabel": "PERSONS",
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            -1.4,
+            0,
+            -2.9
+          ]
+        },
+        {
+          "f": 334,
+          "pos": [
+            -1.4,
+            0,
+            -2.9
+          ]
+        },
+        {
+          "f": 509,
+          "pos": [
+            -1.4,
+            0,
+            -2.9
+          ]
+        },
+        {
+          "f": 1151,
+          "pos": [
+            -21.4,
+            0,
+            -2.9
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fileMissing",
+      "kind": "box",
+      "world": "office",
+      "pos": [
+        -20.47,
+        0,
+        -2.5
+      ],
+      "scale": 0.6,
+      "color": "#c9925e",
+      "accent": "#241726",
+      "label": "MISSING",
+      "sublabel": "PERSONS",
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            -0.47,
+            0,
+            -2.5
+          ]
+        },
+        {
+          "f": 334,
+          "pos": [
+            -0.47,
+            0,
+            -2.5
+          ]
+        },
+        {
+          "f": 509,
+          "pos": [
+            -0.47,
+            0,
+            -2.5
+          ]
+        },
+        {
+          "f": 1151,
+          "pos": [
+            -20.47,
+            0,
+            -2.5
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fileGuns",
+      "kind": "box",
+      "world": "office",
+      "pos": [
+        20.47,
+        0,
+        -2.5
+      ],
+      "scale": 0.6,
+      "color": "#467765",
+      "accent": "#f8f1de",
+      "label": "STOLEN",
+      "sublabel": "GUNS",
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            0.47,
+            0,
+            -2.5
+          ]
+        },
+        {
+          "f": 334,
+          "pos": [
+            0.47,
+            0,
+            -2.5
+          ]
+        },
+        {
+          "f": 509,
+          "pos": [
+            0.47,
+            0,
+            -2.5
+          ]
+        },
+        {
+          "f": 1151,
+          "pos": [
+            20.47,
+            0,
+            -2.5
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fileMore",
+      "kind": "box",
+      "world": "office",
+      "pos": [
+        21.4,
+        0,
+        -2.9
+      ],
+      "scale": 0.6,
+      "color": "#3d485c",
+      "accent": "#f8f1de",
+      "label": "+18 MORE",
+      "sublabel": "FILES",
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            1.4,
+            0,
+            -2.9
+          ]
+        },
+        {
+          "f": 334,
+          "pos": [
+            1.4,
+            0,
+            -2.9
+          ]
+        },
+        {
+          "f": 509,
+          "pos": [
+            1.4,
+            0,
+            -2.9
+          ]
+        },
+        {
+          "f": 1151,
+          "pos": [
+            21.4,
+            0,
+            -2.9
+          ]
+        }
+      ]
+    },
+    {
+      "id": "octSign",
+      "kind": "sign",
+      "world": "office",
+      "pos": [
+        -1.0,
+        0,
+        -3.8
+      ],
+      "color": "#8a5a3a",
+      "accent": "#f8f1de",
+      "label": "OCTOBER",
+      "sublabel": "CLAIMED FBI BREACH",
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            -21.5,
+            0,
+            -3.8
+          ]
+        },
+        {
+          "f": 334,
+          "pos": [
+            -21.5,
+            0,
+            -3.8
+          ]
+        },
+        {
+          "f": 1151,
+          "pos": [
+            -1.0,
+            0,
+            -3.8
+          ]
+        }
+      ]
+    },
+    {
+      "id": "novSign",
+      "kind": "sign",
+      "world": "office",
+      "pos": [
+        1.0,
+        0,
+        -3.8
+      ],
+      "color": "#b0483a",
+      "accent": "#f8f1de",
+      "label": "NOVEMBER",
+      "sublabel": "2ND CLAIM - UNVERIFIED",
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            21.5,
+            0,
+            -3.8
+          ]
+        },
+        {
+          "f": 334,
+          "pos": [
+            21.5,
+            0,
+            -3.8
+          ]
+        },
+        {
+          "f": 1151,
+          "pos": [
+            1.0,
+            0,
+            -3.8
+          ]
         }
       ]
     }
   ],
-  "fx": [],
+  "fx": [
+    {
+      "kind": "burst",
+      "pos": [
+        0,
+        2.6,
+        -4.0
+      ],
+      "a": 1052,
+      "b": 1090,
+      "scale": 1.5,
+      "color": "#e0483e"
+    },
+    {
+      "kind": "stars",
+      "pos": [
+        0.8,
+        2.3,
+        0.2
+      ],
+      "a": 1065,
+      "b": 1140,
+      "scale": 0.9
+    }
+  ],
   "cues": [
     {
       "t": 0.2,
@@ -211,279 +1071,312 @@
       "id": 1,
       "a": 0,
       "b": 92,
-      "graphic": "ncic-hook",
-      "purpose": "hook: bold supported claim + written on-screen hook, breach stamp preserves uncertainty",
+      "purpose": "hook: bold supported claim, breach framed as apparent",
+      "world": "server_room",
       "light": "day",
+      "dof": 6,
+      "kickAt": [
+        62
+      ],
       "cam": {
         "from": [
-          0,
-          2,
-          6
+          0.3,
+          2.1,
+          6.2
         ],
         "to": [
-          0,
-          2,
-          6
+          0.1,
+          2.05,
+          5.4
         ],
         "lookFrom": [
           0,
-          1.6,
-          0
+          2.0,
+          -3.4
         ],
         "lookTo": [
           0,
-          1.6,
-          0
-        ]
+          2.0,
+          -3.4
+        ],
+        "fovFrom": 41,
+        "fovTo": 40
       }
     },
     {
       "id": 2,
       "a": 92,
       "b": 334,
-      "graphic": "ncic-stop",
       "purpose": "context: what NCIC does at a routine traffic stop",
-      "anchor": "When a police officer in America",
+      "world": "town",
       "light": "day",
+      "dof": 0,
       "cam": {
         "from": [
-          0,
-          2,
-          6
+          -0.6,
+          2.0,
+          6.0
         ],
         "to": [
-          0,
-          2,
-          6
+          0.3,
+          1.95,
+          5.5
         ],
         "lookFrom": [
-          0,
-          1.6,
-          0
+          0.2,
+          1.4,
+          -3.0
         ],
         "lookTo": [
-          0,
-          1.6,
-          0
-        ]
+          0.2,
+          1.4,
+          -3.0
+        ],
+        "fovFrom": 40,
+        "fovTo": 40
       }
     },
     {
       "id": 3,
       "a": 334,
       "b": 509,
-      "graphic": "ncic-files",
       "purpose": "evidence: the 21 files inside the cabinet",
-      "anchor": "Think of it as a filing cabinet",
+      "world": "office",
       "light": "day",
+      "dof": 5,
       "cam": {
         "from": [
-          0,
-          2,
-          6
+          -0.8,
+          1.9,
+          5.2
         ],
         "to": [
-          0,
-          2,
-          6
+          0.8,
+          1.9,
+          5.2
         ],
         "lookFrom": [
           0,
-          1.6,
-          0
+          1.2,
+          -2.7
         ],
         "lookTo": [
           0,
-          1.6,
-          0
-        ]
+          1.2,
+          -2.7
+        ],
+        "fovFrom": 41,
+        "fovTo": 41
       }
     },
     {
       "id": 4,
       "a": 509,
       "b": 601,
-      "graphic": "ncic-records",
-      "purpose": "scale: 12M records, ~10M checks/day as number drums",
-      "anchor": "Twelve million active records",
+      "purpose": "scale: 12M records, ~10M checks/day as a live counter",
+      "world": "server_room",
       "light": "day",
+      "dof": 4,
+      "kickAt": [
+        560
+      ],
       "cam": {
         "from": [
-          0,
-          2,
-          6
+          0.9,
+          1.95,
+          4.8
         ],
         "to": [
-          0,
-          2,
-          6
+          0.8,
+          1.85,
+          3.8
         ],
         "lookFrom": [
-          0,
-          1.6,
-          0
+          0.75,
+          1.8,
+          -2.4
         ],
         "lookTo": [
-          0,
-          1.6,
-          0
-        ]
+          0.75,
+          1.8,
+          -2.4
+        ],
+        "fovFrom": 40,
+        "fovTo": 38
       }
     },
     {
       "id": 5,
       "a": 601,
       "b": 734,
-      "graphic": "ncic-clock",
       "purpose": "stakes: always on, 24/7 since Jan 1967",
-      "anchor": "And it never closes",
-      "light": "day",
+      "world": "server_room",
+      "light": "golden",
+      "dof": 5,
+      "kickAt": [
+        640,
+        700
+      ],
       "cam": {
         "from": [
-          0,
-          2,
-          6
+          -0.9,
+          2.0,
+          4.9
         ],
         "to": [
-          0,
-          2,
-          6
+          -0.5,
+          2.0,
+          4.5
         ],
         "lookFrom": [
-          0,
-          1.6,
-          0
+          -1.2,
+          1.9,
+          -2.0
         ],
         "lookTo": [
-          0,
-          1.6,
-          0
-        ]
+          -1.2,
+          1.9,
+          -2.0
+        ],
+        "fovFrom": 40,
+        "fovTo": 40
       }
     },
     {
       "id": 6,
       "a": 734,
       "b": 909,
-      "graphic": "ncic-doors",
       "purpose": "mechanism: 90k connected agencies means 90k doors",
-      "anchor": "That's the weakness",
-      "light": "day",
+      "world": "town",
+      "light": "golden",
+      "dof": 0,
       "cam": {
         "from": [
           0,
-          2,
-          6
+          2.0,
+          5.2
         ],
         "to": [
           0,
-          2,
-          6
+          2.7,
+          8.4
         ],
         "lookFrom": [
           0,
-          1.6,
-          0
+          1.5,
+          -4.0
         ],
         "lookTo": [
           0,
           1.6,
-          0
-        ]
+          -6.0
+        ],
+        "fovFrom": 40,
+        "fovTo": 44
       }
     },
     {
       "id": 7,
       "a": 909,
       "b": 1151,
-      "graphic": "ncic-breach",
       "purpose": "event: apparent breach, unknown who/how/what",
-      "anchor": "The Associated Press says",
-      "flashAt": 1059,
+      "world": "server_room",
       "light": "day",
+      "dof": 3,
+      "flashAt": 1059,
+      "kickAt": [
+        1059
+      ],
       "cam": {
         "from": [
-          0,
-          2,
-          6
+          0.4,
+          2.0,
+          5.3
         ],
         "to": [
-          0,
-          2,
-          6
+          -0.2,
+          1.95,
+          4.6
         ],
         "lookFrom": [
           0,
-          1.6,
-          0
+          2.0,
+          -3.4
         ],
         "lookTo": [
           0,
-          1.6,
-          0
-        ]
+          2.0,
+          -3.4
+        ],
+        "fovFrom": 41,
+        "fovTo": 40,
+        "rollDeg": 1.5
       }
     },
     {
       "id": 8,
       "a": 1151,
       "b": 1359,
-      "graphic": "ncic-pattern",
-      "purpose": "pattern: second claimed FBI breach in two months, honestly unlinked",
-      "anchor": "And it's the second time",
+      "purpose": "pattern: second claimed FBI breach in two months, honestly uncertain",
+      "world": "office",
       "light": "day",
+      "dof": 6,
       "cam": {
         "from": [
-          0,
-          2,
-          6
+          -0.4,
+          2.0,
+          5.5
         ],
         "to": [
-          0,
-          2,
-          6
+          0.4,
+          2.0,
+          5.3
         ],
         "lookFrom": [
           0,
-          1.6,
-          0
+          1.7,
+          -3.0
         ],
         "lookTo": [
           0,
-          1.6,
-          0
-        ]
+          1.7,
+          -3.0
+        ],
+        "fovFrom": 40,
+        "fovTo": 40
       }
     },
     {
       "id": 9,
       "a": 1359,
       "b": 1620,
-      "graphic": "ncic-payoff",
       "purpose": "payoff: records are real people; voiced follow CTA lands here",
-      "anchor": "Remember, every line",
-      "light": "day",
+      "world": "town",
+      "light": "golden",
+      "dof": 0,
       "cam": {
         "from": [
           0,
-          2,
-          6
+          2.0,
+          6.2
         ],
         "to": [
           0,
-          2,
-          6
+          2.6,
+          8.6
         ],
         "lookFrom": [
           0,
-          1.6,
-          0
+          1.4,
+          -2.5
         ],
         "lookTo": [
           0,
-          1.6,
-          0
-        ]
+          1.5,
+          -3.5
+        ],
+        "fovFrom": 41,
+        "fovTo": 45
       }
     }
   ],

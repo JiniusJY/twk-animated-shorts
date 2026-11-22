@@ -8,6 +8,8 @@ Each stage follows its section below: pre-production research, creative contract
 
 Updated 21 November 2026 after review of the Boeing episode. The editorial illustration direction was accepted. That acceptance is not a claim that every shot or voice performance is approved.
 
+Updated 22 November 2026 after the owner's review of the first NCIC cut: the all-2D editorial rendering was rejected ("overall visual, transition all degraded from ep 1"). The staging rule below (story beats play in the 3D world) is now a HARD requirement and supersedes the all-editorial direction for shot staging. The owner also set a standing performance target: every episode must be built to clear 10,000 views, reviewed against that bar after publication, until he raises it.
+
 ## Pre-production research (standing, per owner 22 November 2026)
 
 Before any episode enters production, without being asked each time: research the candidate topic deeply and check it against what is working for top tech shorts creators. Record the evidence in the episode's topic card or plan notes. This is a required pre-production step, not a promise of virality; findings inform selection and packaging and never justify an unsupported claim.
@@ -42,6 +44,8 @@ Audition the hook in three genuinely different deliveries. Judge intelligibility
 
 ### 3. Shot design
 
+HARD REQUIREMENT (owner, 22 November 2026): story beats play in the 3D world - actors, props and camera moves carry the episode. 2D editorial cards (`shot.graphic`) are for data beats only (number drums, document facsimiles, diagram payloads the 3D props cannot show). An episode plan in which every shot has a graphic renders all-2D and FAILS the structural lint gate; it must not reach render. Ep1 (Boeing, 3D characters and camera moves) is the floor for visual quality; the benchmark is top-tier tech storytellers, not our own back catalogue.
+
 First draw a visual sentence in words: object, action, result. Then choose the drawing or rig. Keep important numbers and diagrams large enough for a phone. Use a narrow palette and consistent stroke hierarchy. Introduce new visual vocabulary only when needed.
 
 - Use evidence or recognizable physical objects, not a dashboard for every story.
@@ -50,7 +54,7 @@ First draw a visual sentence in words: object, action, result. Then choose the d
 - Movement needs anticipation, a change and a settled result. Hold long enough to understand the result. Do not add constant camera drift to evade a freeze detector.
 - Do not imitate a creator's proprietary assets, mascot, exact shot or script. Study the reasoning behind the work.
 
-Current engine support: `shot.graphic` selects a purpose-built editorial scene; `counter`, `overflow`, `power`, `reset`, `hook`, `lab`, `stakes`, `question`, `clock`, `storage`, `odometer`, `directive`, `payoff` are implemented for the Boeing pilot. These are a pilot vocabulary, not universal templates. Future topics should add a researched rig when these concepts do not fit. The legacy 3D scene renderer is retained when `graphic` is absent.
+Current engine support: a shot without `graphic` renders in the 3D toon world (worlds: office, town, server_room, tarmac, courtroom; actor presets: worker, boss, engineer, pilot, bot, kid, parent, officer, soldier; prop kinds: desk, screen, book, box, server, coin, plane, pile, sign, chart, crate, car, clock, gcu, switch, with typed actions such as counterValue, beaconIntensity, clockHands, leverAngle). This is the default stage. `shot.graphic` selects a purpose-built 2D editorial scene; `counter`, `overflow`, `power`, `reset`, `hook`, `lab`, `stakes`, `question`, `clock`, `storage`, `odometer`, `directive`, `payoff` are implemented for the Boeing pilot, plus the `ncic-*` set. These are a pilot vocabulary, not universal templates. Future topics should add a researched rig when these concepts do not fit.
 
 ### 4. Voice-first timeline
 
@@ -77,6 +81,8 @@ Technical QA checks loudness, peaks, duration, black and freeze segments. They d
 Future renders omit the bottom source-ledger footer strip (the small 'Simplified illustration / Sources in episode claim ledger' line) and the bottom red progress bar/circular-avatar decoration, per the owner's 22 November review. Do not apply this as a silent edit to already-published videos. Keep the claim ledger and caption/description sources. Retain meaningful in-scene uncertainty labels, such as the unverified internal-counter theory; removing decorative footer chrome does not remove the duty to distinguish theory from established fact.
 
 ### 8. Release and learning
+
+PERFORMANCE TARGET (standing, owner, 22 November 2026): every episode is built to clear 10,000 views; views cannot be guaranteed, so the levers that can be - topic selection, hook strength, visual quality, packaging - are all optimized for that bar before the cut is shown. After publication, each episode's actual views are reviewed against the 10k bar by the posting/metrics automation, and the lessons (what over/under-performed and why) are written into the next episode's pre-production research. The bar stands until the owner raises it.
 
 No new full workflow run merely to see if it works. Prefer a short local proof and a short free voice audition first. Follow the user's current instructions about reruns. Report what was actually verified, which audio is old and which is new. Full render and release wait for the applicable review/authority. Do not overwrite an earlier delivered release with an unapproved rough cut.
 
