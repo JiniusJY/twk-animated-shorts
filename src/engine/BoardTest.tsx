@@ -147,14 +147,14 @@ export const BoardTest: React.FC = () => {
 
         {/* drawn open padlock: editorial illustration of "a door the FBI can't lock" */}
         {f >= 336 && (
-          <div style={{position: "absolute", left: 940, top: 430, opacity: lockP}}>
+          <div style={{position: "absolute", left: 940, top: 350, opacity: lockP}}>
             <svg width="300" height="300" style={{overflow: "visible", transform: "translate(-150px -130px)"}}>
               <g transform={`translate(150 150) rotate(${shackleRot} -38 -20)`}>
                 <DrawOn paths={LOCK_SHACKLE} p={lockP}/>
               </g>
               <g transform="translate(150 150)"><g transform="translate(-55 -20)"><DrawOn paths={LOCK_BODY} p={lockP}/></g></g>
             </svg>
-            <div style={{position: "absolute", top: 130, width: 560, left: -280, textAlign: "center",
+            <div style={{position: "absolute", top: 260, width: 560, left: -280, textAlign: "center",
               fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 52, color: INK,
               opacity: clamp01((f - 370) / 14)}}>a door the FBI can't lock.</div>
           </div>
