@@ -117,3 +117,31 @@ pulls data). Pulses turn narration into mechanism without any simulated system U
 - Anchored chips name parts; scenes explain; cards are for provenance (sources,
   claims, credits), not exposition.
 - Approximation tags stay inline wherever a visual is a metaphor.
+
+## v4 polish pass (2026-11-22)
+
+Frame review of the v3 render found: a weak first frame, text collisions (90,000+ over the
+caption and hub, WHO GOT IN? over an agency node, the crack across the extortion headline,
+threads striking the italic lock line), cards cropped at the frame edge, three text tracks
+on screen at once, blurred foreground scraps that read as render glitches, quiet spans at
+16-19s / 26-29s / 49-56s, and an end card that did not use the exact handle.
+
+Changes in `src/engine/BoardEpisode.tsx`:
+- Hook opens already ringing (alarm shockwaves from frame 0); the face-down card cracks
+  on "broken" with a camera shake.
+- Word-locked camera kicks on key words; framing re-aimed so the active card is fully in frame.
+- Drawers: each category lights up and gets a pinned chip on the spoken word.
+- 24/7 and 2ND TIME punches; office-hours card crossed out on "business hours".
+- Hub becomes the open padlock (no separate italic line; the caption carries the sentence).
+  Agency ring tightened so it fits at the 1.32 push-in; agency boxes use a drawn icon.
+- Breach: alarm rings on "breach"; deeper dim behind the question punches.
+- Second report: enters on "An extortion", CLAIMED slams on "claimed" (was 0.6s early),
+  crack runs beside the card toward "unpatched software", never across its text.
+- Stakes: whip back along the strings, final pulse lands on "handcuffs", wide pull and
+  alarm rings on "five alarm fire".
+- Headline fades out after ~2.7s per beat; duplicate on-board sentences removed;
+  foreground scraps removed; on-card labels enlarged.
+- End card: "Follow @techwhoknows" (exact handle), slow push, looping pulse on the underline.
+
+Not done in this pass: SFX cues were not re-timed to the new visual hits (the CLAIMED slam
+moved +17 frames, the office-hours strike moved), and no full-resolution or listening review.

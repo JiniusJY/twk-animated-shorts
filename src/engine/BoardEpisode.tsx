@@ -30,10 +30,42 @@ const TRAFFIC = {x: 1260, y: 420};
 const CABINET = {x: 2260, y: 400};
 const TERM = {x: 3300, y: 520};
 const APCARD = {x: 4760, y: 400};
-const SECOND = {x: 5450, y: 700};
+const SECOND = {x: 5640, y: 700};
 
 const sway = (f: number, seed: number) => Math.sin((f + seed) / 55) * 0.35;
 const bob = (f: number, seed: number) => Math.sin((f + seed) / 67) * 2.5;
+
+// v4: word-locked camera kicks (zoom impulse) and two hard shakes, scene layers only
+const KICKS: [number, number][] = [[23, 0.07], [419, 0.04], [965, 0.04], [1087, 0.05], [1225, 0.05],
+  [1489, 0.06], [1592, 0.04], [1726, 0.05], [1808, 0.06]];
+const kickAt = (f: number) => KICKS.reduce((s, [t, a]) =>
+  f >= t ? s + a * Math.exp(-(f - t) / 6) * Math.min(1, (f - t + 1) / 2) : s, 0);
+const SHAKES = [23, 1489];
+const shakeAt = (f: number) => SHAKES.reduce((s, t) =>
+  f >= t && f < t + 24 ? s + 14 * Math.sin((f - t) * 2.3) * Math.exp(-(f - t) / 5) : s, 0);
+
+// v4: alarm shockwave rings (drawn, editorial) - expand from a point on given frames
+const Alarm: React.FC<{x: number; y: number; f: number; times: number[]; r0?: number; grow?: number}> =
+  ({x, y, f, times, r0 = 160, grow = 520}) => (
+    <g>
+      {times.map((t) => {
+        const p = (f - t) / 32;
+        if (p < 0 || p > 1) return null;
+        const e = 1 - Math.pow(1 - p, 3);
+        return <circle key={t} cx={x} cy={y} r={r0 + grow * e} fill="none" stroke={RED}
+          strokeWidth={10 * (1 - p) + 2} opacity={0.85 * (1 - p)}/>;
+      })}
+    </g>
+  );
+
+// v4: categories light up on the spoken word
+const DRAWER_HL: {i: number; at: number; label: string}[] = [
+  {i: 0, at: 441, label: "WANTED FUGITIVES"},
+  {i: 1, at: 488, label: "MISSING PERSONS"},
+  {i: 2, at: 519, label: "STOLEN CARS"},
+  {i: 3, at: 547, label: "STOLEN GUNS"},
+  {i: 4, at: 562, label: "PROTECTION ORDERS"},
+];
 
 // ---- query pulses: glowing dots traveling a cubic string -------------------
 type Cubic = [number, number, number, number, number, number, number, number];
@@ -81,8 +113,8 @@ const PhotoCard: React.FC<{x: number; y: number; rot: number; f: number; enter: 
         <Img src={staticFile(img)} style={{width: w - 32, height: 300, objectFit: "cover",
           transform: `scale(${kb})`, filter: "contrast(1.08) saturate(0.82) sepia(0.14)"}}/>
       </div>
-      <div style={{fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 26, color: "#26352f", marginTop: 10}}>{label}</div>
-      <div style={{fontFamily: "Arial,sans-serif", fontSize: 14, color: DIM, marginTop: 4}}>{credit}</div>
+      <div style={{fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 28, color: "#26352f", marginTop: 10}}>{label}</div>
+      <div style={{fontFamily: "Arial,sans-serif", fontSize: 17, color: DIM, marginTop: 4}}>{credit}</div>
       <div style={{position: "absolute", top: -16, left: w / 2 - 16, width: 22, height: 22, borderRadius: 11,
         background: RED, boxShadow: "0 3px 8px rgba(0,0,0,0.5)"}}/>
     </div>
@@ -131,48 +163,55 @@ const NET: {d: string; seed: number; start: number; dur: number; route: Cubic; p
     route: [3010, 640, 3055, 590, 3020, 545, 2988, 515], pulse: {start: 785, period: 55, dur: 28}},    // cabinet -> terminal
   {d: "M4335 940 C 4480 880, 4620 780, 4745 700", seed: 83, start: 1132, dur: 35,
     route: [4335, 940, 4480, 880, 4620, 780, 4745, 700]},                                               // hub -> AP card (editorial link)
-  {d: "M5405 560 C 5452 645, 5456 760, 5455 880", seed: 84, start: 1400, dur: 30,
-    route: [5405, 560, 5452, 645, 5456, 760, 5455, 880]},                                               // AP -> second report (editorial link)
+  {d: "M5400 560 C 5480 600, 5560 690, 5650 770", seed: 84, start: 1440, dur: 24,
+    route: [5400, 560, 5480, 600, 5560, 690, 5650, 770]},                                               // AP -> second report (editorial link)
 ];
 
 // fixed-overlay punches, locked to the spoken words
-const PUNCHES: {at: number; hold: number; text: string; sub?: string; stamp?: string}[] = [
+const PUNCHES: {at: number; hold: number; text: string; sub?: string; stamp?: string; dy?: number}[] = [
   {at: 604, hold: 58, text: "12 MILLION", sub: "active records"},
   {at: 669, hold: 46, text: "10 MILLION", sub: "checks a day"},
-  {at: 963, hold: 52, text: "90,000+", sub: "agencies connected"},
+  {at: 823, hold: 34, text: "24/7", sub: "never closes"},
+  {at: 963, hold: 52, text: "90,000+", sub: "agencies connected", dy: -380},
   {at: 1299, hold: 19, text: "WHO GOT IN?", stamp: "UNKNOWN"},
   {at: 1320, hold: 19, text: "HOW?", stamp: "UNKNOWN"},
   {at: 1341, hold: 30, text: "ANYTHING TAKEN?", stamp: "UNKNOWN"},
+  {at: 1411, hold: 40, text: "2ND TIME", sub: "in two months"},
 ];
 
-const DRAWER_LABELS = ["WANTED", "MISSING", "STOLEN CARS", "STOLEN GUNS", "PROTECTION"];
 
 export const BoardEpisode: React.FC = () => {
   const f = useCurrentFrame();
 
   // ---- camera journey: moves with purpose; dwells only where the mechanism animates ----
+  // v4: framing keeps the active card fully in frame; stakes whips back along the strings,
+  // then pulls wide on "five alarm fire" so the whole lit network reads as the payoff.
   const lookX = interpolate(f,
-    [0, 105, 190, 470, 730, 775, 890, 950, 1125, 1185, 1290, 1365, 1470, 1580, 1695, 1755, 1790, 1851, 2046],
-    [580, 640, 1550, 2450, 2472, 3300, 3322, 4200, 4236, 4800, 4900, 4950, 5730, 5758, 5766, 3300, 1640, 1640, 1656],
+    [0, 105, 190, 470, 560, 730, 775, 890, 950, 1125, 1185, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
+    [600, 640, 1550, 2600, 2640, 2660, 3300, 3322, 4200, 4236, 5080, 5100, 5880, 5900, 1500, 1500, 1640, 1650],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const lookY = interpolate(f,
-    [0, 900, 1125, 1410, 1470, 1695, 1851, 2046],
-    [1000, 960, 860, 900, 936, 952, 780, 786],
+    [0, 900, 1060, 1110, 1125, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
+    [1000, 960, 1010, 1010, 880, 880, 980, 980, 700, 720, 960, 960],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const cam = interpolate(f,
-    [0, 60, 190, 470, 730, 775, 890, 900, 950, 1050, 1125, 1185, 1365, 1470, 1600, 1695, 1755, 1790, 1851, 2046],
-    [1.25, 1.06, 1.065, 1.09, 1.075, 1.075, 1.10, 1.10, 1.14, 1.32, 1.2, 1.21, 1.23, 1.17, 1.12, 1.06, 1.08, 1.2, 1.3, 1.7],
+  const camBase = interpolate(f,
+    [0, 60, 190, 470, 560, 600, 730, 775, 890, 950, 1050, 1125, 1185, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
+    [1.25, 1.06, 1.065, 1.09, 1.16, 1.12, 1.10, 1.075, 1.10, 1.14, 1.32, 1.2, 1.21, 1.32, 1.12, 1.24, 1.1, 1.28, 0.95, 1.0],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const camX = lookX - 540 / cam, camY = lookY - 960 / cam;
+  const cam = camBase * (1 + kickAt(f));
+  const shake = shakeAt(f);
+  const camX = lookX - 540 / cam + shake, camY = lookY - 960 / cam + shake * 0.6;
 
   // ---- shared progress ----
   const dim = interpolate(f, [1020, 1060, 1090, 1125], [0, 0.55, 0.55, 0.3], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const threadGlow = interpolate(f, [1020, 1060], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const stakesPulse = f >= 1800 && f < 1840 ? 1 + Math.sin((f - 1800) / 40 * Math.PI) * 0.5 : 1;
-  const lockPop = spring({frame: Math.max(0, f - 1062), fps: 30, config: {damping: 12, stiffness: 200, mass: 0.8}});
+  const stakesPulse = f >= 1808 && f < 1860 ? 1 + Math.sin((f - 1808) / 52 * Math.PI) * 0.5 : 1;
+  const lockPop = spring({frame: Math.max(0, f - 1087), fps: 30, config: {damping: 12, stiffness: 200, mass: 0.8}});
   const shackleRot = interpolate(lockPop, [0.55, 1], [0, -40], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const lockP = clamp01((f - 1048) / 16);
+  const hubSwap = clamp01((f - 1040) / 8);
   const counter90 = Math.floor(interpolate(f, [968, 1008], [0, 90000], {extrapolateLeft: "clamp", extrapolateRight: "clamp"}));
+  const hl = [...DRAWER_HL].reverse().find((d) => f >= d.at && f < 604) || null;
   const typed = "STATUS: ONLINE  24/7/365";
   const typedN = Math.floor(clamp01((f - 740) / 40) * typed.length);
 
@@ -180,8 +219,8 @@ export const BoardEpisode: React.FC = () => {
   const punch = PUNCHES.find((p) => f >= p.at && f < p.at + p.hold) || null;
   const punchIn = punch ? spring({frame: f - punch.at, fps: 30, config: {damping: 11, stiffness: 260, mass: 0.6}}) : 0;
   const punchDim = interpolate(f,
-    [604, 614, 652, 662, 669, 679, 705, 715, 963, 973, 1005, 1015, 1297, 1305, 1363, 1371],
-    [0, 0.45, 0.45, 0, 0, 0.45, 0.45, 0, 0, 0.45, 0.45, 0, 0, 0.5, 0.5, 0],
+    [604, 614, 652, 662, 669, 679, 705, 715, 823, 831, 849, 857, 963, 973, 1005, 1015, 1297, 1305, 1363, 1371, 1411, 1419, 1443, 1451],
+    [0, 0.62, 0.62, 0, 0, 0.62, 0.62, 0, 0, 0.62, 0.62, 0, 0, 0.62, 0.62, 0, 0, 0.74, 0.74, 0, 0, 0.62, 0.62, 0],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
 
   const bgDriftX = 16 * Math.sin(f / 240);
@@ -201,8 +240,10 @@ export const BoardEpisode: React.FC = () => {
     : f < 1410 ? "An apparent breach."
     : f < 1695 ? "The second time in two months."
     : f < 1851 ? "Every line can put a real person in handcuffs."
-    : "Follow Tech Who Knows.";
-  const beatStart = f < 105 ? 4 : f < 390 ? 108 : f < 730 ? 393 : f < 900 ? 733 : f < 1125 ? 903 : f < 1410 ? 1128 : f < 1695 ? 1413 : f < 1851 ? 1698 : 1854;
+    : "";
+  const beatStart = f < 105 ? 0 : f < 390 ? 108 : f < 730 ? 393 : f < 900 ? 733 : f < 1125 ? 903 : f < 1410 ? 1128 : f < 1636 ? 1453 : f < 1851 ? 1640 : 1854;
+  // v4: one text track at a time - the headline sets context, then hands the frame to captions
+  const headlineOp = beatStart === 0 ? 1 : clamp01((f - beatStart) / 14) * (1 - clamp01((f - beatStart - 80) / 14));
 
   const drawerOn = (i: number) => clamp01((f - (400 + i * 6)) / 10);
   const agencyPop = (i: number) => spring({frame: Math.max(0, f - (1000 + i * 4)), fps: 30, config: {damping: 13, stiffness: 240, mass: 0.6}});
@@ -253,18 +294,32 @@ export const BoardEpisode: React.FC = () => {
         <Pin x={3010} y={640} t={748} f={f}/>
         <Pin x={4335} y={940} t={1132} f={f}/>
         <Pin x={4745} y={700} t={1160} f={f}/>
-        <Pin x={5455} y={880} t={1424} f={f}/>
+        <Pin x={5650} y={770} t={1462} f={f}/>
+
+        {/* v4 alarm shockwaves: hook (open already ringing, big hit on "broken"), breach, five-alarm payoff */}
+        <svg width={W} height={H} style={{position: "absolute", inset: 0, pointerEvents: "none", overflow: "visible"}}>
+          <Alarm x={610} y={1070} f={f} times={[0, 11, 23, 31, 46]} r0={190} grow={560}/>
+          <Alarm x={APCARD.x + 320} y={APCARD.y + 160} f={f} times={[1225, 1235]} r0={300} grow={420}/>
+          <Alarm x={TRAFFIC.x + 240} y={TRAFFIC.y + 190} f={f} times={[1808, 1818, 1828]} r0={280} grow={700}/>
+        </svg>
 
         {/* HOOK: face-down card; the string grows OUT of it toward where we travel; card flips to NCIC */}
         {(() => {
           const flip = interpolate(f, [70, 95], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-          const pop = spring({frame: Math.max(0, f - 4), fps: 30, config: {damping: 13, stiffness: 200, mass: 0.8}});
+          const pop = spring({frame: f + 8, fps: 30, config: {damping: 13, stiffness: 200, mass: 0.8}});
+          const crackP = clamp01((f - 23) / 6);
           return (
             <div style={{position: "absolute", left: 460, top: 880, width: 300, height: 380,
               transform: `scale(${0.6 + 0.4 * pop}) rotate(${-3 + flip * 3}deg) scaleX(${Math.abs(1 - flip * 2)})`,
               opacity: pop, background: flip < 0.5 ? "#232f28" : CARD,
               border: `6px solid ${flip < 0.5 ? RED : "#26352f"}`, boxShadow: "0 18px 50px rgba(0,0,0,0.6)",
               display: "flex", alignItems: "center", justifyContent: "center"}}>
+              {flip < 0.5 && crackP > 0 && (
+                <svg width="300" height="380" style={{position: "absolute", left: -6, top: -6, overflow: "visible"}}>
+                  <DrawOn paths={sPath("M150 -10 L128 90 L176 150 L120 230 L168 300 L140 390", RED, 8, 70)} p={crackP}/>
+                  <DrawOn paths={sPath("M176 150 L250 175 M120 230 L50 250", RED, 6, 71)} p={clamp01((f - 27) / 6)}/>
+                </svg>
+              )}
               {flip >= 0.5 && (
                 <span style={{fontFamily: "Arial,sans-serif", fontWeight: 800, fontSize: 58, color: "#26352f", letterSpacing: 5}}>
                   {"NCIC".split("").map((ch, i) => {
@@ -285,7 +340,7 @@ export const BoardEpisode: React.FC = () => {
         <PhotoCard x={TRAFFIC.x} y={TRAFFIC.y} rot={-3} f={f} enter={130} img="photos/traffic-stop.jpg"
           label="The answer routinely comes from one FBI system" credit="Ildar Sagdejev, CC BY-SA 4.0"/>
         <PaperCard x={1500} y={880} rot={2} f={f} enter={310} w={520}>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 22, color: DIM, letterSpacing: 3}}>
+          <div style={{fontFamily: "Arial,sans-serif", fontSize: 26, color: DIM, letterSpacing: 2}}>
             {"NATIONAL CRIME INFORMATION CENTER".split("").map((ch, i) => (
               <span key={i} style={{opacity: clamp01((f - (312 + i * 1.1)) / 4)}}>{ch}</span>
             ))}
@@ -295,28 +350,48 @@ export const BoardEpisode: React.FC = () => {
 
         {/* DRAWERS: filing cabinet + counters (numbers punch in the fixed overlay) */}
         <PaperCard x={CABINET.x} y={CABINET.y} rot={-2} f={f} enter={395} w={760}>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 22, color: DIM, letterSpacing: 3, marginBottom: 12}}>A FILING CABINET WITH 21 DRAWERS</div>
+          <div style={{fontFamily: "Arial,sans-serif", fontSize: 26, color: DIM, letterSpacing: 2, marginBottom: 12}}>21 DRAWERS</div>
           <div style={{display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8}}>
-            {Array.from({length: 21}, (_, i) => (
-              <div key={i} style={{height: 44, background: i < 5 ? "#d8cba8" : "#c9c2ab",
-                border: "2px solid #26352f", opacity: drawerOn(i), transform: `rotateX(${(1 - drawerOn(i)) * 70}deg)`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 11, color: "#26352f"}}>
-                {DRAWER_LABELS[i] || ""}
-              </div>
-            ))}
+            {Array.from({length: 21}, (_, i) => {
+              const on = hl && hl.i === i;
+              const seen = DRAWER_HL.some((d) => d.i === i && f >= d.at);
+              const hp = on ? spring({frame: f - hl!.at, fps: 30, config: {damping: 10, stiffness: 280, mass: 0.5}}) : 0;
+              return (
+                <div key={i} style={{height: 52, background: on ? RED : seen ? "#e3b9a6" : i < 5 ? "#d8cba8" : "#c9c2ab",
+                  border: "2px solid #26352f", opacity: drawerOn(i),
+                  transform: `rotateX(${(1 - drawerOn(i)) * 70}deg) translateY(${-14 * hp}px) scale(${1 + 0.22 * hp})`,
+                  boxShadow: on ? "0 10px 24px rgba(0,0,0,0.45)" : undefined, position: "relative", zIndex: on ? 2 : 1,
+                  display: "flex", alignItems: "center", justifyContent: "center"}}>
+                  <div style={{width: 22, height: 6, borderRadius: 3, background: on ? CARD : "#26352f", opacity: 0.8}}/>
+                </div>
+              );
+            })}
           </div>
           <div style={{display: "flex", gap: 40, marginTop: 18, fontFamily: "monospace"}}>
             <div>
               <div style={{fontSize: 54, fontWeight: 700, color: "#26352f"}}>{f >= 610 ? "12M" : ""}</div>
-              <div style={{fontSize: 20, color: DIM}}>active records</div>
+              <div style={{fontSize: 24, color: DIM}}>active records</div>
             </div>
             <div>
               <div style={{fontSize: 54, fontWeight: 700, color: "#26352f"}}>{f >= 676 ? "10M" : ""}</div>
-              <div style={{fontSize: 20, color: DIM}}>checks a day</div>
+              <div style={{fontSize: 24, color: DIM}}>checks a day</div>
             </div>
           </div>
         </PaperCard>
+        {/* v4: the spoken category, pinned under the cabinet as it is named */}
+        {hl && (() => {
+          const cp = spring({frame: f - hl.at, fps: 30, config: {damping: 12, stiffness: 260, mass: 0.5}});
+          const out = clamp01((f - 590) / 10);
+          return (
+            <div key={hl.label} style={{position: "absolute", left: CABINET.x + 40, top: CABINET.y + 470,
+              background: "#0b120e", border: `3px solid ${RED}`, padding: "14px 26px", borderRadius: 6,
+              fontFamily: "Arial,sans-serif", fontWeight: 800, fontSize: 46, letterSpacing: 3, color: CARD,
+              boxShadow: "0 16px 40px rgba(0,0,0,0.55)", opacity: cp * (1 - out),
+              transform: `translateY(${24 * (1 - cp)}px) rotate(-1.5deg)`}}>
+              <span style={{color: RED, marginRight: 16}}>&#9679;</span>{hl.label}
+            </div>
+          );
+        })()}
 
         {/* ALWAYS ON: terminal + 1967 chip + crossed-out office hours */}
         <div style={{position: "absolute", left: TERM.x - 330, top: TERM.y - 200, width: 660, height: 360,
@@ -334,11 +409,11 @@ export const BoardEpisode: React.FC = () => {
         <PaperCard x={TERM.x + 160} y={TERM.y - 150} rot={3} f={f} enter={776} w={330}>
           <div style={{fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 34, color: "#26352f"}}>since January 1967</div>
         </PaperCard>
-        <PaperCard x={TERM.x - 240} y={TERM.y + 260} rot={-2} f={f} enter={884} w={300}>
+        <PaperCard x={TERM.x - 240} y={TERM.y + 260} rot={-2} f={f} enter={860} w={300}>
           <div style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 30, color: "#26352f"}}>OFFICE HOURS 9-5</div>
           <svg width="280" height="60" style={{position: "absolute", left: 10, top: 10, overflow: "visible"}}>
-            <DrawOn paths={sLine(10, 30, 260, 30, RED, 9, 55)} p={clamp01((f - 896) / 12)}/>
-            <DrawOn paths={sLine(10, 50, 260, 10, RED, 9, 56)} p={clamp01((f - 902) / 12)}/>
+            <DrawOn paths={sLine(10, 30, 260, 30, RED, 9, 55)} p={clamp01((f - 887) / 8)}/>
+            <DrawOn paths={sLine(10, 50, 260, 10, RED, 9, 56)} p={clamp01((f - 893) / 8)}/>
           </svg>
         </PaperCard>
         {/* status dots */}
@@ -353,49 +428,41 @@ export const BoardEpisode: React.FC = () => {
         <div style={{position: "absolute", left: HUB.x - 130, top: HUB.y - 130, width: 260, height: 260,
           borderRadius: 130, border: `7px solid ${INK}`, display: "flex", alignItems: "center", justifyContent: "center",
           background: "#1d2b24", boxShadow: `0 0 ${30 + 40 * threadGlow}px rgba(224,73,46,${0.25 + 0.5 * threadGlow})`,
-          opacity: clamp01((f - 920) / 20), transform: `scale(${0.7 + 0.3 * clamp01((f - 920) / 20)})`}}>
-          <span style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 52, color: INK, letterSpacing: 6}}>NCIC</span>
+          opacity: clamp01((f - 920) / 20),
+          transform: `scale(${(0.7 + 0.3 * clamp01((f - 920) / 20)) * (1 + 0.12 * Math.sin(Math.PI * clamp01((f - 1087) / 14)))})`}}>
+          <span style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 52, color: INK, letterSpacing: 6, opacity: 1 - hubSwap}}>NCIC</span>
+          {/* v4: the hub itself becomes the open padlock - "a door the FBI can't lock". Drawn metaphor;
+              no traffic depicted through it. Caption carries the sentence, so no duplicate on-board text. */}
+          {f >= 1048 && (
+            <svg width="260" height="260" style={{position: "absolute", left: 0, top: 0, overflow: "visible", opacity: lockP}}>
+              <g transform="translate(130 150) scale(1.15)">
+                <g transform={`rotate(${shackleRot} -38 -20)`}><DrawOn paths={LOCK_SHACKLE} p={lockP}/></g>
+                <g transform="translate(-55 -20)"><DrawOn paths={LOCK_BODY} p={lockP}/></g>
+              </g>
+            </svg>
+          )}
         </div>
         {Array.from({length: 18}, (_, i) => {
           const a = (i / 18) * Math.PI * 2 - Math.PI / 2;
-          const r = 430;
+          const r = 330;
           const p = agencyPop(i);
           if (p <= 0) return null;
           return (
             <div key={"a" + i} style={{position: "absolute",
-              left: HUB.x + Math.cos(a) * r - 55, top: HUB.y + Math.sin(a) * r * 1.06 - 36,
-              width: 110, height: 72, background: CARD, border: "3px solid #26352f",
+              left: HUB.x + Math.cos(a) * r - 46, top: HUB.y + Math.sin(a) * r * 1.06 - 30,
+              width: 92, height: 60, background: CARD, border: "3px solid #26352f",
               transform: `scale(${0.4 + 0.6 * p})`, opacity: p, boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
               display: "flex", alignItems: "center", justifyContent: "center"}}>
-              <span style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 18, color: "#26352f"}}>AGENCY</span>
+              <svg width="40" height="34" viewBox="0 0 40 34">
+                <path d="M4 14 L20 4 L36 14 Z M8 16 V28 M16 16 V28 M24 16 V28 M32 16 V28 M4 30 H36" fill="none" stroke="#26352f" strokeWidth="3"/>
+              </svg>
             </div>
           );
         })}
-        <div style={{position: "absolute", left: HUB.x - 260, top: HUB.y + 330, width: 520, textAlign: "center",
-          fontFamily: "monospace", fontSize: 44, fontWeight: 700, color: GRN,
-    opacity: clamp01((f - 965) / 10) * (1 - Math.min(1, punchDim * 2.2))}}>
-          {counter90 >= 90000 ? "90,000+" : counter90.toLocaleString("en-US")}
-        </div>
-        <div style={{position: "absolute", left: HUB.x - 260, top: HUB.y + 386, width: 520, textAlign: "center",
-          fontFamily: "Arial,sans-serif", fontSize: 24, color: DIM, opacity: clamp01((f - 985) / 10)}}>agencies connected</div>
-        {/* drawn open padlock beside the hub: the door is open. No traffic depicted through it. */}
-        {f >= 1048 && (
-          <div style={{position: "absolute", left: HUB.x, top: 560, opacity: lockP}}>
-            <svg width="300" height="300" style={{overflow: "visible", transform: "translate(-150px -130px)"}}>
-              <g transform={`translate(150 150) rotate(${shackleRot} -38 -20)`}>
-                <DrawOn paths={LOCK_SHACKLE} p={lockP}/>
-              </g>
-              <g transform="translate(150 150)"><g transform="translate(-55 -20)"><DrawOn paths={LOCK_BODY} p={lockP}/></g></g>
-            </svg>
-            <div style={{position: "absolute", top: 230, width: 640, left: -320, textAlign: "center",
-              fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 54, color: INK,
-              opacity: clamp01((f - 1082) / 14)}}>a door the FBI can't lock.</div>
-          </div>
-        )}
 
         {/* BREACH: editorial only - AP card assembles; questions punch in the fixed overlay */}
         <PaperCard x={APCARD.x} y={APCARD.y} rot={-2} f={f} enter={1138} w={640}>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 20, color: DIM, letterSpacing: 3}}>ASSOCIATED PRESS, 21 NOV 2026</div>
+          <div style={{fontFamily: "Arial,sans-serif", fontSize: 24, color: DIM, letterSpacing: 2}}>ASSOCIATED PRESS, 21 NOV 2026</div>
           <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 40, color: "#26352f", marginTop: 10, lineHeight: 1.25}}>
             {["FBI investigating", "an apparent breach,", "found in recent days"].map((line, i) => {
               const lp = clamp01((f - (1155 + i * 13)) / 10);
@@ -404,22 +471,23 @@ export const BoardEpisode: React.FC = () => {
               );
             })}
           </div>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 16, color: DIM, marginTop: 12}}>apnews.com - single-source report; FBI had not publicly confirmed</div>
+          <div style={{fontFamily: "Arial,sans-serif", fontSize: 20, color: DIM, marginTop: 12}}>apnews.com - single-source report; FBI had not publicly confirmed</div>
         </PaperCard>
 
         {/* SECOND: claimed breach card + slow-creeping cracks (mechanism animates the dwell) */}
-        <PaperCard x={SECOND.x} y={SECOND.y} rot={2} f={f} enter={1422} w={560} stamp="CLAIMED" stampAt={1472}>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 20, color: DIM, letterSpacing: 3}}>TWO MONTHS EARLIER</div>
+        <PaperCard x={SECOND.x} y={SECOND.y} rot={2} f={f} enter={1452} w={560} stamp="CLAIMED" stampAt={1489}>
+          <div style={{fontFamily: "Arial,sans-serif", fontSize: 24, color: DIM, letterSpacing: 2}}>TWO MONTHS EARLIER</div>
           <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 34, color: "#26352f", marginTop: 10, lineHeight: 1.3}}>
             Extortion gang says it breached a platform behind the FBI's jobs website
           </div>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 16, color: DIM, marginTop: 12, paddingRight: 150, paddingBottom: 40}}>A claim, not proof - no indication the two are linked</div>
+          <div style={{fontFamily: "Arial,sans-serif", fontSize: 20, color: DIM, marginTop: 12, paddingRight: 150, paddingBottom: 40}}>A claim, not proof - no indication the two are linked</div>
         </PaperCard>
+        {/* v4: the crack runs on the board beside the card (never across its text), from "breached" toward the cause */}
         <svg width={W} height={H} style={{position: "absolute", inset: 0, pointerEvents: "none"}}>
-          <DrawOn paths={sPath("M5730 620 L5700 760 L5750 830 L5690 940 L5740 1050", RED, 5, 90)} p={clamp01((f - 1472) / 150)}/>
-          <DrawOn paths={sPath("M5700 760 L5640 800 M5750 830 L5810 860", RED, 4, 91)} p={clamp01((f - 1540) / 90)}/>
+          <DrawOn paths={sPath("M5610 860 L5585 960 L5625 1030 L5575 1110 L5612 1190", RED, 5, 90)} p={clamp01((f - 1503) / 89)}/>
+          <DrawOn paths={sPath("M5585 960 L5525 990 M5575 1110 L5515 1140", RED, 4, 91)} p={clamp01((f - 1540) / 52)}/>
         </svg>
-        <PaperCard x={SECOND.x + 80} y={SECOND.y + 470} rot={-3} f={f} enter={1588} w={380}>
+        <PaperCard x={SECOND.x + 60} y={SECOND.y + 490} rot={-3} f={f} enter={1588} w={380}>
           <div style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 26, color: "#26352f"}}>unpatched software</div>
           <svg width="340" height="120" style={{overflow: "visible"}}>
             <DrawOn paths={sRect(320, 100, "#26352f", 5, 61)} p={clamp01((f - 1594) / 12)}/>
@@ -429,25 +497,13 @@ export const BoardEpisode: React.FC = () => {
         </PaperCard>
 
         {/* STAKES: pullback; one last pulse arrives at the photo as the sentence lands */}
-        {f >= 1780 && (
-          <div style={{position: "absolute", left: TRAFFIC.x + 20, top: TRAFFIC.y + 640, width: 700,
-            fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 38, color: INK,
-            opacity: clamp01((f - 1790) / 16)}}>every line can put a real person in handcuffs.</div>
-        )}
+        {/* v4: no duplicate on-board sentence (caption carries it); the last query lands on the photo on "handcuffs" */}
         <svg width={W} height={H} style={{position: "absolute", inset: 0, pointerEvents: "none"}}>
-          <Pulse c={[3320, 620, 2800, 560, 2100, 520, 1500, 570]} f={f} start={1792} period={200} dur={42} r={12}/>
+          <Pulse c={[3320, 620, 2800, 560, 2100, 520, 1500, 570]} f={f} start={1688} period={400} dur={40} r={14}/>
         </svg>
       </div>
 
-      {/* foreground scraps (below fixed title/caption layers) */}
-      <div style={{...layerStyle(1.28, 7), opacity: 0.5, pointerEvents: "none"}}>
-        <div style={{position: "absolute", left: 900, top: 1500, width: 300, height: 380, background: CARD,
-          transform: `rotate(${14 + sway(f, 11)}deg)`}}/>
-        <div style={{position: "absolute", left: 2900, top: 650, width: 260, height: 330, background: "#d9d2ba",
-          transform: `rotate(${-11 + sway(f, 53)}deg)`}}/>
-        <div style={{position: "absolute", left: 5100, top: 1560, width: 280, height: 360, background: CARD,
-          transform: `rotate(${9 + sway(f, 91)}deg)`}}/>
-      </div>
+      {/* v4: blurred foreground scraps removed - on a phone they read as render glitches, not depth */}
 
       {/* dim (weakness beat) + punch dim */}
       <div style={{position: "absolute", inset: 0, background: "#050a08", opacity: Math.max(dim, punchDim), pointerEvents: "none"}}/>
@@ -456,14 +512,14 @@ export const BoardEpisode: React.FC = () => {
       <div style={{position: "absolute", left: 64, top: 84, pointerEvents: "none"}}>
         <div style={{fontFamily: "Arial,sans-serif", fontSize: 24, letterSpacing: 4, color: RED, opacity: clamp01(f / 18)}}>AMERICA'S CRIME DATABASE</div>
         <div key={headline} style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 70, color: INK, marginTop: 14,
-          opacity: clamp01((f - beatStart) / 14), maxWidth: 900}}>{headline}</div>
-        <div style={{width: 340 * clamp01((f - 10) / 22), height: 6, background: RED, marginTop: 16}}/>
+          opacity: headlineOp, maxWidth: 900}}>{headline}</div>
+        <div style={{width: 340 * clamp01((f - 10) / 22) * headlineOp, height: 6, background: RED, marginTop: 16}}/>
       </div>
 
       {/* FIXED overlay punches, locked to spoken words; sit above scene dim, below captions */}
       {punch && (
         <div style={{position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
-          flexDirection: "column", pointerEvents: "none", transform: "translateY(-140px)"}}>
+          flexDirection: "column", pointerEvents: "none", transform: `translateY(${punch.dy ?? -140}px)`}}>
           <div style={{transform: `scale(${0.6 + 0.4 * punchIn})`, opacity: punchIn, textAlign: "center"}}>
             <div style={{fontFamily: "Arial,sans-serif", fontWeight: 800, fontSize: 96, color: INK, letterSpacing: 4,
               textShadow: "0 6px 40px rgba(0,0,0,0.7)"}}>{punch.text}</div>
@@ -483,8 +539,21 @@ export const BoardEpisode: React.FC = () => {
       {/* OUT: fade to end card */}
       <div style={{position: "absolute", inset: 0, background: BOARD, opacity: clamp01((f - 1904) / 30), pointerEvents: "none",
         display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column"}}>
-        <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 84, color: INK, opacity: clamp01((f - 1916) / 20)}}>Tech Who Knows</div>
-        <div style={{fontFamily: "Arial,sans-serif", fontSize: 30, color: RED, letterSpacing: 6, marginTop: 18, opacity: clamp01((f - 1930) / 20)}}>FOLLOW FOR THE NEXT ONE</div>
+        {/* v4: exact handle per README end-card rule; slow push + a query pulse looping the underline so it never parks */}
+        <div style={{transform: `scale(${1 + 0.05 * clamp01((f - 1904) / 142)})`, textAlign: "center"}}>
+          <div style={{fontFamily: "Arial,sans-serif", fontSize: 30, color: DIM, letterSpacing: 6, opacity: clamp01((f - 1916) / 16)}}>TECH WHO KNOWS</div>
+          <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 92, color: INK, marginTop: 14,
+            opacity: clamp01((f - 1922) / 16), transform: `translateY(${18 * (1 - clamp01((f - 1922) / 16))}px)`}}>Follow @techwhoknows</div>
+          <svg width="760" height="40" style={{marginTop: 18, overflow: "visible"}}>
+            <DrawOn paths={sLine(20, 20, 740, 20, RED, 7, 95)} p={clamp01((f - 1936) / 20)}/>
+            {f >= 1956 && (() => {
+              const t = ((f - 1956) % 45) / 45;
+              const x = 20 + 720 * t;
+              const env = Math.sin(Math.PI * t);
+              return <g opacity={env}><circle cx={x} cy={20} r={26} fill={RED} opacity={0.2}/><circle cx={x} cy={20} r={11} fill={RED}/><circle cx={x} cy={20} r={5} fill="#fff4ec"/></g>;
+            })()}
+          </svg>
+        </div>
       </div>
     </div>
   );
