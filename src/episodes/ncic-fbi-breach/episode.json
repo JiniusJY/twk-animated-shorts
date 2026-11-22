@@ -1131,86 +1131,308 @@
  ],
  "cues": [
   {
-   "t": 0.2,
-   "kind": "whoosh",
-   "gain": 0.3,
-   "pan": -0.2
+   "t": 0.033,
+   "kind": "punch",
+   "gain": 0.26
+  },
+  {
+   "t": 1.533,
+   "kind": "thud",
+   "gain": 0.5
   },
   {
    "t": 3.1,
-   "kind": "pop",
-   "gain": 0.25
+   "kind": "punch",
+   "gain": 0.26
   },
   {
-   "t": 5.0,
+   "t": 3.627,
    "kind": "relay",
-   "gain": 0.4
+   "gain": 0.35
+  },
+  {
+   "t": 6.147,
+   "kind": "relay",
+   "gain": 0.3
+  },
+  {
+   "t": 7.939,
+   "kind": "chime",
+   "gain": 0.22
   },
   {
    "t": 8.7,
+   "kind": "punch",
+   "gain": 0.26
+  },
+  {
+   "t": 8.864,
+   "kind": "whoosh",
+   "gain": 0.22
+  },
+  {
+   "t": 9.703,
+   "kind": "whoosh",
+   "gain": 0.22
+  },
+  {
+   "t": 10.443,
+   "kind": "pop",
+   "gain": 0.2
+  },
+  {
+   "t": 11.133,
+   "kind": "clack",
+   "gain": 0.1,
+   "pan": -0.2
+  },
+  {
+   "t": 11.167,
+   "kind": "punch",
+   "gain": 0.26
+  },
+  {
+   "t": 11.433,
+   "kind": "clack",
+   "gain": 0.1,
+   "pan": 0.2
+  },
+  {
+   "t": 11.733,
+   "kind": "clack",
+   "gain": 0.1,
+   "pan": -0.2
+  },
+  {
+   "t": 12.033,
+   "kind": "clack",
+   "gain": 0.1,
+   "pan": 0.2
+  },
+  {
+   "t": 12.333,
+   "kind": "clack",
+   "gain": 0.1,
+   "pan": -0.2
+  },
+  {
+   "t": 12.633,
+   "kind": "clack",
+   "gain": 0.1,
+   "pan": 0.2
+  },
+  {
+   "t": 12.933,
+   "kind": "clack",
+   "gain": 0.1,
+   "pan": -0.2
+  },
+  {
+   "t": 17.0,
+   "kind": "punch",
+   "gain": 0.26
+  },
+  {
+   "t": 17.1,
+   "kind": "clack",
+   "gain": 0.09
+  },
+  {
+   "t": 17.167,
+   "kind": "clack",
+   "gain": 0.09
+  },
+  {
+   "t": 17.233,
+   "kind": "clack",
+   "gain": 0.09
+  },
+  {
+   "t": 17.3,
+   "kind": "clack",
+   "gain": 0.09
+  },
+  {
+   "t": 17.367,
+   "kind": "clack",
+   "gain": 0.09
+  },
+  {
+   "t": 17.433,
+   "kind": "clack",
+   "gain": 0.09
+  },
+  {
+   "t": 17.5,
+   "kind": "clack",
+   "gain": 0.09
+  },
+  {
+   "t": 17.567,
+   "kind": "clack",
+   "gain": 0.09
+  },
+  {
+   "t": 17.633,
+   "kind": "clack",
+   "gain": 0.09
+  },
+  {
+   "t": 17.7,
+   "kind": "clack",
+   "gain": 0.09
+  },
+  {
+   "t": 19.267,
+   "kind": "chime",
+   "gain": 0.18
+  },
+  {
+   "t": 20.067,
+   "kind": "punch",
+   "gain": 0.26
+  },
+  {
+   "t": 20.3,
    "kind": "chime",
    "gain": 0.2
   },
   {
-   "t": 11.2,
-   "kind": "whoosh",
-   "gain": 0.25,
-   "pan": 0.2
-  },
-  {
-   "t": 16.8,
+   "t": 20.967,
    "kind": "tick",
-   "gain": 0.18
+   "gain": 0.07
   },
   {
-   "t": 20.0,
+   "t": 21.9,
    "kind": "tick",
-   "gain": 0.15
+   "gain": 0.07
   },
   {
-   "t": 24.4,
-   "kind": "whoosh",
-   "gain": 0.22
+   "t": 22.833,
+   "kind": "tick",
+   "gain": 0.07
+  },
+  {
+   "t": 23.767,
+   "kind": "tick",
+   "gain": 0.07
+  },
+  {
+   "t": 24.7,
+   "kind": "tick",
+   "gain": 0.07
+  },
+  {
+   "t": 25.633,
+   "kind": "tick",
+   "gain": 0.07
+  },
+  {
+   "t": 26.567,
+   "kind": "tick",
+   "gain": 0.07
   },
   {
    "t": 27.5,
-   "kind": "pop",
+   "kind": "tick",
+   "gain": 0.07
+  },
+  {
+   "t": 27.7,
+   "kind": "punch",
+   "gain": 0.26
+  },
+  {
+   "t": 28.457,
+   "kind": "snap",
+   "gain": 0.16
+  },
+  {
+   "t": 28.773,
+   "kind": "snap",
+   "gain": 0.16
+  },
+  {
+   "t": 29.089,
+   "kind": "snap",
+   "gain": 0.16
+  },
+  {
+   "t": 29.773,
+   "kind": "riser",
    "gain": 0.22
   },
   {
-   "t": 30.3,
-   "kind": "riser",
-   "gain": 0.35
+   "t": 30.333,
+   "kind": "punch",
+   "gain": 0.26
   },
   {
-   "t": 35.3,
-   "kind": "powerdown",
-   "gain": 0.5
-  },
-  {
-   "t": 38.4,
-   "kind": "whoosh",
-   "gain": 0.25
-  },
-  {
-   "t": 42.0,
+   "t": 34.737,
    "kind": "snap",
    "gain": 0.3
   },
   {
-   "t": 45.3,
-   "kind": "relay",
+   "t": 35.301,
+   "kind": "alarm",
    "gain": 0.4
   },
   {
-   "t": 49.2,
-   "kind": "chime",
-   "gain": 0.25
+   "t": 35.368,
+   "kind": "pop",
+   "gain": 0.18
   },
   {
-   "t": 52.5,
-   "kind": "startup",
-   "gain": 0.35
+   "t": 36.013,
+   "kind": "pop",
+   "gain": 0.18
+  },
+  {
+   "t": 36.659,
+   "kind": "pop",
+   "gain": 0.18
+  },
+  {
+   "t": 38.4,
+   "kind": "punch",
+   "gain": 0.26
+  },
+  {
+   "t": 38.567,
+   "kind": "pop",
+   "gain": 0.2,
+   "pan": -0.2
+  },
+  {
+   "t": 38.833,
+   "kind": "pop",
+   "gain": 0.22,
+   "pan": 0.2
+  },
+  {
+   "t": 42.517,
+   "kind": "whoosh",
+   "gain": 0.2
+  },
+  {
+   "t": 42.932,
+   "kind": "chime",
+   "gain": 0.18
+  },
+  {
+   "t": 46.7,
+   "kind": "punch",
+   "gain": 0.26
+  },
+  {
+   "t": 46.733,
+   "kind": "thud",
+   "gain": 0.3
+  },
+  {
+   "t": 49.967,
+   "kind": "flash",
+   "gain": 0.2
   }
  ],
  "slug": "ncic-fbi-breach",

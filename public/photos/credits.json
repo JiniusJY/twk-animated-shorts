@@ -1,0 +1,26 @@
+{
+ "fbi-hq": {
+  "license": "Public domain",
+  "author": "FBI photo, public domain, via Wikimedia Commons",
+  "desc": "J. Edgar Hoover Building (FBI HQ), Washington DC",
+  "source": "https://upload.wikimedia.org/wikipedia/commons/1/1c/J._Edgar_Hoover_Building_0f184ad7-6623-4d39-8739-c5929cad2daf.jpg"
+ },
+ "cjis-aerial": {
+  "license": "Public domain",
+  "author": "FBI photo, public domain, via Wikimedia Commons",
+  "desc": "FBI CJIS facility, Clarksburg WV - home of NCIC",
+  "source": "https://upload.wikimedia.org/wikipedia/commons/4/44/Aerial_Photo_of_CJIS_Facility.jpg"
+ },
+ "server-rack": {
+  "license": "Public domain",
+  "author": "Public domain, via Wikimedia Commons",
+  "desc": "data center server rack",
+  "source": "https://upload.wikimedia.org/wikipedia/commons/a/a1/EFTA00002518_-_Server_rack_with_multiple_hard_drives_and_network_cables_connected_in_a_data_center_environment.jpg"
+ },
+ "traffic-stop": {
+  "license": "CC BY-SA 4.0",
+  "author": "Ildar Sagdejev (Specious), CC BY-SA 4.0, via Wikimedia Commons",
+  "desc": "night traffic stop (file photo)",
+  "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/2004-02-25_Night_traffic_stop_in_Durham_1.jpg/1280px-2004-02-25_Night_traffic_stop_in_Durham_1.jpg"
+ }
+}

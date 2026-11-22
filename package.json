@@ -14,6 +14,8 @@
     "@react-three/fiber": "^9.8.2",
     "@react-three/postprocessing": "^3.2.2",
     "@remotion/cli": "4.0.545",
+    "@remotion/paths": "^4.0.545",
+    "@remotion/shapes": "^4.0.545",
     "@remotion/three": "4.0.545",
     "postprocessing": "^6.39.6",
     "react": "^19.0.0",

@@ -130,6 +130,38 @@ def synth_cue(kind: str, r) -> np.ndarray:
         phase = 2*np.pi*(f0*t+(f1-f0)*t*t/(2*dur))
         envelope = (t/dur)**1.6 if kind == "riser" else np.exp(-t*4)
         return fades((np.sin(phase)*0.22 + np.sin(phase*2.01)*0.06)*envelope, 0.008, 0.05)
+    if kind == "punch":
+        # Punch-in transition: short airy whoosh into a soft low impact.
+        a = S.whoosh(0.16, r, peak=0.34, f_lo=500, f_hi=3200, tail=0.10)
+        b = I.timpani(72.0, vel=0.5, r=r, dur=0.5)
+        out = np.zeros(max(len(a), len(b) + ns(0.09)))
+        out[: len(a)] += a
+        out[ns(0.09) : ns(0.09) + len(b)] += b * 0.8
+        return out
+    if kind == "thud":
+        # Stamp slam: low body + paper smack.
+        a = I.timpani(55.0, vel=0.9, r=r, dur=0.7)
+        b = fades(r.normal(0, 0.5, ns(0.05)) * np.exp(-np.arange(ns(0.05)) / SR * 90), 0.002, 0.02)
+        out = np.zeros(max(len(a), len(b)))
+        out[: len(a)] += a
+        out[: len(b)] += b
+        return out
+    if kind == "clack":
+        # Drawer/drum-tile pop: bright mechanical tick.
+        a = S.clink(r, f0=1320.0, dur=0.05, bright=1.2)
+        b = S.boot(r, hard=0.35)
+        out = np.zeros(max(len(a), len(b)))
+        out[: len(a)] += a * 0.8
+        out[: len(b)] += b * 0.5
+        return out
+    if kind == "alarm":
+        # Two-tone alert pulse for the breach beat.
+        dur = 0.7
+        t = np.arange(ns(dur)) / SR
+        f0 = np.where(t % 0.35 < 0.175, 660.0, 520.0)
+        phase = 2 * np.pi * np.cumsum(f0) / SR
+        env = np.minimum(1.0, t / 0.02) * np.exp(-t * 2.2)
+        return fades(np.sin(phase) * 0.18 * env, 0.005, 0.1)
     if kind == "whoosh":
         return S.whoosh(0.28, r, peak=0.4, f_lo=300, f_hi=2400)
     if kind == "pop":

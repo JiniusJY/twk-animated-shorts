@@ -1,5 +1,7 @@
 import React from "react";
 import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from "remotion";
+import {evolvePath} from "@remotion/paths";
+import {Circle} from "@remotion/shapes";
 import type {ShotDef} from "./types";
 
 /**
@@ -55,7 +57,7 @@ const fitSize=(text:string,maxW:number,base:number,weight:string="700",family:st
  * a micro-rotation, and a punch-in over its first frames so each cut reads
  * as an edit beat instead of a slide change. Deterministic per frame.
  */
-const Paper:React.FC<{shot:ShotDef;children:React.ReactNode}>=({shot,children})=>{
+const Paper:React.FC<{shot:ShotDef;dark?:boolean;children:React.ReactNode}>=({shot,dark,children})=>{
  const f=useCurrentFrame();
  const live=0.25+0.75*Math.abs(Math.sin(f/9));
  const rt=f-shot.a, rspan=Math.max(1,shot.b-shot.a), ru=Math.max(0,Math.min(1,rt/rspan));
@@ -65,14 +67,16 @@ const Paper:React.FC<{shot:ShotDef;children:React.ReactNode}>=({shot,children})=
  const dx=5*Math.sin(f*0.021+shot.a*0.37);
  const dy=3.5*Math.sin(f*0.017+shot.a*0.53+1.7);
  const rot=0.3*Math.sin(f*0.012+shot.a*0.21);
- return <AbsoluteFill style={{background:P}}>
+ return <AbsoluteFill style={{background:dark?"#16221d":P}}>
   <svg viewBox="0 0 1080 1920" width="100%" height="100%" style={{fontFamily:"Georgia,serif"}}>
    <defs>
     <pattern id="ncic-grain" width="31" height="29" patternUnits="userSpaceOnUse"><path d="M3 6h1m15 8h1m-9 11h1" stroke={I} opacity=".055"/></pattern>
     <marker id="ncic-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0L8 4 0 8" fill="none" stroke={R} strokeWidth="1.5"/></marker>
     <marker id="ncic-arrow-ink" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0L8 4 0 8" fill="none" stroke={I} strokeWidth="1.5"/></marker>
     <marker id="ncic-arrow-green" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0L8 4 0 8" fill="none" stroke={G} strokeWidth="1.5"/></marker>
+    <filter id="ncic-sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" floodColor="#26352f" floodOpacity="0.28"/></filter>
    </defs>
+   <image href={staticFile(dark?"paper-dark-tex.png":"paper-tex.png")} x="0" y="0" width="1080" height="1920" preserveAspectRatio="xMidYMid slice"/>
    <rect width="1080" height="1920" fill="url(#ncic-grain)"/>
    <g transform={`translate(${(540+dx).toFixed(1)} ${(960+dy).toFixed(1)}) scale(${sc.toFixed(4)}) rotate(${rot.toFixed(2)}) translate(-540 -960)`}>
    <text x="64" y="155" fill={R} fontFamily="Arial,sans-serif" fontSize="23" letterSpacing="3">{KICKER}</text>
@@ -85,18 +89,35 @@ const Paper:React.FC<{shot:ShotDef;children:React.ReactNode}>=({shot,children})=
  </AbsoluteFill>;
 };
 
-const Headline:React.FC<{text:string;size?:number}>=({text,size=73})=>(
+const Headline:React.FC<{text:string;size?:number;ink?:string}>=({text,size=73,ink=I})=>(
  <>
-  <text x="64" y="255" fill={I} fontSize={fitSize(text,952,size,"400","Georgia,serif")} letterSpacing="-3">{text}</text>
+  <text x="64" y="255" fill={ink} fontSize={fitSize(text,952,size,"400","Georgia,serif")} letterSpacing="-3">{text}</text>
   <path d="M65 292Q320 298 590 289" fill="none" stroke={R} strokeWidth="3"/>
  </>
 );
+
+/** A treated real photo presented as a bordered print, spring-in, printed credit (owner label rule: real imagery carries credit). */
+const PhotoCard:React.FC<{src:string;x:number;y:number;w:number;rot?:number;pop:number;credit:string}> = ({src,x,y,w,rot=0,pop,credit})=>{
+ const sp=Math.min(1,pop);
+ const h=Math.round(w*0.62);
+ return <g transform={`translate(${x+w/2} ${y+h/2}) rotate(${rot}) scale(${(0.7+0.3*sp).toFixed(3)}) translate(${-(x+w/2)} ${-(y+h/2)})`} opacity={Math.min(1,sp*1.6)}>
+  <rect x={x-12} y={y-12} width={w+24} height={h+58} fill="#fdfcf6" filter="url(#ncic-sh)"/>
+  <image href={staticFile(src)} x={x} y={y} width={w} height={h} preserveAspectRatio="xMidYMid slice"/>
+  <text x={x} y={y+h+32} fill={I} opacity=".75" fontFamily="Arial,sans-serif" fontSize="19">{credit}</text>
+ </g>;
+};
+
+/** Hand-drawn red scribble (circle/arrow/highlight) drawn on via @remotion/paths - the editorial markup energy. */
+const Scribble:React.FC<{d:string;p:number;w?:number}> = ({d,p,w=6})=>{
+ const e=evolvePath(Math.max(0,Math.min(1,p)),d);
+ return <path d={d} fill="none" stroke={R} strokeWidth={w} strokeLinecap="round" strokeDasharray={e.strokeDasharray} strokeDashoffset={e.strokeDashoffset}/>;
+};
 
 /** A steel drawer with handle and label slot. The plate is fixed; the label font now fits the plate. */
 const Drawer:React.FC<{x:number;y:number;w:number;h:number;label?:string;hot?:boolean;opacity?:number}>=({x,y,w,h,label,hot,opacity=1})=>{
  const fs=label?fitSize(label,w*0.64-24,Math.min(30,w*0.11)):0;
  return <g opacity={opacity}>
-  <rect x={x} y={y} width={w} height={h} rx="6" fill={hot?"#e4d7c8":"#d4d2bf"} stroke={hot?R:I} strokeWidth={hot?5:3}/>
+  <rect x={x} y={y} width={w} height={h} rx="6" fill={hot?"#e4d7c8":"#d4d2bf"} stroke={hot?R:I} strokeWidth={hot?5:3} filter="url(#ncic-sh)"/>
   <rect x={x+w*0.18} y={y+h*0.16} width={w*0.64} height={h*0.34} rx="3" fill={P} stroke={I} strokeWidth="2"/>
   <rect x={x+w*0.38} y={y+h*0.62} width={w*0.24} height={h*0.14} rx={h*0.07} fill={I}/>
   {label&&<text x={x+w/2} y={y+h*0.33+fs*0.36} textAnchor="middle" fill={hot?R:I} fontFamily="Arial,sans-serif" fontSize={fs} fontWeight="700">{label}</text>}
@@ -104,9 +125,9 @@ const Drawer:React.FC<{x:number;y:number;w:number;h:number;label?:string;hot?:bo
 };
 
 /** A door: the unit of attack surface. */
-const Door:React.FC<{x:number;y:number;s?:number;hot?:boolean;open?:number}>=({x,y,s=1,hot,open=0})=>(
+const Door:React.FC<{x:number;y:number;s?:number;hot?:boolean;open?:number;ink?:string}>=({x,y,s=1,hot,open=0,ink=I})=>(
  <g transform={`translate(${x} ${y}) scale(${s})`}>
-  <rect x="-34" y="-60" width="68" height="120" rx="4" fill="#d4d2bf" stroke={hot?R:I} strokeWidth={hot?5:3}/>
+  <rect x="-34" y="-60" width="68" height="120" rx="4" fill="#d4d2bf" stroke={hot?R:ink} strokeWidth={hot?5:3} filter="url(#ncic-sh)"/>
   <g style={{transformOrigin:"-30px 0px",transform:`perspective(300px) rotateY(${-open*70}deg)`}}>
    <rect x="-30" y="-54" width="60" height="108" rx="3" fill={hot?"#e9cdbd":P} stroke={hot?R:I} strokeWidth="3"/>
    <circle cx="18" cy="0" r="5" fill={hot?R:I}/>
@@ -115,11 +136,11 @@ const Door:React.FC<{x:number;y:number;s?:number;hot?:boolean;open?:number}>=({x
 );
 
 /** The NCIC core: one database cylinder. */
-const Core:React.FC<{x:number;y:number;s?:number;alarm?:number}>=({x,y,s=1,alarm=0})=>(
- <g transform={`translate(${x} ${y}) scale(${s})`}>
-  <ellipse cx="0" cy="150" rx="150" ry="26" fill={I} opacity=".08"/>
-  <path d="M-130-110H130V110Q130 150 0 150Q-130 150-130 110Z" fill={alarm>0.5?"#e4c4b4":"#d4d2bf"} stroke={alarm>0.5?R:I} strokeWidth="5"/>
-  <ellipse cx="0" cy="-110" rx="130" ry="34" fill={alarm>0.5?"#e9cdbd":P} stroke={alarm>0.5?R:I} strokeWidth="5"/>
+const Core:React.FC<{x:number;y:number;s?:number;alarm?:number;ink?:string}>=({x,y,s=1,alarm=0,ink=I})=>(
+ <g transform={`translate(${x} ${y}) scale(${s})`} filter="url(#ncic-sh)">
+  <ellipse cx="0" cy="150" rx="150" ry="26" fill={ink} opacity=".08"/>
+  <path d="M-130-110H130V110Q130 150 0 150Q-130 150-130 110Z" fill={alarm>0.5?"#e4c4b4":"#d4d2bf"} stroke={alarm>0.5?R:ink} strokeWidth="5"/>
+  <ellipse cx="0" cy="-110" rx="130" ry="34" fill={alarm>0.5?"#e9cdbd":P} stroke={alarm>0.5?R:ink} strokeWidth="5"/>
   {[-45,10,65].map((yy,i)=><path key={i} d={`M-130 ${yy}Q0 ${yy+40} 130 ${yy}`} fill="none" stroke={alarm>0.5?R:I} strokeWidth="3" opacity=".55"/>)}
   <text x="0" y="30" textAnchor="middle" fill={alarm>0.5?R:I} fontFamily="Arial,sans-serif" fontWeight="700" fontSize="44">NCIC</text>
   {alarm>0.5&&<text x="0" y="200" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontSize="30" letterSpacing="4">APPARENT BREACH</text>}
@@ -153,6 +174,8 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <text x="200" y="48" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontWeight="700" fontSize={fitSize("APPARENT BREACH",360,38)} letterSpacing="3">APPARENT BREACH</text>
     <text x="200" y="88" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontSize={fitSize("FBI INVESTIGATING · UNCONFIRMED",360,24,"400")}>FBI INVESTIGATING · UNCONFIRMED</text>
    </g>}
+   <PhotoCard src="photos/fbi-hq.jpg" x={776} y={530} w={224} rot={4} pop={popAt(6)} credit="FBI HQ · FBI photo (PD)"/>
+   <Scribble d="M310 745a235 95 0 1 1 470 0a235 95 0 1 1 -470 0" p={Math.max(0,Math.min(1,(u-0.52)/0.22))}/>
    <text x="540" y="1330" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">The FBI's own crime database, reported hacked. Nov 2026.</text>
   </Paper>;
  }
@@ -179,6 +202,8 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <text x="110" y="70" textAnchor="middle" fill={I} fontFamily="'Courier New',monospace" fontWeight="700" fontSize={fitSize("8JXK-204",196,52,"700","'Courier New',monospace")}>8JXK-204</text>
     <text x="110" y="150" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize={fitSize("PLATE CHECK",196,20,"400")}>PLATE CHECK</text>
    </g>
+   <PhotoCard src="photos/traffic-stop.jpg" x={700} y={330} w={330} rot={3} pop={popAt(4)} credit="Photo: I. Sagdejev, CC BY-SA 4.0"/>
+   <Scribble d="M110 650a165 105 0 1 1 330 0a165 105 0 1 1 -330 0" p={Math.max(0,Math.min(1,(u-0.2)/0.18))}/>
    {/* NCIC building */}
    <g transform={`translate(840 740) scale(${br(2.6).toFixed(4)}) translate(-840 -740) translate(700 580)`}>
     <path d="M0 320V60L60 0H220L280 60V320Z" fill="#d4d2bf" stroke={I} strokeWidth="5"/>
@@ -245,7 +270,8 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
    <Headline text="Built to be checked."/>
    {drum(520,"ACTIVE RECORDS","","12,000,000")}
    {drum(890,"CHECKS PER DAY","","10,000,000",true)}
-   <text x="540" y="1300" textAnchor="middle" fill={R} fontSize="46" fontStyle="italic">one answer can change a stop</text>
+   <PhotoCard src="photos/server-rack.jpg" x={64} y={1140} w={264} rot={-2} pop={popAt(18)} credit="Server rack · PD, via Wikimedia"/>
+   <text x="610" y="1310" textAnchor="middle" fill={R} fontSize="46" fontStyle="italic">one answer can change a stop</text>
   </Paper>;
  }
 
@@ -272,6 +298,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <text x="150" y="1340" fill={I} fontFamily="Arial,sans-serif" fontSize="26">JAN 27, 1967</text>
     <text x="930" y="1340" textAnchor="end" fill={I} fontFamily="Arial,sans-serif" fontSize="26">TODAY</text>
    </g>
+   <PhotoCard src="photos/cjis-aerial.jpg" x={740} y={330} w={280} rot={3} pop={popAt(10)} credit="FBI CJIS facility, WV · FBI photo (PD)"/>
    <text x="540" y="1400" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">on call for police every hour of every day since</text>
   </Paper>;
  }
@@ -310,19 +337,22 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
   const a=-Math.PI/2+(7/18)*Math.PI*2;
   const door={x:540+Math.cos(a)*380,y:810+Math.sin(a)*400};
   const px=door.x+(540-door.x)*pulse, py=door.y+(810-door.y)*pulse;
-  return <Paper shot={shot}>
-   <Headline text="One door was used." size={66}/>
+  return <Paper shot={shot} dark>
+   <Headline text="One door was used." size={66} ink="#f1eddd"/>
    <g transform={`translate(540 810) scale(${br(0.6).toFixed(4)}) translate(-540 -810)`}>
    {Array.from({length:18},(_,i)=>{
     const aa=(i/18)*Math.PI*2-Math.PI/2;
     const dx=540+Math.cos(aa)*380, dy=810+Math.sin(aa)*400;
     const isDoor=i===7;
     return <g key={i}>
-     <path d={`M540 810L${dx} ${dy}`} stroke={isDoor?R:I} strokeWidth={isDoor?6:2.5} opacity={isDoor?1:0.45}/>
-     <Door x={dx} y={dy} s={0.75} hot={isDoor} open={isDoor?1:0}/>
+     <path d={`M540 810L${dx} ${dy}`} stroke={isDoor?R:"#f1eddd"} strokeWidth={isDoor?6:2.5} opacity={isDoor?1:0.4}/>
+     <Door x={dx} y={dy} s={0.75} hot={isDoor} open={isDoor?1:0} ink="#f1eddd"/>
     </g>;
    })}
-   <Core x={540} y={810} s={0.9} alarm={alarm}/>
+   <Core x={540} y={810} s={0.9} alarm={alarm} ink="#f1eddd"/>
+   {u>0.62&&<g transform="translate(540 810)" opacity={0.5+0.5*Math.sin(f*0.35)}>
+    <Circle radius={175+8*Math.sin(f*0.3)} fill="none" stroke={R} strokeWidth={4}/>
+   </g>}
    </g>
    {pulse<1&&<circle cx={px} cy={py} r="16" fill={R}/>}
    {u>0.62&&<g transform={`translate(140 1260)`}>
@@ -334,7 +364,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
      </g>
     ))}
    </g>}
-   <text x="540" y="1460" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="24">Apparent breach discovered in recent days. Nov 2026.</text>
+   <text x="540" y="1460" textAnchor="middle" fill="#f1eddd" fontFamily="Arial,sans-serif" fontSize="24">Apparent breach discovered in recent days. Nov 2026.</text>
   </Paper>;
  }
 

@@ -32,7 +32,7 @@ const EXPRS = [
   "relief_open", "dazed", "pained", "smile", "smile_closed", "lick",
 ];
 const FX_KINDS = ["burst", "stars", "notes", "puff", "ring", "splash", "creak"];
-const CUE_KINDS = ["whoosh", "pop", "cash", "boom", "snap", "flash", "chime", "tick", "riser", "powerdown", "startup", "relay"];
+const CUE_KINDS = ["whoosh", "pop", "cash", "boom", "snap", "flash", "chime", "tick", "riser", "powerdown", "startup", "relay", "punch", "thud", "clack", "alarm"];
 const EASES = ["smooth", "out", "linear"];
 const ACTION_TYPES = ["leverAngle", "counterValue", "generatorState", "beaconIntensity", "clockHands", "wheelRotation"];
 
