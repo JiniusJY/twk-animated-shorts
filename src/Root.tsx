@@ -4,6 +4,7 @@ import { StoryShort } from "./engine/StoryShort";
 import { RoughTest } from "./engine/RoughTest";
 import { UnfoldTest } from "./engine/UnfoldTest";
 import { BoardTest } from "./engine/BoardTest";
+import { BoardEpisode } from "./engine/BoardEpisode";
 import { EPISODES } from "./episodes/registry";
 
 export const RemotionRoot: React.FC = () => {
@@ -29,6 +30,14 @@ export const RemotionRoot: React.FC = () => {
         id="unfold-test"
         component={UnfoldTest}
         durationInFrames={415}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="board-ep2"
+        component={BoardEpisode}
+        durationInFrames={2046}
         fps={30}
         width={1080}
         height={1920}
