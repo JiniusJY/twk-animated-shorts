@@ -28,7 +28,7 @@ from editorial import narration_warp
 import sfx_gen as S  # noqa: E402
 
 TARGET_LUFS = -15.0
-CEIL_DB = -1.6
+CEIL_DB = -2.2  # sample-peak ceiling; leaves ~1.2dB headroom for lossy (AAC) intersample overshoot so the muxed QA true-peak stays under -1.0 dBTP
 
 
 def duck_envelope(n_samples: int, words: list[dict], duck_db: float = -3.5) -> np.ndarray:
