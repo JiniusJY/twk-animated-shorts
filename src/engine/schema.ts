@@ -17,7 +17,7 @@ import type {
   CaptionsConfig,
 } from "./types";
 
-const WORLDS = ["office", "town", "server_room", "tarmac", "courtroom"];
+const WORLDS = ["office", "town", "server_room", "tarmac", "courtroom", "federal"];
 const MOODS = ["march", "playful", "tense", "mystery"];
 const LIGHTS = ["day", "golden"];
 const PROP_KINDS = [

@@ -506,8 +506,159 @@ export function buildWorldEnvironment(preset: WorldPreset, mode: "day" | "golden
     addBox(g, 28, 10, 0.8, 0, 5, -12, wallMat);
     addBox(g, 9.5, 2.4, 2.8, 0, 1.2, -7.5, woodMat);
     addBox(g, 16, 1.2, 0.45, 0, 0.6, -2.2, woodMat);
+  } else if (preset === "federal") {
+    // Federal law-enforcement HQ (J. Edgar Hoover style): stone plaza, columned portico,
+    // pediment with a gold star seal, double doors, FBI banners, flag. Story-world match
+    // rule (CONTENT_SYSTEM): FBI stories stage here, not in a generic street.
+    addCloudsAndHills(g, mode, true);
+
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(groundSize, groundSize),
+      toonMat("fedGrass", { map: grassTex })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    g.add(ground);
+
+    // Stone plaza apron
+    const plaza = new THREE.Mesh(
+      new THREE.PlaneGeometry(80, 52),
+      toonMat("fedPlaza", { map: rep(stone("fedPlazaStone"), 18, 12), color: "#b9bdc6" })
+    );
+    plaza.rotation.x = -Math.PI / 2;
+    plaza.position.set(0, 0.015, -1);
+    plaza.receiveShadow = true;
+    g.add(plaza);
+
+    // Main facade + side wings (window grid via facade texture)
+    const wallMat = toonMat("fedWall", {
+      map: facade("fedFacade", 30, 12, { wall: "#d8d2c4", shutter: "#4d5566", brick: false }),
+    });
+    addBox(g, 34, 12, 2, 0, 6, -16.5, wallMat);
+    addBox(g, 12, 9, 3.5, -22, 4.5, -15.5, wallMat);
+    addBox(g, 12, 9, 3.5, 22, 4.5, -15.5, wallMat);
+
+    // Steps up to the portico
+    const stepMat = toonMat("fedSteps", { map: stone("fedStepStone"), color: "#c9c3b4" });
+    addBox(g, 21, 0.34, 3.4, 0, 0.17, -11.4, stepMat);
+    addBox(g, 20, 0.34, 2.7, 0, 0.51, -12.1, stepMat);
+    addBox(g, 19, 0.36, 2.1, 0, 0.86, -12.8, stepMat);
+
+    // Six limestone columns with bases + capitals
+    const colMat = toonMat("fedColumn", { map: stone("fedColStone"), color: "#efe9db" });
+    for (const cx of [-7.5, -4.5, -1.5, 1.5, 4.5, 7.5]) {
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.64, 8.2, 14), colMat);
+      col.position.set(cx, 1.04 + 4.1, -13.9);
+      col.castShadow = true;
+      col.receiveShadow = true;
+      g.add(col);
+      addBox(g, 1.5, 0.36, 1.5, cx, 9.5, -13.9, colMat);
+      addBox(g, 1.45, 0.42, 1.45, cx, 1.25, -13.9, colMat);
+    }
+
+    // Entablature + triangular pediment
+    addBox(g, 20, 1.25, 2.7, 0, 10.35, -14.3, colMat);
+    const pedShape = new THREE.Shape();
+    pedShape.moveTo(-10.4, 0);
+    pedShape.lineTo(10.4, 0);
+    pedShape.lineTo(0, 3.3);
+    pedShape.closePath();
+    const ped = new THREE.Mesh(
+      new THREE.ExtrudeGeometry(pedShape, { depth: 2.3, bevelEnabled: false }),
+      toonMat("fedPediment", { map: stone("fedPedStone"), color: "#e7e1d3" })
+    );
+    ped.position.set(0, 10.97, -15.45);
+    ped.castShadow = true;
+    g.add(ped);
+
+    // Gold star seal centred on the entablature (stylized, not the official seal)
+    const sealTex = ctex("fedSealTex", 256, 256, (gc) => {
+      gc.fillStyle = "#1e2a44";
+      gc.beginPath(); gc.arc(128, 128, 126, 0, Math.PI * 2); gc.fill();
+      gc.fillStyle = "#d8a92c";
+      gc.beginPath(); gc.arc(128, 128, 116, 0, Math.PI * 2); gc.fill();
+      gc.fillStyle = "#1e2a44";
+      gc.beginPath(); gc.arc(128, 128, 92, 0, Math.PI * 2); gc.fill();
+      gc.fillStyle = "#e9c45a";
+      gc.save();
+      gc.translate(128, 128);
+      gc.beginPath();
+      for (let i = 0; i < 5; i++) {
+        const a = -Math.PI / 2 + (i * 4 * Math.PI) / 5;
+        const a2 = a + (2 * Math.PI) / 5;
+        gc.lineTo(Math.cos(a) * 70, Math.sin(a) * 70);
+        gc.lineTo(Math.cos(a2) * 30, Math.sin(a2) * 30);
+      }
+      gc.closePath(); gc.fill();
+      gc.restore();
+    });
+    const seal = new THREE.Mesh(
+      new THREE.CircleGeometry(1.1, 40),
+      new THREE.MeshLambertMaterial({ map: sealTex, transparent: true })
+    );
+    seal.position.set(0, 10.35, -12.9);
+    g.add(seal);
+
+    // Recessed double doors
+    const doorMat = toonMat("fedDoor", { color: "#2b3244" });
+    addBox(g, 1.9, 4.4, 0.35, -1.0, 1.05 + 2.2, -15.3, doorMat);
+    addBox(g, 1.9, 4.4, 0.35, 1.0, 1.05 + 2.2, -15.3, doorMat);
+    const trimMat = toonMat("fedDoorTrim", { color: "#d8a92c" });
+    addBox(g, 0.12, 4.4, 0.38, 0, 1.05 + 2.2, -15.3, trimMat);
+
+    // FBI banners flanking the entrance (vertical, navy + gold)
+    const bannerTex = ctex("fedBannerTex", 128, 512, (gc) => {
+      gc.fillStyle = "#1e2a44";
+      gc.fillRect(0, 0, 128, 512);
+      gc.fillStyle = "#d8a92c";
+      gc.fillRect(0, 0, 128, 10);
+      gc.fillRect(0, 502, 128, 10);
+      gc.font = "bold 84px Georgia, serif";
+      gc.textAlign = "center";
+      const letters = ["F", "B", "I"];
+      letters.forEach((ch, i) => gc.fillText(ch, 64, 150 + i * 130));
+    });
+    const bannerMat = new THREE.MeshLambertMaterial({ map: bannerTex, side: THREE.DoubleSide });
+    for (const bx of [-3.6, 3.6]) {
+      const banner = new THREE.Mesh(new THREE.PlaneGeometry(1.05, 4.1), bannerMat);
+      banner.position.set(bx, 5.4, -13.75);
+      g.add(banner);
+    }
+
+    // Flag pole + simplified US flag, plaza right
+    const poleMat = toonMat("fedPole", { color: "#cdd1da" });
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 11.5, 8), poleMat);
+    pole.position.set(12.5, 5.75, -9);
+    pole.castShadow = true;
+    g.add(pole);
+    const flagTex = ctex("fedFlagTex", 256, 160, (gc) => {
+      for (let i = 0; i < 13; i++) {
+        gc.fillStyle = i % 2 === 0 ? "#c03a3e" : "#f2f0ea";
+        gc.fillRect(0, (i * 160) / 13, 256, 160 / 13 + 1);
+      }
+      gc.fillStyle = "#2c3a68";
+      gc.fillRect(0, 0, 104, (7 * 160) / 13);
+      gc.fillStyle = "#f2f0ea";
+      for (let sy = 0; sy < 5; sy++)
+        for (let sx = 0; sx < 6; sx++) {
+          gc.beginPath();
+          gc.arc(9 + sx * 17, 9 + sy * 16, 2.6, 0, Math.PI * 2);
+          gc.fill();
+        }
+    });
+    const flag = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.7, 1.65),
+      new THREE.MeshLambertMaterial({ map: flagTex, side: THREE.DoubleSide })
+    );
+    flag.position.set(13.95, 10.4, -9);
+    g.add(flag);
+
+    // Plaza dressing: hedges + twin lantern posts
+    addCartoonBush(g, -9.8, 0, -10.6, 1.5, 5);
+    addCartoonBush(g, 9.8, 0, -10.6, 1.5, 6);
+    addCartoonBush(g, -14.5, 0, -9.5, 1.3, 7);
+    addCartoonBush(g, 15.5, 0, -9.0, 1.35, 8);
   } else {
-    // "town": Rich storybook village street with gabled houses, cobble road, trees, bushes, lanterns, and rolling hills
     addCloudsAndHills(g, mode, true);
 
     const ground = new THREE.Mesh(
