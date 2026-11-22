@@ -66,7 +66,7 @@ function validateShot(s: Obj, i: number, dur: number, errs: string[]): ShotDef |
   const where = `shots[${i}]`;
   checkKeys(s, ["id", "a", "b", "world", "light", "dof", "flashAt", "kickAt", "sunAz", "sunEl", "cam", "purpose", "anchor", "graphic"], where, errs);
   if (s.anchor !== undefined && (!isStr(s.anchor) || !s.anchor.trim())) errs.push(`${where}.anchor: must be a nonempty phrase`);
-  if (s.graphic !== undefined && !["counter", "overflow", "power", "reset", "hook", "lab", "stakes", "question", "clock", "storage", "odometer", "directive", "payoff"].includes(s.graphic as string)) errs.push(`${where}.graphic: invalid graphic`);
+  if (s.graphic !== undefined && !["counter", "overflow", "power", "reset", "hook", "lab", "stakes", "question", "clock", "storage", "odometer", "directive", "payoff", "ncic-hook", "ncic-stop", "ncic-files", "ncic-records", "ncic-clock", "ncic-doors", "ncic-breach", "ncic-pattern", "ncic-payoff"].includes(s.graphic as string)) errs.push(`${where}.graphic: invalid graphic`);
   if (s.purpose !== undefined && !isStr(s.purpose)) errs.push(`${where}.purpose: must be a string`);
   if (!isInt(s.id)) errs.push(`${where}.id: must be an integer`);
   if (!isInt(s.a) || !isInt(s.b)) {

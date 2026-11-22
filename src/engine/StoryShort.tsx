@@ -41,6 +41,7 @@ import { Captions } from "./Captions";
 import { EndCard } from "./EndCard";
 import { EditorialScene } from "./EditorialScene";
 import { MechanismGraphic } from "./MechanismGraphic";
+import { NcicScene } from "./NcicScene";
 import type { EpisodeSpec, ShotDef, ActorDef, V3, WorldPreset, StoryShortProps } from "./types";
 
 const OUTFIT_PRESETS: Record<string, Outfit> = {
@@ -738,7 +739,7 @@ export const StoryShort: React.FC<StoryShortProps> = ({ spec, captions }) => {
       >
         <SceneCore spec={spec} />
       </ThreeCanvas>}
-      {shot.graphic && (["counter", "overflow", "power", "reset"].includes(shot.graphic) ? <MechanismGraphic shot={shot} /> : <EditorialScene shot={shot} />)}
+      {shot.graphic && (shot.graphic.startsWith("ncic-") ? <NcicScene shot={shot} /> : ["counter", "overflow", "power", "reset"].includes(shot.graphic) ? <MechanismGraphic shot={shot} /> : <EditorialScene shot={shot} />)}
       {flashOn && (
         <AbsoluteFill style={{ backgroundColor: "#ffffff", opacity: flashOpacity, pointerEvents: "none" }} />
       )}

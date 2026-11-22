@@ -130,7 +130,11 @@ export interface ShotDef {
   purpose?: string;
   /** Spoken phrase that starts this shot, matched to real aligned words. */
   anchor?: string;
-  graphic?: "counter" | "overflow" | "power" | "reset" | "hook" | "lab" | "stakes" | "question" | "clock" | "storage" | "odometer" | "directive" | "payoff";
+  graphic?:
+    | "counter" | "overflow" | "power" | "reset" | "hook" | "lab" | "stakes"
+    | "question" | "clock" | "storage" | "odometer" | "directive" | "payoff"
+    | "ncic-hook" | "ncic-stop" | "ncic-files" | "ncic-records" | "ncic-clock"
+    | "ncic-doors" | "ncic-breach" | "ncic-pattern" | "ncic-payoff";
   world?: WorldPreset;
   light: LightMode;
   dof?: number;

@@ -1,0 +1,601 @@
+{
+  "fps": 30,
+  "world": "office",
+  "musicMood": "tense",
+  "actors": [],
+  "props": [
+    {
+      "id": "ncicCore",
+      "kind": "server",
+      "world": "office",
+      "pos": [
+        0,
+        0,
+        -6
+      ],
+      "scale": 1,
+      "keyframes": [
+        {
+          "f": 0,
+          "pos": [
+            0,
+            0,
+            -6
+          ],
+          "action": {
+            "type": "beaconIntensity",
+            "value": 0
+          }
+        },
+        {
+          "f": 909,
+          "action": {
+            "type": "beaconIntensity",
+            "value": 0.2,
+            "dur": 60
+          }
+        },
+        {
+          "f": 1059,
+          "action": {
+            "type": "beaconIntensity",
+            "value": 1,
+            "dur": 5
+          }
+        },
+        {
+          "f": 1359,
+          "action": {
+            "type": "beaconIntensity",
+            "value": 0.4,
+            "dur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "checkCounter",
+      "kind": "screen",
+      "world": "office",
+      "pos": [
+        1.8,
+        0,
+        -6
+      ],
+      "keyframes": [
+        {
+          "f": 509,
+          "action": {
+            "type": "counterValue",
+            "value": 0
+          }
+        },
+        {
+          "f": 601,
+          "action": {
+            "type": "counterValue",
+            "value": 10000000,
+            "dur": 60
+          }
+        },
+        {
+          "f": 1400,
+          "action": {
+            "type": "counterValue",
+            "value": 12000000,
+            "dur": 90
+          }
+        }
+      ]
+    },
+    {
+      "id": "dutyClock",
+      "kind": "clock",
+      "world": "office",
+      "pos": [
+        -1.8,
+        0,
+        -6
+      ],
+      "keyframes": [
+        {
+          "f": 601,
+          "action": {
+            "type": "clockHands",
+            "value": 0
+          }
+        },
+        {
+          "f": 734,
+          "action": {
+            "type": "clockHands",
+            "value": 720,
+            "dur": 100
+          }
+        }
+      ]
+    }
+  ],
+  "fx": [],
+  "cues": [
+    {
+      "t": 0.2,
+      "kind": "whoosh",
+      "gain": 0.3,
+      "pan": -0.2
+    },
+    {
+      "t": 3.1,
+      "kind": "pop",
+      "gain": 0.25
+    },
+    {
+      "t": 5.0,
+      "kind": "relay",
+      "gain": 0.4
+    },
+    {
+      "t": 7.5,
+      "kind": "chime",
+      "gain": 0.2
+    },
+    {
+      "t": 11.2,
+      "kind": "whoosh",
+      "gain": 0.25,
+      "pan": 0.2
+    },
+    {
+      "t": 16.8,
+      "kind": "tick",
+      "gain": 0.18
+    },
+    {
+      "t": 20.0,
+      "kind": "tick",
+      "gain": 0.15
+    },
+    {
+      "t": 24.4,
+      "kind": "whoosh",
+      "gain": 0.22
+    },
+    {
+      "t": 27.5,
+      "kind": "pop",
+      "gain": 0.22
+    },
+    {
+      "t": 30.3,
+      "kind": "riser",
+      "gain": 0.35
+    },
+    {
+      "t": 35.3,
+      "kind": "powerdown",
+      "gain": 0.5
+    },
+    {
+      "t": 38.4,
+      "kind": "whoosh",
+      "gain": 0.25
+    },
+    {
+      "t": 42.0,
+      "kind": "snap",
+      "gain": 0.3
+    },
+    {
+      "t": 45.3,
+      "kind": "relay",
+      "gain": 0.4
+    },
+    {
+      "t": 49.2,
+      "kind": "chime",
+      "gain": 0.25
+    },
+    {
+      "t": 52.5,
+      "kind": "startup",
+      "gain": 0.35
+    }
+  ],
+  "slug": "ncic-fbi-breach",
+  "title": "The FBI's Own Crime Database May Have Been Hacked",
+  "script": "Someone may have just broken into the FBI's own crime database. When a police officer in America runs a plate at a traffic stop, the answer routinely comes from one FBI system: the National Crime Information Center. Think of it as a filing cabinet with twenty-one drawers: wanted fugitives, missing persons, stolen cars, stolen guns, protection orders. Twelve million active records. About ten million checks a day. And it never closes: since January 1967, twenty-four seven, because crime doesn't keep business hours. That's the weakness. Over ninety thousand agencies connect to it, and every connection is a door the FBI can't lock. The Associated Press says the FBI is investigating an apparent breach, found in recent days. We don't know who got in, how, or whether anything was taken. And it's the second time in two months: an extortion gang claimed it breached a platform behind the FBI's jobs website through unpatched software. Remember, every line in that system can put a real person in handcuffs. That's why even a possible breach is a five-alarm fire. Follow TechWhoKnows for the next one.",
+  "sourceUrl": "https://apnews.com/article/fbi-database-ncic-hack-d066cff87a64a564db0a00172c124972",
+  "durationFrames": 1620,
+  "shots": [
+    {
+      "id": 1,
+      "a": 0,
+      "b": 92,
+      "graphic": "ncic-hook",
+      "purpose": "hook: bold supported claim + written on-screen hook, breach stamp preserves uncertainty",
+      "light": "day",
+      "cam": {
+        "from": [
+          0,
+          2,
+          6
+        ],
+        "to": [
+          0,
+          2,
+          6
+        ],
+        "lookFrom": [
+          0,
+          1.6,
+          0
+        ],
+        "lookTo": [
+          0,
+          1.6,
+          0
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "a": 92,
+      "b": 334,
+      "graphic": "ncic-stop",
+      "purpose": "context: what NCIC does at a routine traffic stop",
+      "anchor": "When a police officer in America",
+      "light": "day",
+      "cam": {
+        "from": [
+          0,
+          2,
+          6
+        ],
+        "to": [
+          0,
+          2,
+          6
+        ],
+        "lookFrom": [
+          0,
+          1.6,
+          0
+        ],
+        "lookTo": [
+          0,
+          1.6,
+          0
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "a": 334,
+      "b": 509,
+      "graphic": "ncic-files",
+      "purpose": "evidence: the 21 files inside the cabinet",
+      "anchor": "Think of it as a filing cabinet",
+      "light": "day",
+      "cam": {
+        "from": [
+          0,
+          2,
+          6
+        ],
+        "to": [
+          0,
+          2,
+          6
+        ],
+        "lookFrom": [
+          0,
+          1.6,
+          0
+        ],
+        "lookTo": [
+          0,
+          1.6,
+          0
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "a": 509,
+      "b": 601,
+      "graphic": "ncic-records",
+      "purpose": "scale: 12M records, ~10M checks/day as number drums",
+      "anchor": "Twelve million active records",
+      "light": "day",
+      "cam": {
+        "from": [
+          0,
+          2,
+          6
+        ],
+        "to": [
+          0,
+          2,
+          6
+        ],
+        "lookFrom": [
+          0,
+          1.6,
+          0
+        ],
+        "lookTo": [
+          0,
+          1.6,
+          0
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "a": 601,
+      "b": 734,
+      "graphic": "ncic-clock",
+      "purpose": "stakes: always on, 24/7 since Jan 1967",
+      "anchor": "And it never closes",
+      "light": "day",
+      "cam": {
+        "from": [
+          0,
+          2,
+          6
+        ],
+        "to": [
+          0,
+          2,
+          6
+        ],
+        "lookFrom": [
+          0,
+          1.6,
+          0
+        ],
+        "lookTo": [
+          0,
+          1.6,
+          0
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "a": 734,
+      "b": 909,
+      "graphic": "ncic-doors",
+      "purpose": "mechanism: 90k connected agencies means 90k doors",
+      "anchor": "That's the weakness",
+      "light": "day",
+      "cam": {
+        "from": [
+          0,
+          2,
+          6
+        ],
+        "to": [
+          0,
+          2,
+          6
+        ],
+        "lookFrom": [
+          0,
+          1.6,
+          0
+        ],
+        "lookTo": [
+          0,
+          1.6,
+          0
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "a": 909,
+      "b": 1151,
+      "graphic": "ncic-breach",
+      "purpose": "event: apparent breach, unknown who/how/what",
+      "anchor": "The Associated Press says",
+      "flashAt": 1059,
+      "light": "day",
+      "cam": {
+        "from": [
+          0,
+          2,
+          6
+        ],
+        "to": [
+          0,
+          2,
+          6
+        ],
+        "lookFrom": [
+          0,
+          1.6,
+          0
+        ],
+        "lookTo": [
+          0,
+          1.6,
+          0
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "a": 1151,
+      "b": 1359,
+      "graphic": "ncic-pattern",
+      "purpose": "pattern: second claimed FBI breach in two months, honestly unlinked",
+      "anchor": "And it's the second time",
+      "light": "day",
+      "cam": {
+        "from": [
+          0,
+          2,
+          6
+        ],
+        "to": [
+          0,
+          2,
+          6
+        ],
+        "lookFrom": [
+          0,
+          1.6,
+          0
+        ],
+        "lookTo": [
+          0,
+          1.6,
+          0
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "a": 1359,
+      "b": 1620,
+      "graphic": "ncic-payoff",
+      "purpose": "payoff: records are real people; voiced follow CTA lands here",
+      "anchor": "Remember, every line",
+      "light": "day",
+      "cam": {
+        "from": [
+          0,
+          2,
+          6
+        ],
+        "to": [
+          0,
+          2,
+          6
+        ],
+        "lookFrom": [
+          0,
+          1.6,
+          0
+        ],
+        "lookTo": [
+          0,
+          1.6,
+          0
+        ]
+      }
+    }
+  ],
+  "claim_ledger": [
+    {
+      "id": "ap-ncic-investigation",
+      "source_url": "https://apnews.com/article/fbi-database-ncic-hack-d066cff87a64a564db0a00172c124972",
+      "source_date": "2026-11-21",
+      "accessed_at": "2026-11-22",
+      "attribution": "AP, citing a source: FBI is investigating an apparent hack of the National Crime Information Center.",
+      "limits": "Single-source attribution to an unnamed person briefed; the FBI had not publicly confirmed at write time. Supports 'apparent breach under investigation', not a confirmed breach.",
+      "wording": "The Associated Press says the FBI is investigating an apparent breach, found in recent days."
+    },
+    {
+      "id": "bc-ncic-details",
+      "source_url": "https://www.bleepingcomputer.com/news/security/fbi-reportedly-hacked-again-this-time-targeting-nationwide-police-database/",
+      "source_date": "2026-11-21",
+      "accessed_at": "2026-11-22",
+      "attribution": "CNN-sourced reporting: intrusion discovered in recent days; unclear when, how, or whether records were stolen. NCIC shares wanted/missing persons, warrants, stolen vehicles and firearms, protection orders; routinely used at traffic stops. Second claimed FBI breach in ~2 months: ShinyHunters claimed FBIJobs.gov via unpatched Oracle PeopleSoft; no indication the two are linked.",
+      "limits": "Based on CNN reporting citing two people briefed; the gang's earlier claim is a claim, not proof.",
+      "wording": "We don't know who got in, how, or whether anything was taken. / an extortion gang claimed it breached a platform behind the FBI's jobs website through unpatched software."
+    },
+    {
+      "id": "fbi-ncic-50",
+      "source_url": "https://www.fbi.gov/news/stories/ncic-turns-50",
+      "source_date": "2017-01-27",
+      "accessed_at": "2026-11-22",
+      "attribution": "FBI: NCIC live since January 27, 1967; 21 files; 12 million active records; ~14 million transactions/day (2017); serves 90,000+ criminal justice and law enforcement agencies; files include wanted/missing persons, stolen vehicles and firearms, protection orders, identity theft, gangs, suspected terrorists.",
+      "limits": "2017 figures; daily transaction volume later stated at ~10 million (DOJ, 2024).",
+      "wording": "twenty-one drawers / Twelve million active records / Over ninety thousand agencies connect to it / since January 1967, twenty-four seven"
+    },
+    {
+      "id": "doj-cjis-2024",
+      "source_url": "https://www.justice.gov/sites/default/files/2024-12/statement_for_the_record_crime_subcommittee_cjis_hearing_ad_ferguson.pdf",
+      "source_date": "2024-12-17",
+      "accessed_at": "2026-11-22",
+      "attribution": "DOJ/FBI CJIS testimony: NCIC is a 'lifeline for law enforcement' with an average of 10 million daily transactions.",
+      "limits": "Rounded hearing figure; supports 'about ten million checks a day'.",
+      "wording": "About ten million checks a day."
+    },
+    {
+      "id": "editorial-stakes",
+      "source_url": "https://www.fbi.gov/services/cjis/ncic",
+      "accessed_at": "2026-11-22",
+      "attribution": "Editorial framing, not a sourced fact: NCIC records (warrants, stolen vehicles, protection orders) drive real police actions, so record integrity matters; 'every connection is a door' is our explanatory metaphor for a 24/7 shared system.",
+      "limits": "Metaphor and stakes framing; no claim that any record was altered is made or implied in the video."
+    }
+  ],
+  "topic_card": {
+    "trend_timestamp": "2026-11-21",
+    "audience_question": "What does it mean that the FBI's own crime database may have been hacked?",
+    "why_now": "Reported Nov 21, 2026; FBI investigation ongoing; second claimed FBI breach in two months. Fits the evidenced 'this affects you / failure behind the headline' genre in the pre-production research."
+  },
+  "creative_brief": {
+    "question": "If police everywhere must reach one crime database instantly, how could it ever be fully locked down?",
+    "answer": "It can't: 90,000+ agencies need 24/7 access, so every connection is a door - and the FBI is now investigating an apparent breach through one of them.",
+    "proof": "AP/CNN reporting on the investigation; FBI CJIS NCIC facts (1967, 21 files, 12M records, 90k agencies, ~10M checks/day).",
+    "caveat": "Breach not publicly confirmed by the FBI; who, how and impact unknown; presented as an apparent breach under investigation.",
+    "sharing_reason": "The system every cop trusts has the one property that makes it impossible to fully secure: it has to stay open."
+  },
+  "alternate_hook": "The database behind every American traffic stop may have a stranger inside it.",
+  "voice": {
+    "temperature": 0.8,
+    "topP": 0.8,
+    "speed": 1.0,
+    "direction": "measured, serious curiosity",
+    "beats": [
+      {
+        "before": "When a police officer in America",
+        "direction": "confident and clear"
+      },
+      {
+        "before": "Think of it as",
+        "direction": "warm, conversational"
+      },
+      {
+        "before": "Twelve million active records",
+        "direction": "measured, deliberate"
+      },
+      {
+        "before": "And it never closes",
+        "direction": "steady, factual"
+      },
+      {
+        "before": "That's the weakness",
+        "direction": "serious, restrained urgency"
+      },
+      {
+        "before": "The Associated Press says",
+        "direction": "careful, factual"
+      },
+      {
+        "before": "And it's the second time",
+        "direction": "concerned, deliberate"
+      },
+      {
+        "before": "Remember, every line",
+        "direction": "emphatic, sincere"
+      },
+      {
+        "before": "Follow TechWhoKnows",
+        "direction": "warm, friendly"
+      }
+    ]
+  },
+  "endCard": {
+    "handle": "@techwhoknows",
+    "seconds": 3.2
+  },
+  "captions": {
+    "enabled": true,
+    "maxWordsPerPage": 4,
+    "theme": "editorial"
+  }
+}

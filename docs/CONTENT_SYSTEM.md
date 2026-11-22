@@ -2,6 +2,22 @@
 
 Updated 21 November 2026 after review of the Boeing episode. The editorial illustration direction was accepted. That acceptance is not a claim that every shot or voice performance is approved.
 
+## Pre-production research (standing, per owner 22 November 2026)
+
+Before any episode enters production, without being asked each time: research the candidate topic deeply and check it against what is working for top tech shorts creators. Record the evidence in the episode's topic card or plan notes. This is a required pre-production step, not a promise of virality; findings inform selection and packaging and never justify an unsupported claim.
+
+What the current evidence says (checked 22 November 2026; re-verify as it ages):
+
+- **Genre:** tech shorts that travel are "this affects YOU" stories: breaches, scams, your data, your money, your phone. Fear and outrage outperform neutral explainers. Failure-behind-the-headline explainers (Boeing ep1, NCIC ep2) sit inside this genre. High-concept comparisons and superlative stunts ('$10 vs $10,000', 'World's X') are Mrwhosetheboss's most repeatable reach engine but need props/budget our illustrated format can borrow only as framing devices.
+- **Openers:** the bold claim is the most common opener among standout tech TikToks (33% of 1,663 analyzed), ahead of question hooks (12%) and story opens (11%). ViralMint's 943-viral-Short study found textbook hook formulas (questions, numbers, POV) do NOT separate hits from same-creator flops; what hits share is starting instantly (first word ~0.1s) and being short (median 21s). So: open on the boldest truthful claim we can support, speak immediately, and do not trust formulas over a genuinely surprising fact.
+- **On-screen text hook:** a hook written on screen went with 1.79x the views of same-account videos without one (Postdom, 1,272 TikToks/Reels). Every episode's first frame carries a written version of the hook claim.
+- **Endings:** a "let me know below" ending went with 0.61x views (Postdom). End on payoff + follow CTA, never comment-bait; discussion prompts live in the first/pinned comment, not the video.
+- **Mechanics of pacing (Fireship study):** ~13 hard cuts/minute, ~3s median shot, 0% talking head; meme/stock inserts act as paragraph breaks after each explanatory beat (35% of frames); diagrams are additive, assembling one element per narrated clause (25% of frames). Our editorial scenes must assemble in sync with the narration the same way: no finished diagram explained after the fact. Comprehension still outranks metronome cutting.
+- **Length:** tech TikTok standouts cluster at 30-60s; viral Shorts median is 21s. Prefer the short end of our 45-65s default when the story fits; never pad to a number.
+- **Humor:** dry wit in the payoff works (Boeing's "oldest fix in IT"); forced funny kills retention. Write jokes only when the writing is actually funny.
+
+Sources: https://www.writepanda.ai/blog/fireship-editing-style-measured/ ; https://viralmint.net/blog/viral-hooks-data-study/ ; https://viralvault.studio/niches/tech ; https://postdom.com/research/what-makes-a-video-go-viral ; https://growwly.co/youtube-playbooks/@mrwhosetheboss ; https://blog.youtube/creator-and-artist-stories/cracking-the-code-to-youtube-shorts/
+
 ## Creative contract
 
 A short should give the viewer one new understanding. Every cut either advances the question, demonstrates the mechanism, changes scale, supplies evidence or pays off the promise. Decorative motion is not evidence of a good edit.

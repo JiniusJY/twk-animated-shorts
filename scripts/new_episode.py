@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 import re
 
-GRAPHICS = {'hook','lab','stakes','question','clock','storage','counter','odometer','overflow','power','directive','payoff','reset'}
+GRAPHICS = {'hook','lab','stakes','question','clock','storage','counter','odometer','overflow','power','directive','payoff','reset',
+            'ncic-hook','ncic-stop','ncic-files','ncic-records','ncic-clock','ncic-doors','ncic-breach','ncic-pattern','ncic-payoff'}
 REQUIRED = {'slug','title','script','sourceUrl','durationFrames','shots','claim_ledger','topic_card','creative_brief'}
 
 def build_episode(plan):
