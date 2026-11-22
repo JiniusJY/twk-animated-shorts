@@ -15,8 +15,10 @@ const I="#26352f",P="#f1eddd",R="#cb4a32",G="#467765";
 
 const KICKER="AMERICA'S CRIME DATABASE";
 
-const Paper:React.FC<{children:React.ReactNode}>=({children})=>(
- <AbsoluteFill style={{background:P}}>
+const Paper:React.FC<{children:React.ReactNode}>=({children})=>{
+ const f=useCurrentFrame();
+ const live=0.25+0.75*Math.abs(Math.sin(f/9));
+ return <AbsoluteFill style={{background:P}}>
   <svg viewBox="0 0 1080 1920" width="100%" height="100%" style={{fontFamily:"Georgia,serif"}}>
    <defs>
     <pattern id="ncic-grain" width="31" height="29" patternUnits="userSpaceOnUse"><path d="M3 6h1m15 8h1m-9 11h1" stroke={I} opacity=".055"/></pattern>
@@ -26,10 +28,12 @@ const Paper:React.FC<{children:React.ReactNode}>=({children})=>(
    </defs>
    <rect width="1080" height="1920" fill="url(#ncic-grain)"/>
    <text x="64" y="155" fill={R} fontFamily="Arial,sans-serif" fontSize="23" letterSpacing="3">{KICKER}</text>
+   <circle cx="1022" cy="147" r="9" fill={R} opacity={live}/>
+   <circle cx="1022" cy="147" r="15" fill="none" stroke={R} strokeWidth="2" opacity={live*0.5}/>
    {children}
   </svg>
- </AbsoluteFill>
-);
+ </AbsoluteFill>;
+};
 
 const Headline:React.FC<{text:string;size?:number}>=({text,size=73})=>(
  <>
@@ -150,7 +154,11 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
      const col=i%3,row=Math.floor(i/3);
      const named=i<5;
      const o=Math.max(0,Math.min(1,(t-i*3)/10));
-     return <Drawer key={i} x={35+col*250} y={35+row*122} w={220} h={96} label={named?names[i]:undefined} hot={named} opacity={o}/>;
+     const scan=Math.floor(f/7)%21===i;
+     return <g key={i}>
+      <Drawer x={35+col*250} y={35+row*122} w={220} h={96} label={named?names[i]:undefined} hot={named} opacity={o}/>
+      {scan&&o>0.9&&<rect x={35+col*250} y={35+row*122} width={220} height={96} rx="6" fill={R} opacity=".16"/>}
+     </g>;
     })}
    </g>
    <text x="540" y="1400" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">plus identity theft, gangs and suspected terrorists (FBI, 2017)</text>
@@ -165,7 +173,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <rect x="90" y="0" width="900" height="240" rx="16" fill={I}/>
     {finalStr.split("").map((ch,i)=>{
      const x=120+i*((840-72)/Math.max(1,finalStr.length-1));
-     const jiggle=rolling<1&&ch>="0"&&ch<="9"?Math.sin((f+i*7)*0.35)*10*(1-rolling):0;
+     const jiggle=ch>="0"&&ch<="9"?Math.sin((f+i*7)*0.35)*(rolling<1?10*(1-rolling):1.4):0;
      return <g key={i} transform={`translate(${x} 30)`}>
       <rect width="72" height="120" rx="6" fill={P}/>
       <text x="36" y={95+jiggle} textAnchor="middle" fill={I} fontFamily="'Courier New',monospace" fontWeight="700" fontSize="66">{ch}</text>

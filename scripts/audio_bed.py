@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Procedural SFX + Music + Voice master mix (-15.0 LUFS, <= -1.2 dBTP)
+Procedural SFX + Music + Voice master mix (-15.0 LUFS, <= -1.6 dBTP sample peak, headroom for intersample true peak)
 Reuses templates/audio/dsp.py, instruments.py, and sfx_gen.py driven by episode.json.
 
 Timeline sync: every visual timing (shots, keyframes, FX) is scaled from authored
@@ -28,7 +28,7 @@ from editorial import narration_warp
 import sfx_gen as S  # noqa: E402
 
 TARGET_LUFS = -15.0
-CEIL_DB = -1.2
+CEIL_DB = -1.6
 
 
 def duck_envelope(n_samples: int, words: list[dict], duck_db: float = -3.5) -> np.ndarray:
