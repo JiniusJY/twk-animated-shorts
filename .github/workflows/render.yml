@@ -302,8 +302,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="ep-$EPISODE-${{ github.run_number }}"
+          # Prerelease by default: the viewer-skip gate (100/100 review) promotes
+          # a release to full. QA-pass alone must never put a cut in front of the owner.
           gh release create "$TAG" out/final.mp4 out/qa_metrics.json \
             --repo "${{ github.repository }}" \
             --target "${{ github.sha }}" \
-            --title "$EPISODE (#${{ github.run_number }})" \
-            --notes "Automated parallel cloud render for episode $EPISODE. QA gate passed (see qa_metrics.json)."
+            --prerelease \
+            --title "$EPISODE (#${{ github.run_number }}) [UNGATED]" \
+            --notes "Automated parallel cloud render for episode $EPISODE. QA gate passed (see qa_metrics.json). PRERELEASE: pending viewer-skip gate; do not treat as final."
