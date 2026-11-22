@@ -3,8 +3,11 @@
 CURRENT owner pick: cover A "What police know about you." - user's direct "A" reply at 13:07:30 +08
 (wamid.HBgKNjU5ODg5MTg5MBUCABIYFDNCMzE1Njg0Q0VGMjM5MUQ1MENEAA==) answering "So cover A? Or B"
 (wamid.HBgKNjU5ODg5MTg5MBUCABEYEjdDNDk2OUIyOTFGNjYyNThGRgA=). A asset: twk_ncic_cover_A-51ce2176.jpg
-(sent 12:55:29). The C1 pick below was real but is SUPERSEDED. Posting task owns matching final
-pixels/hash/rights before any use. Publication held.
+(sent 12:55:29). The C1 pick below was real but is SUPERSEDED - the cover.jpg file in this folder is
+that superseded C1 (WalterFish sunset); do not use it. Selected cover A asset: regenerated and verified
+by the posting task, SHA-256 d447ea0bc925edb26d13fe2c89d5243acc284c208594d2055833063375159f67, photo
+Tony Webster CC BY 2.0 (credit printed on-image). Posting task owns matching final pixels/hash/rights
+before any use. Publication held.
 
 ---
 
