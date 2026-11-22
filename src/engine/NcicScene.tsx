@@ -175,7 +175,6 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <text x="200" y="88" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontSize={fitSize("FBI INVESTIGATING · UNCONFIRMED",360,24,"400")}>FBI INVESTIGATING · UNCONFIRMED</text>
    </g>}
    <PhotoCard src="photos/fbi-hq.jpg" x={776} y={530} w={224} rot={4} pop={popAt(6)} credit="FBI HQ · FBI photo (PD)"/>
-   <Scribble d="M310 745a235 95 0 1 1 470 0a235 95 0 1 1 -470 0" p={Math.max(0,Math.min(1,(u-0.52)/0.22))}/>
    <text x="540" y="1330" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">The FBI's own crime database, reported hacked. Nov 2026.</text>
   </Paper>;
  }
@@ -203,7 +202,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <text x="110" y="150" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize={fitSize("PLATE CHECK",196,20,"400")}>PLATE CHECK</text>
    </g>
    <PhotoCard src="photos/traffic-stop.jpg" x={700} y={330} w={330} rot={3} pop={popAt(4)} credit="Photo: I. Sagdejev, CC BY-SA 4.0"/>
-   <Scribble d="M110 650a165 105 0 1 1 330 0a165 105 0 1 1 -330 0" p={Math.max(0,Math.min(1,(u-0.2)/0.18))}/>
+   <Scribble d="M110 615a150 80 0 1 1 300 0a150 80 0 1 1 -300 0" p={Math.max(0,Math.min(1,(u-0.2)/0.18))}/>
    {/* NCIC building */}
    <g transform={`translate(840 740) scale(${br(2.6).toFixed(4)}) translate(-840 -740) translate(700 580)`}>
     <path d="M0 320V60L60 0H220L280 60V320Z" fill="#d4d2bf" stroke={I} strokeWidth="5"/>
