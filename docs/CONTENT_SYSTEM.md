@@ -72,7 +72,7 @@ These support a process, not a promise that a fixed editing formula will produce
 
 ## Follow end card
 
-New episodes include a short branded end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. The card is visual, not extra narration. New-episode creation supplies it by default; the audio timeline reserves its duration. Record follower conversion and retention as outcomes to measure, never guarantees.
+New episodes include a short branded end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. Per the owner's 22 November instruction, the follow CTA must also be spoken in the voiceover, not only shown visually. Write one brief, natural follow line into the script, for example 'Follow TechWhoKnows for the next one,' and verify it is audible in the final mix. A specific next-story promise must be truthful and grounded in the actual content plan; do not invent an upcoming episode or date. Test an earlier voiced follow promise when it fits without delaying the hook or answer; do not automatically duplicate the ask at several points. New-episode creation supplies the end card and voiced CTA by default; the audio timeline reserves their actual duration. Record follower conversion and retention as outcomes to measure, never guarantees. This supersedes the earlier visual-only/no-extra-narration rule for future episodes, not the approved published master.
 
 ## Evidence media and brand assets
 
