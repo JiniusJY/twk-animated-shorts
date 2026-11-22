@@ -1,0 +1,19 @@
+ADAPTATION CREDIT AND LICENCE RECORD - traffic-stop photo in TWK episode 2 (ncic-fbi-breach)
+
+Source work: "2004-02-25 Night traffic stop in Durham 1"
+Author: Ildar Sagdejev (Specious)
+Source URL: https://commons.wikimedia.org/wiki/File:2004-02-25_Night_traffic_stop_in_Durham_1.jpg
+Licence: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Adaptation (as used in the episode):
+- Cropped to a 448:300 (1.4933:1) cover window from the 1000x750 source
+- Colour grade: contrast(1.08) saturate(0.82) sepia(0.14) (CSS-equivalent values)
+- Slow zoom (Ken Burns) scale 1.00 -> 1.09 over 12 seconds; presented on a card rotated -3 degrees
+- No on-image attribution text (credits carried here and in the post description, per owner direction)
+
+Supplied adaptation exports (released under CC BY-SA 4.0, same licence as source):
+1. traffic-stop-adapted-still.jpg - isolated adapted photo still, final crop and grade at end-of-zoom state
+2. traffic-stop-motion-layer-silent.mp4 - silent 12s motion layer, crop/grade/zoom motion only; no narration, music, captions, or branding
+
+Scope note: the CC BY-SA 4.0 ShareAlike obligation applies to the adapted photo material itself. No claim is made about the licence status of the overall video, its narration, music, or branding. No endorsement by the licensor is implied.

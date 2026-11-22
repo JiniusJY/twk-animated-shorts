@@ -24,7 +24,7 @@ export const CARDS = {
   hook:     {x: 460,  y: 880, w: 300, h: 380},
   photo:    {x: 1260, y: 420, w: 480, h: 332},
   ncic:     {x: 1500, y: 880, w: 520, h: 200},
-  cabinet:  {x: 2260, y: 400, w: 760, h: 370},
+  cabinet:  {x: 2260, y: 400, w: 760, h: 210},
   terminal: {x: 3170, y: 320, w: 660, h: 360},
   chip1967: {x: 3560, y: 720, w: 300, h: 130},
   office:   {x: 3150, y: 780, w: 300, h: 120},
@@ -32,7 +32,7 @@ export const CARDS = {
   hub:      {x: 4320, y: 830, w: 260, h: 260},
   ap:       {x: 4960, y: 400, w: 640, h: 210},
   second:   {x: 5840, y: 700, w: 600, h: 260},
-  drawerChip: {x: 2300, y: 870, w: 640, h: 86},
+  drawerChip: {x: 2300, y: 660, w: 640, h: 86},
 } satisfies Record<string, Rect>;
 export type CardId = keyof typeof CARDS;
 
@@ -61,8 +61,9 @@ export const anchor = (id: CardId, side: Side): Pt => {
 
 /** Frame each card first appears (its entrance spring starts). Components read these. */
 export const ENTER: Record<CardId, number> = {
-  hook: 0, photo: 130, ncic: 310, cabinet: 376, drawerChip: 441, terminal: 736, chip1967: 776,
-  dots: 806, office: 860, hub: 920, ap: 1138, second: 1452,
+  // anchored to the stats-omitted VO (run 45010023328); each card lands as its shot settles or on its word
+  hook: 0, photo: 135, ncic: 338, cabinet: 412, drawerChip: 480, terminal: 676, chip1967: 724,
+  dots: 768, office: 835, hub: 915, ap: 1100, second: 1420,
 };
 /** A string only starts drawing this long after BOTH of its cards have entered. */
 export const LINK_LAG = 12;
@@ -154,14 +155,14 @@ export const TRANS = 20;
 export type Shot = {id: string; at: number; cards: CardId[]; also?: Rect[]; widen?: number};
 export const SHOTS: Shot[] = [
   {id: "hook",     at: 0,    cards: ["hook"]},
-  {id: "stop",     at: 99,   cards: ["photo"]},                                     // "When a police officer..."
-  {id: "system",   at: 201,  cards: ["photo", "ncic"]},                             // "the answer routinely comes from..."
-  {id: "cabinet",  at: 357,  cards: ["cabinet", "drawerChip"]},                     // "Think of it as a filing cabinet..."
-  {id: "alwayson", at: 705,  cards: ["terminal", "chip1967", "office", "dots"]},    // "And it never closes..."
-  {id: "weakness", at: 900,  cards: ["hub"], also: ringBoxes()},                    // "That's the weakness..."
-  {id: "breach",   at: 1109, cards: ["ap"], also: [{x: CARDS.ap.x, y: CARDS.ap.y + CARDS.ap.h, w: CARDS.ap.w, h: 320}]}, // room for the question punches
-  {id: "second",   at: 1398, cards: ["second"]},                                    // "And it's the second time..."
-  {id: "stakes",   at: 1636, cards: ["photo", "ncic"]},                             // "Remember, every line..."
+  {id: "stop",     at: 105,  cards: ["photo"]},                                     // "When a police officer..."
+  {id: "system",   at: 216,  cards: ["photo", "ncic"]},                             // "the answer routinely comes from..."
+  {id: "cabinet",  at: 392,  cards: ["cabinet", "drawerChip"]},                     // "Think of it as a filing cabinet..."
+  {id: "alwayson", at: 671,  cards: ["terminal", "chip1967", "office", "dots"]},    // "And it never closes..."
+  {id: "weakness", at: 895,  cards: ["hub"], also: ringBoxes()},                    // "That's the weakness..."
+  {id: "breach",   at: 1094, cards: ["ap"], also: [{x: CARDS.ap.x, y: CARDS.ap.y + CARDS.ap.h, w: CARDS.ap.w, h: 320}]}, // room for the question punches
+  {id: "second",   at: 1354, cards: ["second"]},                                    // "And it's the second time..."
+  {id: "stakes",   at: 1624, cards: ["photo", "ncic"]},                             // "Remember, every line..."
   {id: "alarm",    at: 1753, cards: ["photo", "ncic"], widen: 1.3},                 // "That's why even a possible breach..."
 ];
 
