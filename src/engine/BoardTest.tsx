@@ -1,6 +1,6 @@
 import React from "react";
 import {useCurrentFrame, interpolate, spring, Img, staticFile} from "remotion";
-import {sPath, DrawOn, clamp01} from "./sketch";
+import {sPath, sRect, DrawOn, clamp01} from "./sketch";
 
 /**
  * BOARD TEST - v2 motion-design probe: "the case board".
@@ -38,6 +38,9 @@ const CARDS = [
    label: "One database. Always on.", credit: "Public domain"},
 ] as const;
 
+const LOCK_BODY = sRect(110, 84, RED, 7, 31);
+const LOCK_SHACKLE = sPath("M-38 -20 L-38 -52 A38 38 0 0 1 38 -52 L38 -20", RED, 7, 32);
+
 const THREADS = [
   sPath(`M${HUB.x} ${HUB.y} C 900 700, 640 640, 420 560`, RED, 7, 21),      // to CJIS
   sPath(`M${HUB.x} ${HUB.y} C 1300 800, 1420 700, 1660 560`, RED, 7, 22),    // to traffic stop
@@ -70,7 +73,7 @@ export const BoardTest: React.FC = () => {
 
   // ---- camera: dolly across the board, then push into the terminal ----
   const lookX = interpolate(f, [0, 40, 115, 175, 255, 320, 415], [420, 420, 880, 1180, 1700, 1180, 940], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const lookY = interpolate(f, [320, 415], [900, 660], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
+  const lookY = interpolate(f, [320, 415], [900, 560], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const cam = interpolate(f, [0, 340, 415], [1.06, 1.06, 1.8], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const camRot = interpolate(f, [0, 415], [-1.6, 0]);
   const camX = lookX - 540 / cam, camY = lookY - 960 / cam;
@@ -78,10 +81,12 @@ export const BoardTest: React.FC = () => {
   // ---- beat progress ----
   const typed = "STATUS: ONLINE  24/7/365";
   const typedN = Math.floor(clamp01((f - 52) / 40) * typed.length);
-  const counter = Math.floor(interpolate(f, [118, 160], [0, 90214], {extrapolateLeft: "clamp", extrapolateRight: "clamp"}));
+  const counter = Math.floor(interpolate(f, [118, 160], [0, 90000], {extrapolateLeft: "clamp", extrapolateRight: "clamp"}));
   const dim = interpolate(f, [222, 262, 300, 415], [0, 0.62, 0.62, 0.35], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const threadGlow = interpolate(f, [222, 262], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const stamp = spring({frame: Math.max(0, f - 356), fps: 30, config: {damping: 11, stiffness: 260, mass: 0.8}});
+  const lockPop = spring({frame: Math.max(0, f - 350), fps: 30, config: {damping: 12, stiffness: 200, mass: 0.8}});
+  const shackleRot = interpolate(lockPop, [0.55, 1], [0, -40], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
+  const lockP = clamp01((f - 336) / 16);
   const threadP = [clamp01((f - 40) / 45), clamp01((f - 182) / 40), clamp01((f - 196) / 40), clamp01((f - 208) / 40)];
 
   const layerStyle = (k: number, blur = 0): React.CSSProperties => ({
@@ -127,7 +132,8 @@ export const BoardTest: React.FC = () => {
         <div style={{position: "absolute", left: TERM.x - 330, top: TERM.y - 200, width: 660, height: 400,
           background: "#0b120e", border: `3px solid #33503f`, borderRadius: 10, padding: "26px 30px",
           boxShadow: "0 24px 70px rgba(0,0,0,0.6)",
-          opacity: clamp01((f - 44) / 12), transform: `translateY(${26 * (1 - clamp01((f - 44) / 12))}px)`}}>
+          opacity: clamp01((f - 44) / 12) * (1 - interpolate(f, [348, 378], [0, 0.8], {extrapolateLeft: "clamp", extrapolateRight: "clamp"})),
+          transform: `translateY(${26 * (1 - clamp01((f - 44) / 12))}px)`}}>
           <div style={{fontFamily: "monospace", fontSize: 30, color: GRN}}>
             {typed.slice(0, typedN)}<span style={{opacity: f % 16 < 8 ? 1 : 0}}>&#9608;</span>
           </div>
@@ -135,15 +141,24 @@ export const BoardTest: React.FC = () => {
             &gt; agencies connected
           </div>
           <div style={{fontFamily: "monospace", fontSize: 66, fontWeight: 700, color: GRN, marginTop: 6}}>
-            {counter.toLocaleString("en-US")}
+            {counter >= 90000 ? "90,000+" : counter.toLocaleString("en-US")}
           </div>
-          {f >= 356 && (
-            <div style={{position: "absolute", right: 26, bottom: 30, transform: `rotate(-9deg) scale(${0.4 + 0.6 * stamp})`,
-              opacity: stamp, border: `6px solid ${RED}`, borderRadius: 8, padding: "8px 18px"}}>
-              <span style={{fontFamily: "Arial,sans-serif", fontWeight: 800, fontSize: 44, color: RED, letterSpacing: 3}}>ACCESS: OPEN</span>
-            </div>
-          )}
         </div>
+
+        {/* drawn open padlock: editorial illustration of "a door the FBI can't lock" */}
+        {f >= 336 && (
+          <div style={{position: "absolute", left: 940, top: 430, opacity: lockP}}>
+            <svg width="300" height="300" style={{overflow: "visible", transform: "translate(-150px -130px)"}}>
+              <g transform={`translate(150 150) rotate(${shackleRot} -38 -20)`}>
+                <DrawOn paths={LOCK_SHACKLE} p={lockP}/>
+              </g>
+              <g transform="translate(150 150)"><g transform="translate(-55 -20)"><DrawOn paths={LOCK_BODY} p={lockP}/></g></g>
+            </svg>
+            <div style={{position: "absolute", top: 130, width: 560, left: -280, textAlign: "center",
+              fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 52, color: INK,
+              opacity: clamp01((f - 370) / 14)}}>a door the FBI can't lock.</div>
+          </div>
+        )}
 
         {/* status dots wave */}
         {Array.from({length: 24}, (_, i) => {
