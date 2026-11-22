@@ -28,6 +28,27 @@ const I="#26352f",P="#f1eddd",R="#cb4a32",G="#467765";
 
 const KICKER="AMERICA'S CRIME DATABASE";
 
+/**
+ * Text-fit root fix (owner flagged recurring label clipping, 22 Nov 2026):
+ * fixed plates with guessed font sizes kept slicing through glyphs.
+ * Measure the REAL rendered width (Chromium canvas metrics) and shrink the
+ * font until the string fits its container with margin. Falls back to a
+ * conservative 0.62em/char estimate outside the browser (lint/SSR).
+ */
+let __mctx:CanvasRenderingContext2D|null|undefined;
+const textW=(text:string,weight:string,size:number,family:string):number=>{
+ try{
+  if(__mctx===undefined)__mctx=document.createElement("canvas").getContext("2d");
+  if(__mctx){__mctx.font=`${weight} ${size}px ${family}`;return __mctx.measureText(text).width;}
+ }catch{}
+ return text.length*size*0.62;
+};
+/** Largest size <= base at which text fits maxW (floor 10px). */
+const fitSize=(text:string,maxW:number,base:number,weight:string="700",family:string="Arial,sans-serif"):number=>{
+ const w=textW(text,weight,base,family);
+ return w<=maxW?base:Math.max(10,Math.floor(base*maxW/w));
+};
+
 const Paper:React.FC<{children:React.ReactNode}>=({children})=>{
  const f=useCurrentFrame();
  const live=0.25+0.75*Math.abs(Math.sin(f/9));
@@ -56,15 +77,16 @@ const Headline:React.FC<{text:string;size?:number}>=({text,size=73})=>(
  </>
 );
 
-/** A steel drawer with handle and label slot. */
-const Drawer:React.FC<{x:number;y:number;w:number;h:number;label?:string;hot?:boolean;opacity?:number}>=({x,y,w,h,label,hot,opacity=1})=>(
- <g opacity={opacity}>
+/** A steel drawer with handle and label slot. The plate is fixed; the label font now fits the plate. */
+const Drawer:React.FC<{x:number;y:number;w:number;h:number;label?:string;hot?:boolean;opacity?:number}>=({x,y,w,h,label,hot,opacity=1})=>{
+ const fs=label?fitSize(label,w*0.64-24,Math.min(30,w*0.11)):0;
+ return <g opacity={opacity}>
   <rect x={x} y={y} width={w} height={h} rx="6" fill={hot?"#e4d7c8":"#d4d2bf"} stroke={hot?R:I} strokeWidth={hot?5:3}/>
   <rect x={x+w*0.18} y={y+h*0.16} width={w*0.64} height={h*0.34} rx="3" fill={P} stroke={I} strokeWidth="2"/>
   <rect x={x+w*0.38} y={y+h*0.62} width={w*0.24} height={h*0.14} rx={h*0.07} fill={I}/>
-  {label&&<text x={x+w/2} y={y+h*0.4} textAnchor="middle" fill={hot?R:I} fontFamily="Arial,sans-serif" fontSize={Math.min(30,w*0.11)} fontWeight="700">{label}</text>}
- </g>
-);
+  {label&&<text x={x+w/2} y={y+h*0.33+fs*0.36} textAnchor="middle" fill={hot?R:I} fontFamily="Arial,sans-serif" fontSize={fs} fontWeight="700">{label}</text>}
+ </g>;
+};
 
 /** A door: the unit of attack surface. */
 const Door:React.FC<{x:number;y:number;s?:number;hot?:boolean;open?:number}>=({x,y,s=1,hot,open=0})=>(
@@ -107,9 +129,9 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
    </g>
    <path d={`M1080 730Q860 710 ${1080-570*creep} ${710-20*creep}`} fill="none" stroke={R} strokeWidth="5" strokeDasharray="14 12" markerEnd="url(#ncic-arrow)"/>
    {stamp>0&&<g transform={`translate(560 400) rotate(-7)`} opacity={stamp}>
-    <rect x="0" y="0" width="470" height="146" rx="8" fill="none" stroke={R} strokeWidth="7"/>
-    <text x="235" y="64" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontWeight="700" fontSize="42" letterSpacing="3">APPARENT BREACH</text>
-    <text x="235" y="112" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontSize="27">FBI INVESTIGATING · UNCONFIRMED</text>
+    <rect x="0" y="0" width="470" height="146" rx="8" fill={P} fillOpacity="0.93" stroke={R} strokeWidth="7"/>
+    <text x="235" y="64" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontWeight="700" fontSize={fitSize("APPARENT BREACH",430,42)} letterSpacing="3">APPARENT BREACH</text>
+    <text x="235" y="112" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontSize={fitSize("FBI INVESTIGATING · UNCONFIRMED",430,27,"400")}>FBI INVESTIGATING · UNCONFIRMED</text>
    </g>}
    <text x="540" y="1330" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">The FBI's own crime database, reported hacked. Nov 2026.</text>
   </Paper>;
@@ -278,7 +300,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     {["WHO GOT IN?","HOW?","WHAT WAS TAKEN?"].map((q,i)=>(
      <g key={q} transform={`translate(${i*273} 0)`} opacity={Math.max(0,Math.min(1,(u-0.62-i*0.08)/0.12))}>
       <rect width="253" height="130" rx="10" fill={P} stroke={I} strokeWidth="3"/>
-      <text x="126" y="52" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontWeight="700" fontSize="27">{q}</text>
+      <text x="126" y="52" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontWeight="700" fontSize={fitSize(q,225,27)}>{q}</text>
       <text x="126" y="100" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontSize="27" fontStyle="italic">unknown</text>
      </g>
     ))}

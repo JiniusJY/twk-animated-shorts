@@ -30,27 +30,37 @@ concurrency:
 permissions:
   contents: read
 
+# Inputs reach shell ONLY through these env vars (never inline interpolation),
+# after the validate job's regex gates them. Artifact names/paths below still
+# use expressions - those are not shell-executed.
+env:
+  EPISODE: ${{ inputs.episode }}
+  SCALE: ${{ inputs.scale }}
+  SHARDS: ${{ inputs.shards }}
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Validate workflow inputs (before anything spends money)
+        env:
+          EP: ${{ inputs.episode }}
+          S: ${{ inputs.shards }}
+          SC: ${{ inputs.scale }}
         run: |
           set -euo pipefail
-          EP="${{ inputs.episode }}"
           if ! [[ "$EP" =~ ^[a-z0-9][a-z0-9-]{0,63}$ ]]; then
             echo "invalid episode slug: $EP" >&2; exit 1
           fi
           test -f "src/episodes/$EP/episode.json" || { echo "no such episode: $EP" >&2; exit 1; }
-          S="${{ inputs.shards }}"
           if ! [[ "$S" =~ ^[0-9]+$ ]] || [ "$S" -lt 1 ] || [ "$S" -gt 30 ]; then
             echo "shards must be 1-30, got: $S" >&2; exit 1
           fi
-          SC="${{ inputs.scale }}"
           if ! [[ "$SC" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
             echo "scale must be numeric, got: $SC" >&2; exit 1
           fi
+          awk -v s="$SC" 'BEGIN{ if (s < 0.5 || s > 2.0) { print "scale must be 0.5-2.0, got: " s > "/dev/stderr"; exit 1 } }'
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -60,8 +70,8 @@ jobs:
         run: |
           npx tsc --noEmit
           npx vitest run
-          npx tsx scripts/validate_episode.ts "src/episodes/${{ inputs.episode }}/episode.json"
-          npx tsx scripts/lint_episode.ts "src/episodes/${{ inputs.episode }}/episode.json"
+          npx tsx scripts/validate_episode.ts "src/episodes/$EPISODE/episode.json"
+          npx tsx scripts/lint_episode.ts "src/episodes/$EPISODE/episode.json"
 
       - uses: actions/setup-python@v5
         with:
@@ -103,10 +113,10 @@ jobs:
       - name: Render 4 storyboard stills across the runtime
         run: |
           mkdir -p out/stills
-          DUR=$(python3 -c "import json; print(json.load(open('src/episodes/${{ inputs.episode }}/episode.json'))['durationFrames'])")
+          DUR=$(python3 -c "import json,os; print(json.load(open('src/episodes/'+os.environ['EPISODE']+'/episode.json'))['durationFrames'])")
           for PCT in 5 35 65 95; do
             F=$(( DUR * PCT / 100 ))
-            npx remotion still src/index.ts "${{ inputs.episode }}" "out/stills/still-$PCT.png" --frame=$F
+            npx remotion still src/index.ts "$EPISODE" "out/stills/still-$PCT.png" --frame=$F
           done
       - name: Upload storyboard stills
         uses: actions/upload-artifact@v4
@@ -145,7 +155,7 @@ jobs:
           # Networked step (Fish TTS + Groq alignment); a transient API error must not kill the run.
           # voice.py caches takes by script hash, so a retry reuses any completed work.
           for ATTEMPT in 1 2 3; do
-            if python3 scripts/voice.py --episode "src/episodes/${{ inputs.episode }}"; then
+            if python3 scripts/voice.py --episode "src/episodes/$EPISODE"; then
               break
             fi
             if [ "$ATTEMPT" = "3" ]; then
@@ -166,11 +176,11 @@ jobs:
       - name: Build procedural audio mix (-15 LUFS) & sync timings
         run: |
           mkdir -p out
-          python3 scripts/audio_bed.py --episode "src/episodes/${{ inputs.episode }}" --props-out out/props.json
+          python3 scripts/audio_bed.py --episode "src/episodes/$EPISODE" --props-out out/props.json
       - id: shards
         name: Compute parallel render shards
         run: |
-          MATRIX=$(python3 scripts/make_shards.py out/props.json "${{ inputs.shards }}")
+          MATRIX=$(python3 scripts/make_shards.py out/props.json "$SHARDS")
           echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
       - id: meta
         name: Record expected duration
@@ -226,8 +236,8 @@ jobs:
           PROPS=$(find prep -name 'props.json' | head -n 1)
           ok=0
           for ATTEMPT in 1 2; do
-            if npx remotion render src/index.ts "${{ inputs.episode }}" "out/chunk-${{ matrix.shard.idx }}.mp4" \
-              --codec h264 --crf 18 --x264-preset veryfast --scale "${{ inputs.scale }}" \
+            if npx remotion render src/index.ts "$EPISODE" "out/chunk-${{ matrix.shard.idx }}.mp4" \
+              --codec h264 --crf 18 --x264-preset veryfast --scale "$SCALE" \
               --props="$PROPS" \
               --frames="${{ matrix.shard.range }}" \
               --timeout=120000 \
@@ -291,9 +301,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="ep-${{ inputs.episode }}-${{ github.run_number }}"
+          TAG="ep-$EPISODE-${{ github.run_number }}"
           gh release create "$TAG" out/final.mp4 out/qa_metrics.json \
             --repo "${{ github.repository }}" \
             --target "${{ github.sha }}" \
-            --title "${{ inputs.episode }} (#${{ github.run_number }})" \
-            --notes "Automated parallel cloud render for episode ${{ inputs.episode }}. QA gate passed (see qa_metrics.json)."
+            --title "$EPISODE (#${{ github.run_number }})" \
+            --notes "Automated parallel cloud render for episode $EPISODE. QA gate passed (see qa_metrics.json)."

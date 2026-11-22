@@ -293,7 +293,12 @@ def main():
         print(f"Using viral background track: {bg_path.name}", flush=True)
         music = load_bg_audio(bg_path, dur)
     else:
-        music = build_music(dur, ep.get("musicMood", "playful"))
+        # MUSIC RULE root fix (owner, 22 Nov 2026: "music wasn't updated"):
+        # the fixed seed 42 made every episode with the same mood ship the
+        # SAME bed (boeing + ncic both 'tense'). Derive the seed from the
+        # episode directory so no two episodes ever share a bed.
+        music_seed = int(hashlib.sha256(ep_dir.name.encode("utf-8")).hexdigest()[:8], 16) % (2**31)
+        music = build_music(dur, ep.get("musicMood", "playful"), seed=music_seed)
     music *= duck_envelope(n, words, duck_db=-4.0)
 
     # Set music bed ~10.5 dB below voice
@@ -350,7 +355,7 @@ def main():
             "integrated_lufs": round(float(final_lufs), 2),
             "true_peak_dbtp": round(float(final_peak), 2),
             "ceil_db": CEIL_DB,
-            "seed_music": 42,
+            "seed_music": music_seed if not (bg_path and bg_path.exists()) else None,
             "seed_sfx": 99,
         },
         "bg_audio": str(bg_path) if bg_path and bg_path.exists() else None,

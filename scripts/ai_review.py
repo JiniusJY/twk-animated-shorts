@@ -32,9 +32,10 @@ Judge it as a viewer with a skip thumb, against this release rubric:
 5. ENERGY ARC: the narration should build, with hush beats and emphatic beats - not a monotone metronome. Flag flat stretches with timestamps.
 6. ALIVENESS: no frozen frames; static scenes must still breathe. Flag any segment that looks frozen or dead.
 7. THE SKIP TEST: name EVERY timestamp range where a viewer would be inclined to skip, and why. "Inclined to skip" is a fail for that beat.
+8. TEXT OCCLUSION (hard fail class, owner-flagged 22 Nov 2026): inspect every label, plate, stamp, card and caption. Fail any frame where a box, border, image or graphic element overlaps, clips, slices through or hides part of a text glyph; where text overflows its container; or where text sits behind another element. Report the timestamp and the element.
 
 Return ONLY compact JSON (no whitespace, no markdown fence) with this shape:
-{"overall_score": 0-100, "pass": true/false, "hook_verdict": "...", "skip_risk": [{"start_s": 0.0, "end_s": 0.0, "reason": "..."}], "caption_issues": [{"at_s": 0.0, "issue": "..."}], "energy_flat_spans": [{"start_s": 0.0, "end_s": 0.0}], "frozen_look_spans": [{"start_s": 0.0, "end_s": 0.0}], "top_fixes": ["..."]}"""
+{"overall_score": 0-100, "pass": true/false, "hook_verdict": "...", "skip_risk": [{"start_s": 0.0, "end_s": 0.0, "reason": "..."}], "caption_issues": [{"at_s": 0.0, "issue": "..."}], "text_occlusion": [{"at_s": 0.0, "element": "...", "issue": "..."}], "energy_flat_spans": [{"start_s": 0.0, "end_s": 0.0}], "frozen_look_spans": [{"start_s": 0.0, "end_s": 0.0}], "top_fixes": ["..."]}"""
 
 
 def post_json(url, payload, retries=4):
