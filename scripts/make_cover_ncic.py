@@ -134,6 +134,72 @@ def variant_b(photo):
     return img
 
 
+def variant_c1(photo):
+    """Bold-claim dark variant: 'Who hacked the FBI?' over darkened full-bleed HQ."""
+    iw, ih = photo.size
+    cw = int(ih * W / H)
+    left = int(min(max(0.5 * iw - cw / 2, 0), iw - cw))
+    plate = photo.crop((left, 0, left + cw, ih)).resize((W, H), Image.LANCZOS)
+    black = Image.new("RGB", (W, H), (10, 12, 11))
+    img = Image.blend(plate, black, 0.55)
+    d = ImageDraw.Draw(img)
+
+    kf = f(SANSB, 32)
+    kw = sum(kf.getlength(c) + 7 for c in "FBI  ·  NCIC  ·  NOV 2026") - 7
+    draw_tracked(d, ((W - kw) / 2, 600), "FBI  ·  NCIC  ·  NOV 2026", kf, RED, tracking=7)
+
+    hf = f(SERIF, 148)
+    lh = 172
+    l1 = [("Who ", PAPER), ("hacked", RED)]
+    l2 = [("the FBI?", PAPER)]
+    w1 = sum(hf.getlength(t) for t, _ in l1)
+    w2 = sum(hf.getlength(t) for t, _ in l2)
+    draw_segments(d, ((W - w1) / 2, 690), l1, hf)
+    draw_segments(d, ((W - w2) / 2, 690 + lh), l2, hf)
+
+    cf = f(SANS, 22)
+    tw = cf.getlength(CREDIT_B)
+    d.text((W - tw - 28, H - 40), CREDIT_B, font=cf, fill=(241, 237, 221))
+    return img
+
+
+def variant_c2(photo):
+    """Viewer-stakes paper variant: 'Every cop checks you here.'"""
+    img = Image.new("RGB", (W, H), PAPER)
+    d = ImageDraw.Draw(img)
+    M = 64
+
+    kf = f(SANSB, 30)
+    draw_tracked(d, (M, 84), "TECHWHOKNOWS", kf, RED, tracking=8)
+    d.rectangle([M, 140, W - M, 142], fill=INK)
+
+    hf = f(SERIF, 96)
+    lh = 112
+    y = 240
+    draw_segments(d, (M, y), [("Every ", INK), ("cop", RED)], hf)
+    draw_segments(d, (M, y + lh), [("checks ", INK), ("you", RED), (" here.", INK)], hf)
+
+    plate_w = W - 2 * M
+    plate_h = 760
+    iw, ih = photo.size  # 9021x6183
+    bw = 0.56 * iw
+    bh = bw * plate_h / plate_w
+    box = (int(0.10 * iw), int(ih - bh), int(0.10 * iw + bw), ih)
+    plate = photo.crop(box).resize((plate_w, plate_h), Image.LANCZOS)
+    py = 660
+    d.rectangle([M - 3, py - 3, M + plate_w + 2, py + plate_h + 2], outline=INK, width=3)
+    img.paste(plate, (M, py))
+
+    af = f(SANS, 33)
+    d.text((M, py + plate_h + 34), "FBI crime database  ·  apparent breach  ·  Nov 2026",
+           font=af, fill=INK)
+
+    cf = f(SANS, 22)
+    d.rectangle([M, 1770, W - M, 1771], fill=INK)
+    d.text((M, 1792), CREDIT_A, font=cf, fill=INK)
+    return img
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
@@ -146,7 +212,11 @@ def main():
     a.save(args.out_dir / "twk_ncic_cover_A.jpg", quality=92)
     b = variant_b(ImageOps.exif_transpose(Image.open(args.photo_b)).convert("RGB"))
     b.save(args.out_dir / "twk_ncic_cover_B.jpg", quality=92)
-    print("Wrote two 1080x1920 NCIC cover candidates. Inspect pixels and crops before publishing.")
+    c1 = variant_c1(ImageOps.exif_transpose(Image.open(args.photo_b)).convert("RGB"))
+    c1.save(args.out_dir / "twk_ncic_cover_C1.jpg", quality=92)
+    c2 = variant_c2(ImageOps.exif_transpose(Image.open(args.photo_a)).convert("RGB"))
+    c2.save(args.out_dir / "twk_ncic_cover_C2.jpg", quality=92)
+    print("Wrote four 1080x1920 NCIC cover candidates. Inspect pixels and crops before publishing.")
 
 
 if __name__ == "__main__":
