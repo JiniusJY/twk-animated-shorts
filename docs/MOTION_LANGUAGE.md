@@ -18,8 +18,9 @@ permanent for all future scenes and episodes.
 - **No simulated system states.** Nothing may read as authentic footage/evidence of the breach
   (no fake terminal stamps like "ACCESS: OPEN"). Metaphors are rendered in our visibly drawn
   sketch style (e.g. the open padlock illustrating "a door the FBI can't lock").
-- APPARENT BREACH / unknowns framing applies to visuals: attribution cards, "claimed" labels
-  and question marks carry meaning and stay.
+- Uncertainty ("apparent breach", "claimed", unknowns) is carried by the narration. Visuals must
+  never contradict it or show more certainty than the VO. No on-screen uncertainty stamps
+  (CONTENT_SYSTEM.md section 4).
 
 ## Camera and depth
 - Continuous camera over scene cuts: dolly, push, pull. Parallax via 3 planes

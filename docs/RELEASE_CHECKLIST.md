@@ -30,7 +30,7 @@ Use the original editorial illustration system in `CONTENT_SYSTEM.md`. New episo
   TikTok/Reels/Shorts UI overlays - no covered labels or citations.
 - Missing human review of the actual rendered pixels AND the final mix.
 
-## Scoring rubric (pilot target: >= 85/100, no category under 70%)
+## Scoring rubric (release target: 100/100, see owner precision bar below)
 
 | Category | Points |
 | --- | --- |
