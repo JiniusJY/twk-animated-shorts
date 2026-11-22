@@ -147,7 +147,8 @@ export interface ShotDef {
     | "counter" | "overflow" | "power" | "reset" | "hook" | "lab" | "stakes"
     | "question" | "clock" | "storage" | "odometer" | "directive" | "payoff"
     | "ncic-hook" | "ncic-stop" | "ncic-files" | "ncic-records" | "ncic-clock"
-    | "ncic-doors" | "ncic-breach" | "ncic-pattern" | "ncic-payoff";
+    | "ncic-doors" | "ncic-breach" | "ncic-pattern" | "ncic-payoff"
+    | "ncic-id";
   world?: WorldPreset;
   light: LightMode;
   dof?: number;
@@ -217,6 +218,8 @@ export interface CaptionsConfig {
 }
 
 export interface EpisodeSpec {
+  /** Visual spine: "world" = 3D toon world (default), "editorial" = 2D motion graphics (owner ruling 22 Nov 2026: 3D read as slop for NCIC; full editorial chosen). */
+  style?: "world" | "editorial";
   slug: string;
   title: string;
   fps: number;

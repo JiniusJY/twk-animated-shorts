@@ -15,9 +15,9 @@ export function lintEpisodeErrors(spec: EpisodeSpec): string[] {
   // An episode where every shot carries a graphic never renders the 3D world:
   // no actors, no camera moves, no toon environments. That is the regression
   // the owner rejected on the NCIC episode ("overall visual degraded from ep 1").
-  if (spec.shots.length > 0 && spec.shots.every((s) => s.graphic)) {
+  if (spec.style !== "editorial" && spec.shots.length > 0 && spec.shots.every((s) => s.graphic)) {
     errors.push(
-      "all-2D episode: every shot has a graphic, so the 3D world never renders. Story beats must play in the 3D world (actors + camera moves); 2D editorial cards are for data beats only."
+      "all-2D episode: every shot has a graphic, so the 3D world never renders. Story beats must play in the 3D world (actors + camera moves); 2D editorial cards are for data beats only. (Owner ruling 22 Nov 2026: an episode may opt into the full-editorial spine with style: 'editorial' - the NCIC 3D world read as slop and was dropped.)"
     );
   }
 

@@ -340,5 +340,25 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
   </Paper>;
  }
 
+ // 10. ID: the system has a name - National Crime Information Center.
+ if(m==="ncic-id"){
+  const w1=Math.max(0,Math.min(1,(u-0.08)/0.3));
+  const w2=Math.max(0,Math.min(1,(u-0.42)/0.3));
+  const line=Math.max(0,Math.min(1,(u-0.72)/0.22));
+  const clip=(p:number)=>`inset(0 ${(1-p)*100}% 0 0)`;
+  return <Paper>
+   <text x="64" y="155" fill={R} fontFamily="Arial,sans-serif" fontSize="23" letterSpacing="3">{KICKER}</text>
+   <text x="64" y="300" fill={I} fontFamily="Arial,sans-serif" fontSize="26" letterSpacing="6">THE SYSTEM HAS A NAME</text>
+   <g transform="translate(64 430)">
+    <rect x="0" y="0" width="952" height="560" rx="18" fill="#fffcf1" stroke={I} strokeWidth="5"/>
+    <text x="70" y="150" fill={I} fontSize="82" fontWeight="700" style={{clipPath:clip(w1)}}>NATIONAL CRIME</text>
+    <text x="70" y="330" fill={I} fontSize="82" fontWeight="700" style={{clipPath:clip(w2)}}>INFORMATION CENTER</text>
+    <rect x="70" y="400" width={812*line} height="14" fill={R}/>
+    <text x="70" y="500" fill={I} fontFamily="Arial,sans-serif" fontSize="30">run by the FBI · built for the street, not the lab</text>
+   </g>
+   <text x="540" y="1160" textAnchor="middle" fill={R} fontSize="52" fontStyle="italic" opacity={line}>every cop knows it as NCIC</text>
+  </Paper>;
+ }
+
  return <Paper><Headline text="NCIC"/></Paper>;
 };

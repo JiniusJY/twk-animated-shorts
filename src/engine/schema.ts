@@ -68,7 +68,7 @@ function validateShot(s: Obj, i: number, dur: number, errs: string[]): ShotDef |
   if (s.move !== undefined && !["static", "truck", "push", "pull", "crane", "pan"].includes(s.move as string)) errs.push(`${where}.move: invalid move class`);
   if (s.transitionIn !== undefined && !["cut", "whip-left", "whip-right", "dissolve"].includes(s.transitionIn as string)) errs.push(`${where}.transitionIn: invalid transition`);
   if (s.anchor !== undefined && (!isStr(s.anchor) || !s.anchor.trim())) errs.push(`${where}.anchor: must be a nonempty phrase`);
-  if (s.graphic !== undefined && !["counter", "overflow", "power", "reset", "hook", "lab", "stakes", "question", "clock", "storage", "odometer", "directive", "payoff", "ncic-hook", "ncic-stop", "ncic-files", "ncic-records", "ncic-clock", "ncic-doors", "ncic-breach", "ncic-pattern", "ncic-payoff"].includes(s.graphic as string)) errs.push(`${where}.graphic: invalid graphic`);
+  if (s.graphic !== undefined && !["counter", "overflow", "power", "reset", "hook", "lab", "stakes", "question", "clock", "storage", "odometer", "directive", "payoff", "ncic-hook", "ncic-stop", "ncic-files", "ncic-records", "ncic-clock", "ncic-doors", "ncic-breach", "ncic-pattern", "ncic-payoff", "ncic-id"].includes(s.graphic as string)) errs.push(`${where}.graphic: invalid graphic`);
   if (s.purpose !== undefined && !isStr(s.purpose)) errs.push(`${where}.purpose: must be a string`);
   if (!isInt(s.id)) errs.push(`${where}.id: must be an integer`);
   if (!isInt(s.a) || !isInt(s.b)) {
@@ -262,7 +262,7 @@ function validateCaptions(c: unknown, errs: string[]): CaptionsConfig | undefine
 export function validateEpisode(raw: unknown, source: string): EpisodeSpec {
   const errs: string[] = [];
   if (!isObj(raw)) throw new Error(`${source}: episode is not an object`);
-  checkKeys(raw, ["slug", "title", "fps", "durationFrames", "world", "musicMood", "script", "sourceUrl", "shots", "actors", "props", "fx", "cues", "captions", "voice", "bgAudio", "topic_card", "creative_brief", "claim_ledger", "beats", "alternate_hook", "endCard"], source, errs);
+  checkKeys(raw, ["slug", "title", "style", "fps", "durationFrames", "world", "musicMood", "script", "sourceUrl", "shots", "actors", "props", "fx", "cues", "captions", "voice", "bgAudio", "topic_card", "creative_brief", "claim_ledger", "beats", "alternate_hook", "endCard"], source, errs);
 
   if (!isStr(raw.slug) || !/^[a-z0-9][a-z0-9-]*$/.test(raw.slug))
     errs.push(`${source}.slug: required, lowercase letters/digits/hyphens`);

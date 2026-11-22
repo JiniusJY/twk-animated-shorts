@@ -144,6 +144,10 @@ Use real screenshots or video excerpts when they supply evidence or context the 
 
 The end card uses the actual TechWhoKnows logo from the website brand asset, stored at `public/brand/twk-logo.svg`. Do not redraw or improvise the logo. Preserve its proportions and contrast. Website logo provenance is documented in `public/brand/README.md`. The current Boeing render does not add unrelated social footage.
 
+## Visual spine (owner ruling, 22 November 2026)
+
+The 3D toon world is NOT the default spine. Owner on the pass-3 NCIC cut: the 3D world "doesnt rlly look realistic... jus seems slop", and he delegated the final call - full editorial was chosen. Episodes default to the editorial motion-graphics spine (`style: "editorial"` in episode.json: animated paper/ink/red graphics per story beat, mixed pacing, whip/dissolve/cut transitions, SFX cues) in the cleo-abram style, upgraded with licensed real footage/imagery where it beats a graphic. The older standing rule "story beats must play in the 3D world" is SUPERSEDED by this ruling; the lint all-2D hard error now applies only to episodes that opt back into `style: "world"`. The 3D engine stays available for beats where it honestly beats the gate.
+
 ## Cover design (viewer psychology, standing per owner 22 November 2026)
 
 A cover is a value promise, not decoration. A viewer scrolling the feed gives it about two seconds and asks one question: what does watching this do for me. Every cover must answer it.
