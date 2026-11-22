@@ -2,6 +2,14 @@
 
 Owner brief: "Find plugins on github that enhances ur workflow and video generation"; goal is better editing (not just camera pan on one scene), live sfx, and visuals that match the voiceover (e.g. a stat lands as a building pile of the thing being counted). Reviewed 22 Nov; re-check each episode pre-production.
 
+## Adopted 22 November 2026
+
+Installed at 4.0.545 (exact, matching Remotion): `@remotion/transitions`, `@remotion/motion-blur`, `@remotion/light-leaks`, `@remotion/noise`, `@remotion/lottie`, `@remotion/sfx`. Transition devices built on top are in `src/engine/devices/transitions.tsx` (see DEVICES.md).
+
+- **@remotion/sfx finding:** it is a list of URLs to sounds hosted at remotion.media, mostly meme sounds. Per its own docs, `whip` and `whoosh` are CC0 (Freesound 838766 and 831936). `ding`, `vine-boom`, `spongebob-fail` and similar say only "probably fine to use", with no license. Rule: use only sounds whose page states CC0 or an equivalent commercial license, record the source in the asset ledger, and never use the meme sounds on brand accounts. Download and keep the file locally, don't stream from remotion.media at render time.
+- **Synthesised SFX are the biggest sound gap.** `scripts/audio_bed.py` builds every cue from noise and sine waves. A recorded, commercially licensed SFX library is the next step (sources and rights rules in CONTENT_SYSTEM section 8).
+- `@remotion/light-leaks` exports a deprecated `LightLeak` and points to `@remotion/effects`. Not used yet. `FlashHit` (CSS) covers flashes for now.
+
 ## Adopt next (ep3 candidates)
 
 - **@remotion/transitions** (official, remotion-dev/remotion, packages/transitions): presentation transitions (wipe, slide, flip, clock wipe, etc.) between scenes via TransitionSeries. Directly upgrades our cut/dissolve-only grammar - motivated scene changes instead of pans on one scene. Docs: remotion.dev/docs/transitions/

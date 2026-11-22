@@ -54,6 +54,39 @@ Ep2 (`src/engine/BoardEpisode.tsx`) is the reference episode. It's now only layo
 | `PunchOverlay` | A number or question that must land ("24/7", "WHO GOT IN?") | Fixed overlay, outside the camera, one at a time. Supported wording only. |
 | `dimTrack` + `SceneDim` | Focus on a punch or a dark moment | Windows of fade-in, hold, fade-out. |
 
+### Transitions and hits
+
+Preview all of these in the `transitions-demo` composition (`src/engine/TransitionsDemo.tsx`). The labels in that reel are for review only.
+
+| Device | Use it when | Notes |
+|---|---|---|
+| `whipPan({direction})` | Same energy, new subject ("and it's not the only one") | Scene-to-scene, inside `<TransitionSeries>`. Speed-ramped, with a directional streak at peak speed. 14-18 frames. |
+| `zoomThrough({x, y})` | Diving into a detail ("inside that drawer is...") | Camera dives into a point of the old scene, the new one opens as a circle from that point. Put `x, y` on the thing being named. About 22 frames. |
+| `paperTear()` | A turn in the story ("but here's the other side") | Ragged paper edge sweeps across. Native to the paper/ink look. |
+| `makeBoard({ease: "whip"})` + `MotionSmear` | Fast travel inside one continuous world | Speed-ramped camera, blur from `cameraVelocity()`. No filter at all while a shot is held. |
+| `GlitchHit` | A hack or a break, on the word ("broken into", "breach") | 7 frames of RGB split and slice shift. Renders the scene 3x while active, so keep it short. One or two per episode at most. |
+| `FlashHit` | A reveal or an impact word | 2-5 frame flash. Pair with a `kickEnvelope` kick. |
+| `@remotion/transitions` built-ins | `wipe`, `clockWipe` (time passing), `iris`, `slide`, `fade` | CSS-based. Some built-ins (`zoomBlur`, `filmBurn`, `crosswarp`) are canvas shaders, so test a render before using them. |
+
+Hard cut stays the default (about 90% of boundaries). Every non-cut transition must connect two meanings, and the choice is recorded per boundary in the episode plan.
+
+## Editing grammar from top tech creators
+
+This is what the techniques are for, and which device covers each. Before ep3, verify cadence and examples against real frames of current videos (CONTENT_SYSTEM section 3, grounding rule). This table is a starting map, not measured evidence.
+
+| Technique | Seen in | What it does | Device |
+|---|---|---|---|
+| Hard cut on the word | Fireship, almost everyone | New idea, no wasted frames | Default, no device |
+| Whip pan | Cleo Abram, MKBHD | Keeps energy while swapping subjects | `whipPan`, whip board camera |
+| Zoom into a screen or object | Cleo Abram, Kurzgesagt-style scale jumps | Changes scale, "let's look inside" | `zoomThrough` |
+| Match cut on shape | Cleo Abram, Vox | One object becomes the next idea | `FlipRevealCard`, object transformation (MOTION_LANGUAGE) |
+| Evidence board, documents, highlights | Johnny Harris, Vox | Makes sources physical | Case board, `LineAssemble`, `PhotoCard` |
+| Speed ramp | MKBHD, Cleo Abram | Motion feels filmed, not slid | `ease: "whip"`, `rampInOut` |
+| Kinetic type punch | Fireship, Cleo Abram | The number lands as an event | `PunchOverlay` + kick |
+| Glitch / RGB split | Cyber and hacking shorts | Signals something broke | `GlitchHit` |
+| Object passes the lens and wipes to the next scene | Cleo Abram, MKBHD | Hides the cut inside motion | Not built yet |
+| Sound on every transition | All of them | A whoosh on the whip, an impact on the punch, a riser into the reveal | Needs the recorded SFX library (TOOLING_RESEARCH.md) |
+
 ## Building a new board episode
 
 1. Copy `src/engine/boardLayout.ts` as the episode's layout: card rects, `ENTER` frames, `LINKS`, `SHOTS`. Take frames from the take's word alignment.

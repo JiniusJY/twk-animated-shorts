@@ -50,6 +50,8 @@ export type BoardSpec<C extends string> = {
   pinGap?: number;
   /** a string starts drawing this long after BOTH of its cards have entered */
   linkLag?: number;
+  /** camera travel curve: "smooth" (ep2, cubic in-out) or "whip" (speed ramp: slow out, very fast middle, slow in; pair with MotionSmear) */
+  ease?: "smooth" | "whip";
   /** extra rects strings and pins must avoid (e.g. a ring of nodes) */
   extraObstacles?: {name: string; r: Rect}[];
 };
@@ -87,6 +89,7 @@ export const ringRects = (c: {x: number; y: number}, ring: {r: number; ry: numbe
   });
 
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const easeInOutQuint = (t: number) => (t < 0.5 ? 16 * t ** 5 : 1 - Math.pow(-2 * t + 2, 5) / 2);
 
 export const makeBoard = <C extends string>(spec: BoardSpec<C>) => {
   const PIN_GAP = spec.pinGap ?? 26;
@@ -147,7 +150,7 @@ export const makeBoard = <C extends string>(spec: BoardSpec<C>) => {
     const prev = frameShot(shots[i - 1]);
     const t = Math.min(1, (f - shots[i].at) / TRANS);
     if (t >= 1) return cur;
-    const e = easeInOutCubic(t);
+    const e = (spec.ease === "whip" ? easeInOutQuint : easeInOutCubic)(t);
     return {
       cx: prev.cx + (cur.cx - prev.cx) * e,
       cy: prev.cy + (cur.cy - prev.cy) * e,
@@ -160,7 +163,13 @@ export const makeBoard = <C extends string>(spec: BoardSpec<C>) => {
     x: FOCUS.x + (r.x - c.cx) * c.zoom, y: FOCUS.y + (r.y - c.cy) * c.zoom, w: r.w * c.zoom, h: r.h * c.zoom,
   });
 
-  return {spec, PIN_GAP, LINK_LAG, MAX_ZOOM, TRANS, SAFE, FOCUS, anchor, buildLink, links, linkById, obstacles, frameShot, cameraAt, toScreen};
+  /** On-screen camera velocity in px/frame (feed to MotionSmear). Zero while a shot is held. */
+  const cameraVelocity = (f: number): {vx: number; vy: number} => {
+    const a = cameraAt(f - 1), b = cameraAt(f);
+    return {vx: (b.cx - a.cx) * b.zoom, vy: (b.cy - a.cy) * b.zoom};
+  };
+
+  return {spec, cameraVelocity, PIN_GAP, LINK_LAG, MAX_ZOOM, TRANS, SAFE, FOCUS, anchor, buildLink, links, linkById, obstacles, frameShot, cameraAt, toScreen};
 };
 
 export type Board<C extends string> = ReturnType<typeof makeBoard<C>>;

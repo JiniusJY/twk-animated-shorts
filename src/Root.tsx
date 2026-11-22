@@ -5,6 +5,7 @@ import { RoughTest } from "./engine/RoughTest";
 import { UnfoldTest } from "./engine/UnfoldTest";
 import { BoardTest } from "./engine/BoardTest";
 import { BoardEpisode } from "./engine/BoardEpisode";
+import { TransitionsDemo, TRANSITIONS_DEMO_FRAMES } from "./engine/TransitionsDemo";
 
 // Registered hand-authored compositions selectable per episode via episode.json
 // "composition". Adding a new visual language for a future topic = build the
@@ -56,6 +57,14 @@ export const RemotionRoot: React.FC = () => {
         id="board-ep2"
         component={BoardEpisode}
         durationInFrames={2014}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="transitions-demo"
+        component={TransitionsDemo}
+        durationInFrames={TRANSITIONS_DEMO_FRAMES}
         fps={30}
         width={1080}
         height={1920}

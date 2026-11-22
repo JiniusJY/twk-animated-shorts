@@ -97,3 +97,24 @@ describe("motion and overlay helpers", () => {
     expect(activeHighlight(hl, 100, 100)).toBeNull();
   });
 });
+
+import { rampInOut } from "../src/engine/devices/transitions";
+
+describe("transition helpers", () => {
+  it("rampInOut runs 0 -> 1, is symmetric, and is fastest in the middle", () => {
+    expect(rampInOut(0)).toBe(0);
+    expect(rampInOut(1)).toBe(1);
+    expect(rampInOut(0.5)).toBeCloseTo(0.5);
+    expect(rampInOut(0.25) + rampInOut(0.75)).toBeCloseTo(1);
+    const step = (t: number) => rampInOut(t + 0.01) - rampInOut(t);
+    expect(step(0.495)).toBeGreaterThan(step(0.1) * 10);
+  });
+
+  it("whip-eased board camera lands on the same framing and reports zero velocity while held", () => {
+    const spec = { ...toy.spec, ease: "whip" as const };
+    const whip = makeBoard(spec);
+    expect(whip.cameraAt(100 + whip.TRANS)).toEqual(toy.cameraAt(100 + toy.TRANS));
+    expect(whip.cameraVelocity(60)).toEqual({ vx: 0, vy: 0 });
+    expect(Math.abs(whip.cameraVelocity(100 + whip.TRANS / 2).vx)).toBeGreaterThan(Math.abs(toy.cameraVelocity(100 + toy.TRANS / 2).vx));
+  });
+});
