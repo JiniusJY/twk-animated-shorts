@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Advisory AI video review of a rendered cut against the CONTENT_SYSTEM release gate.
 
-Uses Gemini video understanding (default: gemini-4-hydrogen, free tier) to watch the
+Uses Gemini video understanding (default: gemini-3.6-flash, free tier) to watch the
 cut and return a structured verdict. ADVISORY ONLY: a human/agent frame review still
 owns the pass/fail decision; this flags beats and timestamps to inspect.
 
 Usage:
   GEMINI_API_KEY_FILE=/path/to/key python3 scripts/ai_review.py --video out/final.mp4 \
-      [--model gemini-4-hydrogen] [--out out/ai_review.json]
+      [--model gemini-3.6-flash] [--out out/ai_review.json]
 
 Free-tier note: content sent to the free tier may be used by Google for training.
 Fine for publication-bound cuts; never send private material.
@@ -88,7 +88,7 @@ def upload_file(key, path, mime):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--video", required=True)
-    ap.add_argument("--model", default="gemini-4-hydrogen")
+    ap.add_argument("--model", default="gemini-3.6-flash")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
