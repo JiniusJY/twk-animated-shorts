@@ -20,7 +20,7 @@ When the owner says "episode N" or approves a topic, the system runs every stage
 2. Topic pick with a viral-potential check
 3. Claim ledger (section 4)
 4. Script with the cue pass (section 5)
-5. Storyboard: one visual per spoken claim, a camera move and a transition for each boundary (section 6)
+5. Storyboard: one visual per spoken claim, picked from the device library ([DEVICES.md](DEVICES.md)) first, plus a camera move and a transition for each boundary (section 6)
 6. Voice take, word alignment and timing map
 7. Build, short local proof, full render
 8. Defect gate, then the skip test (section 10)
@@ -96,7 +96,7 @@ Sources: writepanda.ai Fireship study, viralmint.net hook study, viralvault.stud
 - **Default: editorial motion graphics** (`style: "editorial"`): animated paper, ink and red graphics per story beat, upgraded with licensed real footage or photos where they beat a graphic.
 - The 3D toon world (`style: "world"`) is opt-in for beats where it honestly beats the gate. The all-2D lint error applies only to `world` episodes.
 - The legacy cartoon renderer is for existing compositions or an explicit creative choice.
-- Don't force a new story into a dashboard, a stock scene or a previous episode's rig. Build the rig the story needs.
+- Don't force a new story into a dashboard, a stock scene or a previous episode's rig. Reuse devices from [DEVICES.md](DEVICES.md) where they demonstrate the sentence. Build a new device (in the library, with its settings exposed) when none does.
 
 ### Designing a shot
 
