@@ -1,5 +1,11 @@
 # TWK content system
 
+## The standard episode flow (standing, per owner 22 November 2026)
+
+When the owner says "episode N" (or just approves a topic), the whole pipeline runs without him driving each step: trend and creator research, topic pick with viral-potential check, script, scene production, voiceover, render, cover shortlist under the cover rules, quality gate. He is shown the final video (and cover options if he has not delegated the pick) and approves before anything publishes. Approval of the final cut is the one step that is never skipped; everything before it is the system's job, not his.
+
+Each stage follows its section below: pre-production research, creative contract, cover design, then the release and learning rules. Report what was verified at each gate, and never ship a cut that has not passed the quality gate and his approval.
+
 Updated 21 November 2026 after review of the Boeing episode. The editorial illustration direction was accepted. That acceptance is not a claim that every shot or voice performance is approved.
 
 ## Pre-production research (standing, per owner 22 November 2026)
