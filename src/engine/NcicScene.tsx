@@ -49,9 +49,22 @@ const fitSize=(text:string,maxW:number,base:number,weight:string="700",family:st
  return w<=maxW?base:Math.max(10,Math.floor(base*maxW/w));
 };
 
-const Paper:React.FC<{children:React.ReactNode}>=({children})=>{
+/**
+ * Camera rig (motion-core rebuild, 22 Nov 2026): no frame ever sits still.
+ * Every shot gets a continuous slow push-in, a gentle sinusoidal drift,
+ * a micro-rotation, and a punch-in over its first frames so each cut reads
+ * as an edit beat instead of a slide change. Deterministic per frame.
+ */
+const Paper:React.FC<{shot:ShotDef;children:React.ReactNode}>=({shot,children})=>{
  const f=useCurrentFrame();
  const live=0.25+0.75*Math.abs(Math.sin(f/9));
+ const rt=f-shot.a, rspan=Math.max(1,shot.b-shot.a), ru=Math.max(0,Math.min(1,rt/rspan));
+ const punch=1+0.10*Math.max(0,1-rt/7);
+ const push=1+0.05*ru;
+ const sc=punch*push;
+ const dx=5*Math.sin(f*0.021+shot.a*0.37);
+ const dy=3.5*Math.sin(f*0.017+shot.a*0.53+1.7);
+ const rot=0.3*Math.sin(f*0.012+shot.a*0.21);
  return <AbsoluteFill style={{background:P}}>
   <svg viewBox="0 0 1080 1920" width="100%" height="100%" style={{fontFamily:"Georgia,serif"}}>
    <defs>
@@ -61,10 +74,12 @@ const Paper:React.FC<{children:React.ReactNode}>=({children})=>{
     <marker id="ncic-arrow-green" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0L8 4 0 8" fill="none" stroke={G} strokeWidth="1.5"/></marker>
    </defs>
    <rect width="1080" height="1920" fill="url(#ncic-grain)"/>
+   <g transform={`translate(${(540+dx).toFixed(1)} ${(960+dy).toFixed(1)}) scale(${sc.toFixed(4)}) rotate(${rot.toFixed(2)}) translate(-540 -960)`}>
    <text x="64" y="155" fill={R} fontFamily="Arial,sans-serif" fontSize="23" letterSpacing="3">{KICKER}</text>
    <circle cx="1022" cy="147" r="9" fill={R} opacity={live}/>
    <circle cx="1022" cy="147" r="15" fill="none" stroke={R} strokeWidth="2" opacity={live*0.5}/>
    {children}
+   </g>
   </svg>
   <Grain frame={f}/>
  </AbsoluteFill>;
@@ -115,20 +130,25 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
  const t=f-shot.a, span=shot.b-shot.a, u=Math.max(0,Math.min(1,t/span));
  const m=shot.graphic;
- const pop=spring({frame:t,fps,config:{damping:22,stiffness:160}});
+ const pop=spring({frame:t,fps,config:{damping:12,stiffness:150,mass:0.9}});
+ /** Overshoot entrance for element i starting at frame `start`: pop scale/fade. */
+ const popAt=(start:number)=>spring({frame:Math.max(0,t-start),fps,config:{damping:12,stiffness:170,mass:0.8}});
+ /** Slow idle breathing so hero graphics never freeze between beats. */
+ const br=(ph:number)=>1+0.009*Math.sin(f*0.11+ph);
 
  // 1. HOOK: someone may already be inside the FBI's own files.
  if(m==="ncic-hook"){
   const creep=Math.min(1,u*1.6);
   const stamp=Math.max(0,Math.min(1,(u-0.5)/0.2));
-  return <Paper>
+  const slam=popAt(Math.round(span*0.5));
+  return <Paper shot={shot}>
    <Headline text="Someone may be inside."/>
-   <g transform={`translate(0 ${(1-pop)*40})`}>
+   <g transform={`translate(540 835) scale(${(pop*br(0)).toFixed(4)}) translate(-540 -835) translate(0 ${(1-pop)*40})`}>
     <rect x="310" y="470" width="460" height="730" rx="14" fill="#c0c5b1" stroke={I} strokeWidth="5"/>
     {["WANTED PERSONS","MISSING PERSONS","STOLEN VEHICLES","WARRANTS"].map((l,i)=><Drawer key={l} x={345} y={505+i*170} w={390} h={140} label={l} hot={i===1&&creep>0.7}/>)}
    </g>
    <path d={`M1080 730Q860 710 ${1080-570*creep} ${710-20*creep}`} fill="none" stroke={R} strokeWidth="5" strokeDasharray="14 12" markerEnd="url(#ncic-arrow)"/>
-   {stamp>0&&<g transform={`translate(560 400) rotate(-7)`} opacity={stamp}>
+   {stamp>0&&<g transform={`translate(795 473) rotate(-7) scale(${(1.55-0.55*Math.min(1,slam)).toFixed(3)}) translate(-795 -473)`} opacity={Math.min(1,slam*2)}>
     <rect x="0" y="0" width="470" height="146" rx="8" fill={P} fillOpacity="0.93" stroke={R} strokeWidth="7"/>
     <text x="235" y="64" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontWeight="700" fontSize={fitSize("APPARENT BREACH",430,42)} letterSpacing="3">APPARENT BREACH</text>
     <text x="235" y="112" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontSize={fitSize("FBI INVESTIGATING · UNCONFIRMED",430,27,"400")}>FBI INVESTIGATING · UNCONFIRMED</text>
@@ -143,7 +163,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
   const back=Math.max(0,Math.min(1,(u-0.55)/0.3));
   const dotX=interpolate(send,[0,1],[350,760]);
   const retX=interpolate(back,[0,1],[760,350]);
-  return <Paper>
+  return <Paper shot={shot}>
    <Headline text="One system answers."/>
    {/* patrol car */}
    <g transform={`translate(${140+30*Math.sin(u*Math.PI)} 780)`}>
@@ -160,7 +180,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <text x="110" y="150" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize={fitSize("PLATE CHECK",196,20,"400")}>PLATE CHECK</text>
    </g>
    {/* NCIC building */}
-   <g transform="translate(700 580)">
+   <g transform={`translate(840 740) scale(${br(2.6).toFixed(4)}) translate(-840 -740) translate(700 580)`}>
     <path d="M0 320V60L60 0H220L280 60V320Z" fill="#d4d2bf" stroke={I} strokeWidth="5"/>
     <path d="M60 0L140 60H220L140 0" fill="none" stroke={I} strokeWidth="3"/>
     {[0,1,2,3].map(i=><rect key={i} x={35+i*60} y={110} width="34" height="48" fill={I} opacity=".8"/>)}
@@ -182,17 +202,18 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
  // 3. FILES: the filing cabinet with twenty-one drawers.
  if(m==="ncic-files"){
   const names=["WANTED","MISSING","STOLEN CARS","STOLEN GUNS","PROT. ORDERS"];
-  return <Paper>
+  return <Paper shot={shot}>
    <Headline text="Twenty-one drawers."/>
-   <g transform="translate(140 440)">
+   <g transform={`translate(540 890) scale(${br(1.3).toFixed(4)}) translate(-540 -890) translate(140 440)`}>
     <rect x="0" y="0" width="800" height="905" rx="16" fill="#c0c5b1" stroke={I} strokeWidth="5"/>
     {Array.from({length:21},(_,i)=>{
      const col=i%3,row=Math.floor(i/3);
      const named=i<5;
-     const o=Math.max(0,Math.min(1,(t-i*3)/10));
+     const o=popAt(i*3);
+     const cx=35+col*250+110, cy=35+row*122+48;
      const scan=Math.floor(f/7)%21===i;
-     return <g key={i}>
-      <Drawer x={35+col*250} y={35+row*122} w={220} h={96} label={named?names[i]:undefined} hot={named} opacity={o}/>
+     return <g key={i} transform={`translate(${cx} ${cy}) scale(${(0.55+0.45*Math.min(1,o)).toFixed(3)}) translate(${-cx} ${-cy})`} opacity={Math.min(1,o*1.6)}>
+      <Drawer x={35+col*250} y={35+row*122} w={220} h={96} label={named?names[i]:undefined} hot={named}/>
       {scan&&o>0.9&&<rect x={35+col*250} y={35+row*122} width={220} height={96} rx="6" fill={R} opacity=".16"/>}
      </g>;
     })}
@@ -210,7 +231,8 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     {finalStr.split("").map((ch,i)=>{
      const x=120+i*((840-72)/Math.max(1,finalStr.length-1));
      const jiggle=ch>="0"&&ch<="9"?Math.sin((f+i*7)*0.35)*(rolling<1?10*(1-rolling):1.4):0;
-     return <g key={i} transform={`translate(${x} 30)`}>
+     const tp=popAt(4+i*2);
+     return <g key={i} transform={`translate(${x+36} ${30+60}) scale(${(0.4+0.6*Math.min(1,tp)).toFixed(3)}) translate(${-(x+36)} ${-90}) translate(${x} 30)`} opacity={Math.min(1,tp*1.5)}>
       <rect width="72" height="120" rx="6" fill={P}/>
       <text x="36" y={95+jiggle} textAnchor="middle" fill={I} fontFamily="'Courier New',monospace" fontWeight="700" fontSize="66">{ch}</text>
      </g>;
@@ -219,7 +241,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <text x="985" y="200" textAnchor="end" fill="#a4af9f" fontFamily="Arial,sans-serif" fontSize="22">{sub}</text>
    </g>;
   };
-  return <Paper>
+  return <Paper shot={shot}>
    <Headline text="Built to be checked."/>
    {drum(520,"ACTIVE RECORDS","","12,000,000")}
    {drum(890,"CHECKS PER DAY","","10,000,000",true)}
@@ -230,7 +252,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
  // 5. CLOCK: open 24/7 since January 1967.
  if(m==="ncic-clock"){
   const sweep=t*6;
-  return <Paper>
+  return <Paper shot={shot}>
    <Headline text="It never closes."/>
    <g transform="translate(540 720)">
     <circle r="280" fill="#dedeca" stroke={I} strokeWidth="6"/>
@@ -239,7 +261,9 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     <g transform={`rotate(${sweep/12})`}><path d="M0 0L115 60" stroke={R} strokeWidth="16" strokeLinecap="round"/></g>
     <circle r="15" fill={I}/>
    </g>
-   <text x="540" y="1160" textAnchor="middle" fill={R} fontSize="120">24/7</text>
+   <g transform={`translate(540 1100) scale(${(0.5+0.5*Math.min(1,popAt(8))).toFixed(3)}) translate(-540 -1100)`} opacity={Math.min(1,popAt(8)*1.4)}>
+    <text x="540" y="1160" textAnchor="middle" fill={R} fontSize="120">24/7</text>
+   </g>
    <g>
     <path d="M150 1280H930" stroke={I} strokeWidth="4"/>
     <circle cx="150" cy="1280" r="12" fill={I}/>
@@ -259,18 +283,21 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
    return {a,x:540+Math.cos(a)*380,y:810+Math.sin(a)*400};
   });
   const hot=[2,7,12];
-  return <Paper>
+  return <Paper shot={shot}>
    <Headline text="Ninety thousand doors." size={66}/>
+   <g transform={`translate(540 810) scale(${br(2.1).toFixed(4)}) translate(-540 -810)`}>
    {doors.map((d,i)=>{
     const isHot=hot.includes(i);
-    const open=isHot?Math.max(0,Math.min(1,(u-0.3-i*0.12)/0.25)):0;
+    const open=isHot?Math.max(0,Math.min(1,popAt(Math.round(span*(0.3+i*0.12)))/1)):0;
+    const dp=popAt(i*2);
     const lineLive=Math.min(1,u*1.3);
-    return <g key={i}>
+    return <g key={i} opacity={Math.min(1,dp*1.5)}>
      <path d={`M540 810L${540+(d.x-540)*lineLive} ${810+(d.y-810)*lineLive}`} stroke={open>0?R:I} strokeWidth={open>0?5:2.5} opacity={open>0?0.95:0.5}/>
      <Door x={d.x} y={d.y} s={0.75} hot={open>0.15} open={open}/>
     </g>;
    })}
    <Core x={540} y={810} s={0.9}/>
+   </g>
    <text x="540" y="1300" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">connected to 90,000+ criminal-justice agencies</text>
    <text x="540" y="1380" textAnchor="middle" fill={R} fontSize="48" fontStyle="italic">every connection is a way in</text>
   </Paper>;
@@ -283,8 +310,9 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
   const a=-Math.PI/2+(7/18)*Math.PI*2;
   const door={x:540+Math.cos(a)*380,y:810+Math.sin(a)*400};
   const px=door.x+(540-door.x)*pulse, py=door.y+(810-door.y)*pulse;
-  return <Paper>
+  return <Paper shot={shot}>
    <Headline text="One door was used." size={66}/>
+   <g transform={`translate(540 810) scale(${br(0.6).toFixed(4)}) translate(-540 -810)`}>
    {Array.from({length:18},(_,i)=>{
     const aa=(i/18)*Math.PI*2-Math.PI/2;
     const dx=540+Math.cos(aa)*380, dy=810+Math.sin(aa)*400;
@@ -295,10 +323,11 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     </g>;
    })}
    <Core x={540} y={810} s={0.9} alarm={alarm}/>
+   </g>
    {pulse<1&&<circle cx={px} cy={py} r="16" fill={R}/>}
    {u>0.62&&<g transform={`translate(140 1260)`}>
     {["WHO GOT IN?","HOW?","WHAT WAS TAKEN?"].map((q,i)=>(
-     <g key={q} transform={`translate(${i*273} 0)`} opacity={Math.max(0,Math.min(1,(u-0.62-i*0.08)/0.12))}>
+     <g key={q} transform={`translate(${i*273+126} 65) scale(${(0.5+0.5*Math.min(1,popAt(Math.round(span*(0.62+i*0.08))))).toFixed(3)}) translate(${-(i*273+126)} -65) translate(${i*273} 0)`} opacity={Math.min(1,popAt(Math.round(span*(0.62+i*0.08)))*1.5)}>
       <rect width="253" height="130" rx="10" fill={P} stroke={I} strokeWidth="3"/>
       <text x="126" y="52" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontWeight="700" fontSize={fitSize(q,225,27)}>{q}</text>
       <text x="126" y="100" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontSize="27" fontStyle="italic">unknown</text>
@@ -311,8 +340,8 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
 
  // 8. PATTERN: second claimed FBI breach in two months.
  if(m==="ncic-pattern"){
-  const card=(x:number,head:string,l1:string,l2:string,l3:string,hot?:boolean)=>(
-   <g transform={`translate(${x} 520) rotate(${hot?2:-2})`}>
+  const card=(x:number,head:string,l1:string,l2:string,l3:string,hot?:boolean,idx:number=0)=>(
+   <g transform={`translate(${x+215} 800) rotate(${hot?2:-2}) scale(${(0.6+0.4*Math.min(1,popAt(6+idx*8))).toFixed(3)}) translate(${-(x+215)} -800) translate(${x} 520)`} opacity={Math.min(1,popAt(6+idx*8)*1.5)}>
     <path d="M0 0H380L430 55V560H0Z" fill="#fffcf1" stroke={I} strokeWidth="4"/>
     <path d="M380 0V55H430" fill="#ddd9c9" stroke={I} strokeWidth="3"/>
     <text x="36" y="80" fill={hot?R:I} fontFamily="Arial,sans-serif" fontWeight="700" fontSize={fitSize(head,340,34)} letterSpacing="2">{head}</text>
@@ -323,13 +352,15 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
    </g>
   );
   const link=Math.max(0,Math.min(1,(u-0.5)/0.25));
-  return <Paper>
+  return <Paper shot={shot}>
    <Headline text="Twice in two months." size={66}/>
-   {card(90,"SEPT 2026","FBIJobs.gov","extortion gang claim:","unpatched software.")}
-   {card(560,"NOV 2026","NCIC","apparent breach:","under investigation.",true)}
+   {card(90,"SEPT 2026","FBIJobs.gov","extortion gang claim:","unpatched software.",false,0)}
+   {card(560,"NOV 2026","NCIC","apparent breach:","under investigation.",true,1)}
    {link>0&&<g opacity={link}>
     <path d="M520 660Q540 600 560 660" fill="none" stroke={R} strokeWidth="5" markerEnd="url(#ncic-arrow)"/>
-    <text x="540" y="1200" textAnchor="middle" fill={R} fontSize="42" fontStyle="italic">same agency. no evidence the two are linked.</text>
+    <g transform={`translate(540 1170) scale(${(0.7+0.3*Math.min(1,popAt(Math.round(span*0.55)))).toFixed(3)}) translate(-540 -1170)`}>
+     <text x="540" y="1200" textAnchor="middle" fill={R} fontSize="42" fontStyle="italic">same agency. no evidence the two are linked.</text>
+    </g>
    </g>}
   </Paper>;
  }
@@ -337,9 +368,9 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
  // 9. PAYOFF: every line in the system is a real person.
  if(m==="ncic-payoff"){
   const underline=Math.max(0,Math.min(1,(u-0.45)/0.3));
-  return <Paper>
+  return <Paper shot={shot}>
    <Headline text="Every line is a person." size={66}/>
-   <g transform={`translate(240 460) rotate(-2)`}>
+   <g transform={`translate(560 855) rotate(-2) scale(${(pop*br(3.7)).toFixed(4)}) translate(-560 -855) translate(240 460)`} opacity={Math.min(1,pop*1.6)}>
     <path d="M0 0H560L640 85V790H0Z" fill="#fffcf1" stroke={I} strokeWidth="5"/>
     <path d="M560 0V85H640" fill="#ddd9c9" stroke={I} strokeWidth="3"/>
     <rect x="40" y="50" width="200" height="250" fill="#d4d2bf" stroke={I} strokeWidth="3"/>
@@ -365,10 +396,10 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
   const w2=Math.max(0,Math.min(1,(u-0.42)/0.3));
   const line=Math.max(0,Math.min(1,(u-0.72)/0.22));
   const clip=(p:number)=>`inset(0 ${(1-p)*100}% 0 0)`;
-  return <Paper>
+  return <Paper shot={shot}>
    <text x="64" y="155" fill={R} fontFamily="Arial,sans-serif" fontSize="23" letterSpacing="3">{KICKER}</text>
    <text x="64" y="300" fill={I} fontFamily="Arial,sans-serif" fontSize="26" letterSpacing="6">THE SYSTEM HAS A NAME</text>
-   <g transform="translate(64 430)">
+   <g transform={`translate(540 710) scale(${(0.85+0.15*Math.min(1,pop)).toFixed(4)}) translate(-540 -710) translate(64 430)`} opacity={Math.min(1,pop*1.6)}>
     <rect x="0" y="0" width="952" height="560" rx="18" fill="#fffcf1" stroke={I} strokeWidth="5"/>
     <text x="70" y="150" fill={I} fontSize={fitSize("NATIONAL CRIME",812,82,"700","Georgia,serif")} fontWeight="700" style={{clipPath:clip(w1)}}>NATIONAL CRIME</text>
     <text x="70" y="330" fill={I} fontSize={fitSize("INFORMATION CENTER",812,82,"700","Georgia,serif")} fontWeight="700" style={{clipPath:clip(w2)}}>INFORMATION CENTER</text>
@@ -379,5 +410,5 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
   </Paper>;
  }
 
- return <Paper><Headline text="NCIC"/></Paper>;
+ return <Paper shot={shot}><Headline text="NCIC"/></Paper>;
 };
