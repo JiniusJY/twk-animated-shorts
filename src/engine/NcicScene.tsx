@@ -148,10 +148,10 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
     {["WANTED PERSONS","MISSING PERSONS","STOLEN VEHICLES","WARRANTS"].map((l,i)=><Drawer key={l} x={345} y={505+i*170} w={390} h={140} label={l} hot={i===1&&creep>0.7}/>)}
    </g>
    <path d={`M1080 730Q860 710 ${1080-570*creep} ${710-20*creep}`} fill="none" stroke={R} strokeWidth="5" strokeDasharray="14 12" markerEnd="url(#ncic-arrow)"/>
-   {stamp>0&&<g transform={`translate(795 473) rotate(-7) scale(${(1.55-0.55*Math.min(1,slam)).toFixed(3)}) translate(-795 -473)`} opacity={Math.min(1,slam*2)}>
-    <rect x="0" y="0" width="470" height="146" rx="8" fill={P} fillOpacity="0.93" stroke={R} strokeWidth="7"/>
-    <text x="235" y="64" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontWeight="700" fontSize={fitSize("APPARENT BREACH",430,42)} letterSpacing="3">APPARENT BREACH</text>
-    <text x="235" y="112" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontSize={fitSize("FBI INVESTIGATING · UNCONFIRMED",430,27,"400")}>FBI INVESTIGATING · UNCONFIRMED</text>
+   {stamp>0&&<g transform={`translate(540 1190) rotate(-7) scale(${(1.35-0.35*Math.min(1,slam)).toFixed(3)}) translate(-540 -1190) translate(340 1135)`} opacity={Math.min(1,slam*2)}>
+    <rect x="0" y="0" width="400" height="110" rx="8" fill={P} fillOpacity="0.93" stroke={R} strokeWidth="7"/>
+    <text x="200" y="48" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontWeight="700" fontSize={fitSize("APPARENT BREACH",360,38)} letterSpacing="3">APPARENT BREACH</text>
+    <text x="200" y="88" textAnchor="middle" fill={R} fontFamily="Arial,sans-serif" fontSize={fitSize("FBI INVESTIGATING · UNCONFIRMED",360,24,"400")}>FBI INVESTIGATING · UNCONFIRMED</text>
    </g>}
    <text x="540" y="1330" textAnchor="middle" fill={I} fontFamily="Arial,sans-serif" fontSize="26">The FBI's own crime database, reported hacked. Nov 2026.</text>
   </Paper>;
