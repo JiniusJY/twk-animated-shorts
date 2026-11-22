@@ -173,7 +173,10 @@ jobs:
     needs: [prepare]
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      # fail-fast: false so one failing shard does NOT cancel the other 27.
+      # Recovery path: "Re-run failed jobs" re-renders only the failed shards
+      # (chunk artifacts are run_id-scoped, so publish merges old + new chunks).
+      fail-fast: false
       matrix:
         shard: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
@@ -203,12 +206,25 @@ jobs:
         run: |
           mkdir -p out
           PROPS=$(find prep -name 'props.json' | head -n 1)
-          npx remotion render src/index.ts "${{ inputs.episode }}" "out/chunk-${{ matrix.shard.idx }}.mp4" \
-            --codec h264 --crf 18 --x264-preset veryfast --scale "${{ inputs.scale }}" \
-            --props="$PROPS" \
-            --frames="${{ matrix.shard.range }}" \
-            --timeout=120000 \
-            --muted --gl=swangle
+          ok=0
+          for ATTEMPT in 1 2; do
+            if npx remotion render src/index.ts "${{ inputs.episode }}" "out/chunk-${{ matrix.shard.idx }}.mp4" \
+              --codec h264 --crf 18 --x264-preset veryfast --scale "${{ inputs.scale }}" \
+              --props="$PROPS" \
+              --frames="${{ matrix.shard.range }}" \
+              --timeout=120000 \
+              --muted --gl=swangle; then
+              ok=1
+              break
+            fi
+            echo "shard ${{ matrix.shard.idx }} attempt $ATTEMPT failed; retrying once after 15s" >&2
+            rm -f "out/chunk-${{ matrix.shard.idx }}.mp4"
+            sleep 15
+          done
+          if [ "$ok" != "1" ]; then
+            echo "shard ${{ matrix.shard.idx }} failed after 2 attempts" >&2
+            exit 1
+          fi
       - name: Upload rendered chunk
         uses: actions/upload-artifact@v4
         with:

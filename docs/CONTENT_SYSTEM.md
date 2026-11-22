@@ -25,7 +25,8 @@ MEASURED PLAYBOOK (22 November 2026 frame-level study of Fireship, Cleo Abram, M
 - TRANSITION PALETTE: hard cut is the default (~90%); match cut for scale/shape links; whip pan for same-energy subject swaps; zoom-punch on number/product emphasis. Dissolve marks time/place shifts. Every boundary picks deliberately.
 - EVIDENCE INSERTS (engine work, ep3+): a shot type for real B-roll/screenshots with an auto top-left "* SOURCE: X" tag, matching how Cleo Abram grounds claims.
 - MUSIC: the genre is voice-driven; trending audio is not the growth lever, packaging is. The fresh-track-per-episode rule stands as hygiene, not as a virality bet.
-- RENDER SPEED (adopted 22 November): shards cap 16->30 (default 28; the tail was shard-bound at 15.6 min vs 4.0 for equal ranges), x264 preset veryfast + crf 18 (indistinguishable for toon content), more to come (validate+prepare merge, storyboard skip on rebuild runs, and Remotion Lambda ~200-way parallel = 2-4 min renders, pending the owner's AWS decision).
+- RENDER SPEED (adopted 22 November): shards cap 16->30 (default 28; the tail was shard-bound at 15.6 min vs 4.0 for equal ranges), x264 preset veryfast + crf 18 (indistinguishable for toon content), more to come (validate+prepare merge, storyboard skip on rebuild runs). Remotion Lambda / cloud rendering is OFF the table (owner decision 22 Nov: not truly free, saving doesn't justify it) - do not build it unless he raises it again.
+- REDO COST (adopted 22 November): a failed shard never costs a full re-render. render.yml runs fail-fast: false (one bad shard doesn't cancel the other 27) and each shard retries its render once in-step. Recovery: "Re-run failed jobs" on the run re-renders ONLY the failed shards; chunk artifacts are run-scoped, so publish merges the kept chunks with the retried ones.
 
 What the current evidence says (checked 22 November 2026; re-verify as it ages):
 
