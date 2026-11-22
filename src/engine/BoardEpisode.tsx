@@ -69,7 +69,7 @@ const Pin: React.FC<{x: number; y: number; t: number; f: number}> = ({x, y, t, f
 };
 
 const PhotoCard: React.FC<{x: number; y: number; rot: number; f: number; enter: number; img: string;
-  label: string; credit: string; w?: number}> = ({x, y, rot, f, enter, img, label, credit, w = 480}) => {
+  label?: string; credit?: string; w?: number}> = ({x, y, rot, f, enter, img, label, credit, w = 480}) => {
   const pop = spring({frame: Math.max(0, f - enter), fps: 30, config: {damping: 12, stiffness: 220, mass: 0.7}});
   if (pop <= 0) return null;
   const kb = 1 + 0.09 * clamp01((f - enter) / 360);
@@ -81,8 +81,8 @@ const PhotoCard: React.FC<{x: number; y: number; rot: number; f: number; enter: 
         <Img src={staticFile(img)} style={{width: w - 32, height: 300, objectFit: "cover",
           transform: `scale(${kb})`, filter: "contrast(1.08) saturate(0.82) sepia(0.14)"}}/>
       </div>
-      <div style={{fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 26, color: "#26352f", marginTop: 10}}>{label}</div>
-      <div style={{fontFamily: "Arial,sans-serif", fontSize: 14, color: DIM, marginTop: 4}}>{credit}</div>
+      {label && <div style={{fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 26, color: "#26352f", marginTop: 10}}>{label}</div>}
+      {credit && <div style={{fontFamily: "Arial,sans-serif", fontSize: 14, color: DIM, marginTop: 4}}>{credit}</div>}
       <div style={{position: "absolute", top: -16, left: w / 2 - 16, width: 22, height: 22, borderRadius: 11,
         background: RED, boxShadow: "0 3px 8px rgba(0,0,0,0.5)"}}/>
     </div>
@@ -140,9 +140,9 @@ const PUNCHES: {at: number; hold: number; text: string; sub?: string; stamp?: st
   {at: 604, hold: 58, text: "12 MILLION", sub: "active records"},
   {at: 669, hold: 46, text: "10 MILLION", sub: "checks a day"},
   {at: 963, hold: 52, text: "90,000+", sub: "agencies connected"},
-  {at: 1299, hold: 19, text: "WHO GOT IN?", stamp: "UNKNOWN"},
-  {at: 1320, hold: 19, text: "HOW?", stamp: "UNKNOWN"},
-  {at: 1341, hold: 30, text: "ANYTHING TAKEN?", stamp: "UNKNOWN"},
+  {at: 1299, hold: 19, text: "WHO GOT IN?"},
+  {at: 1320, hold: 19, text: "HOW?"},
+  {at: 1341, hold: 30, text: "ANYTHING TAKEN?"},
 ];
 
 const DRAWER_LABELS = ["WANTED", "MISSING", "STOLEN CARS", "STOLEN GUNS", "PROTECTION"];
@@ -283,7 +283,7 @@ export const BoardEpisode: React.FC = () => {
 
         {/* SYSTEM: traffic stop photo; a query pulse runs to the NCIC card as the VO says where answers come from */}
         <PhotoCard x={TRAFFIC.x} y={TRAFFIC.y} rot={-3} f={f} enter={130} img="photos/traffic-stop.jpg"
-          label="The answer routinely comes from one FBI system" credit="Ildar Sagdejev, CC BY-SA 4.0"/>
+/>
         <PaperCard x={1500} y={880} rot={2} f={f} enter={310} w={520}>
           <div style={{fontFamily: "Arial,sans-serif", fontSize: 22, color: DIM, letterSpacing: 3}}>
             {"NATIONAL CRIME INFORMATION CENTER".split("").map((ch, i) => (
@@ -404,36 +404,21 @@ export const BoardEpisode: React.FC = () => {
               );
             })}
           </div>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 16, color: DIM, marginTop: 12}}>apnews.com - single-source report; FBI had not publicly confirmed</div>
         </PaperCard>
 
         {/* SECOND: claimed breach card + slow-creeping cracks (mechanism animates the dwell) */}
-        <PaperCard x={SECOND.x} y={SECOND.y} rot={2} f={f} enter={1422} w={560} stamp="CLAIMED" stampAt={1472}>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 20, color: DIM, letterSpacing: 3}}>TWO MONTHS EARLIER</div>
-          <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 34, color: "#26352f", marginTop: 10, lineHeight: 1.3}}>
-            Extortion gang says it breached a platform behind the FBI's jobs website
+        <PaperCard x={SECOND.x} y={SECOND.y} rot={2} f={f} enter={1422} w={560}>
+          <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 34, color: "#26352f", lineHeight: 1.3}}>
+            {[["Extortion gang says it breached", 1440], ["a platform behind", 1470], ["the FBI's jobs website", 1500], ["through unpatched software", 1592]].map(([line, at]) => {
+              const lp = clamp01((f - (at as number)) / 10);
+              return (
+                <div key={line as string} style={{opacity: lp, transform: `translateY(${14 * (1 - lp)}px)`}}>{line}</div>
+              );
+            })}
           </div>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 16, color: DIM, marginTop: 12, paddingRight: 150, paddingBottom: 40}}>A claim, not proof - no indication the two are linked</div>
-        </PaperCard>
-        <svg width={W} height={H} style={{position: "absolute", inset: 0, pointerEvents: "none"}}>
-          <DrawOn paths={sPath("M5730 620 L5700 760 L5750 830 L5690 940 L5740 1050", RED, 5, 90)} p={clamp01((f - 1472) / 150)}/>
-          <DrawOn paths={sPath("M5700 760 L5640 800 M5750 830 L5810 860", RED, 4, 91)} p={clamp01((f - 1540) / 90)}/>
-        </svg>
-        <PaperCard x={SECOND.x + 80} y={SECOND.y + 470} rot={-3} f={f} enter={1588} w={380}>
-          <div style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 26, color: "#26352f"}}>unpatched software</div>
-          <svg width="340" height="120" style={{overflow: "visible"}}>
-            <DrawOn paths={sRect(320, 100, "#26352f", 5, 61)} p={clamp01((f - 1594) / 12)}/>
-            <DrawOn paths={sPath("M160 10 L120 50 L170 60 L140 95", RED, 6, 62)} p={clamp01((f - 1606) / 10)}/>
-            <DrawOn paths={sPath("M160 10 L200 45 L180 70 L215 95", RED, 6, 63)} p={clamp01((f - 1612) / 10)}/>
-          </svg>
         </PaperCard>
 
         {/* STAKES: pullback; one last pulse arrives at the photo as the sentence lands */}
-        {f >= 1780 && (
-          <div style={{position: "absolute", left: TRAFFIC.x + 20, top: TRAFFIC.y + 640, width: 700,
-            fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 38, color: INK,
-            opacity: clamp01((f - 1790) / 16)}}>every line can put a real person in handcuffs.</div>
-        )}
         <svg width={W} height={H} style={{position: "absolute", inset: 0, pointerEvents: "none"}}>
           <Pulse c={[3320, 620, 2800, 560, 2100, 520, 1500, 570]} f={f} start={1792} period={200} dur={42} r={12}/>
         </svg>
