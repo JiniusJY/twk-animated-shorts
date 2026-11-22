@@ -22,6 +22,7 @@
     "react-dom": "^19.0.0",
     "remotion": "4.0.545",
     "roughjs": "^4.6.6",
+    "simple-icons": "^15.22.0",
     "three": "^0.187.0"
   },
   "devDependencies": {

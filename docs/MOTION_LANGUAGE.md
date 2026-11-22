@@ -46,3 +46,10 @@ permanent for all future scenes and episodes.
   bounded claim, other surfaces not exhaustively tested. Firefly spends generative credits:
   scoped approval + exact cost BEFORE any generation.
 - No spend without owner's scoped approval. Existing subscription access is authorized.
+
+## Board strings and pins (settled 22 Nov 2026)
+- Card positions/sizes live in `src/engine/boardLayout.ts` only (border-box rects). Components render
+  from those rects; never hand-type a card or string coordinate in the scene.
+- Strings are declared card-to-card by edge and derived from the rects. Pins sit on the board just
+  outside the card edge. No string or pin may touch any card or agency box.
+- `tests/boardLayout.test.ts` enforces this (plus no overlapping cards). Move a card -> run the test.
