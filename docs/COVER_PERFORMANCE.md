@@ -11,4 +11,4 @@ or data has not been collected yet.
 | Episode | Cover shipped | Losing variant | Headline type | Performance | Lesson |
 | --- | --- | --- | --- | --- | --- |
 | ep1 boeing | (check posting manifest) | - | - | pending | - |
-| ep2 ncic-fbi-breach | pending owner pick | - | viewer-stakes vs curiosity | pending | First draft "Ninety thousand doors." (topic fact) failed the owner's viewer test; replaced with viewer-value lines before shipping. |
+| ep2 ncic-fbi-breach | C1 "Who hacked the FBI?" (bold true-claim question) | A "Someone may be inside.", B "Ninety thousand doors.", C2 "Every cop checks you here." | bold true-claim vs viewer-stakes | pending | First draft "Ninety thousand doors." (topic fact) failed the owner's viewer test; owner then rejected the safe curiosity line A and picked the boldest TRUE claim over the safer viewer-stakes C2. Watch CTR vs ep1 to test bold-question covers. |
