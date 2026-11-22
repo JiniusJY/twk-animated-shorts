@@ -387,9 +387,6 @@ export const BoardEpisode: React.FC = () => {
               </g>
               <g transform="translate(150 150)"><g transform="translate(-55 -20)"><DrawOn paths={LOCK_BODY} p={lockP}/></g></g>
             </svg>
-            <div style={{position: "absolute", top: 230, width: 640, left: -320, textAlign: "center",
-              fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 54, color: INK,
-              opacity: clamp01((f - 1082) / 14)}}>a door the FBI can't lock.</div>
           </div>
         )}
 
