@@ -73,12 +73,8 @@ def variant_a(photo):
 
     plate_w = W - 2 * M
     plate_h = 760
-    # explicit window on the Webster photo: big flag + J. Edgar Hoover FBI Building sign
-    iw, ih = photo.size  # 9021x6183
-    bw = 0.56 * iw
-    bh = bw * plate_h / plate_w
-    box = (int(0.10 * iw), int(ih - bh), int(0.10 * iw + bw), ih)
-    plate = photo.crop(box).resize((plate_w, plate_h), Image.LANCZOS)
+    # centered window on the Webster photo: both flags + the full FBI Building sign
+    plate = crop_to(photo, plate_w, plate_h, cx=0.5)
     py = 660
     d.rectangle([M - 3, py - 3, M + plate_w + 2, py + plate_h + 2], outline=INK, width=3)
     img.paste(plate, (M, py))
@@ -181,11 +177,8 @@ def variant_c2(photo):
 
     plate_w = W - 2 * M
     plate_h = 760
-    iw, ih = photo.size  # 9021x6183
-    bw = 0.56 * iw
-    bh = bw * plate_h / plate_w
-    box = (int(0.10 * iw), int(ih - bh), int(0.10 * iw + bw), ih)
-    plate = photo.crop(box).resize((plate_w, plate_h), Image.LANCZOS)
+    # centered window on the Webster photo: both flags + the full FBI Building sign
+    plate = crop_to(photo, plate_w, plate_h, cx=0.5)
     py = 660
     d.rectangle([M - 3, py - 3, M + plate_w + 2, py + plate_h + 2], outline=INK, width=3)
     img.paste(plate, (M, py))
