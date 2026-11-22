@@ -64,6 +64,17 @@ pilot 85. Every rubric category above is scored with this checklist:
 The owner is never the QC layer: the gate runs over every frame at full res
 before any cut reaches him.
 
+## External benchmark (standing, owner-directed 2026-11-22)
+
+"u compare with top tier tech creators out there lol". Before any final cut
+goes to the parent, benchmark the rendered scenes side by side against
+current top-tier tech explainer work (cleo abram, johnny harris, vox-level):
+pacing (cuts per minute, beat spacing), visual density (elements per frame,
+mixed-media usage), motion polish (easing, camera work, draw-on animation),
+sound design (SFX density, music bed, VO mix). Report the honest delta per
+dimension, not just pass/fail on our own rubric. A delta we cannot close gets
+named explicitly with a plan, never silently waved through.
+
 ## Learning loop
 
 Log every published variant with `python3 scripts/experiments.py log` (one

@@ -1,6 +1,7 @@
 import React from "react";
 import { Composition } from "remotion";
 import { StoryShort } from "./engine/StoryShort";
+import { RoughTest } from "./engine/RoughTest";
 import { EPISODES } from "./episodes/registry";
 
 export const RemotionRoot: React.FC = () => {
@@ -22,6 +23,14 @@ export const RemotionRoot: React.FC = () => {
           })}
         />
       ))}
+      <Composition
+        id="rough-test"
+        component={RoughTest}
+        durationInFrames={90}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
     </>
   );
 };
