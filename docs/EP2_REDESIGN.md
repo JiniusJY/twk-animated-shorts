@@ -5,8 +5,9 @@ Publication of ep2 remains HELD until the rebuilt cut passes full-motion review 
 
 ## Reference studied
 
-scroll.engineer — "Your Apple Watch can read your heartbeat" (TikTok 7695160547297217806,
-1.9M views, 84s, 720x1280). Studied via 19 frame captures across the full runtime in the
+scroll.engineer — "Your Apple Watch can read your heartbeat"
+(https://www.tiktok.com/@scroll.engineer/video/7695160547297217806, 1.9M views, 84s,
+720x1280). Studied via 19 frame captures across the full runtime in the
 cloud browser (YouTube/yt-dlp download was bot-walled; the YouTube "@scroll.engineer"
 channel is an impostor fan account — the real one is on TikTok/Instagram).
 
@@ -67,13 +68,15 @@ pulls data). Pulses turn narration into mechanism without any simulated system U
   arrive CONTINUOUSLY (that is what "never closes" looks like); "since January 1967"
   chip; office-hours card crossed out.
 - **WEAKNESS 30-37.5s.** Pull back to the hub; 18 agency nodes with pulses flowing;
-  "90,000+" punches in overlay; the drawn padlock hangs open and pulses pass THROUGH it
-  unimpeded — "a door the FBI can't lock" demonstrated, not stated.
+  "90,000+" punches in overlay; the drawn padlock hangs open beside the hub. No pulses
+  thread the lock — threading would depict a specific bypass we cannot assert (parent
+  ruling 22 Nov). The open door + 18 access points carries the metaphor.
 - **BREACH 37.5-47s.** AP card slams; headline assembles line by line on the spoken
-  words; then a FOREIGN pulse — a string entering from OFF the board edge, wrong color
-  temp or moving against the flow — touches the hub. The three questions hit as big
-  word-synced overlay punches (WHO GOT IN / HOW / ANYTHING TAKEN, each with the spoken
-  words at 43.1s+) with UNKNOWN stamps slamming. Not parked cards.
+  words. The intrusion MECHANISM is not depicted — origin, path and method are all
+  unknown, and any animated intruder/entry-point visual would assert facts we do not
+  have (parent ruling 22 Nov). Breach stays editorial: APPARENT BREACH labels + the
+  three questions as big word-synced overlay punches (WHO GOT IN / HOW / ANYTHING
+  TAKEN, on the spoken words at 43.1s+) with UNKNOWN stamps. Not parked cards.
 - **SECOND 47-56.8s.** Second card + CLAIMED stamp slam on "claimed" (48.9s); a crack
   creeps across that corner of the board; caption chip "a claim, not proof". No dead
   dwell — crack spreads continuously while spoken.
@@ -87,8 +90,8 @@ pulls data). Pulses turn narration into mechanism without any simulated system U
 - Every beat gets a mechanism animation locked to its spoken sentence (pulses, drawer
   waves, crack spread) — description replaced by demonstration where possible.
 - Overlay number/question punches replace some on-card text (less reading from cards).
-- Opening string has clear origin/destination; foreign-pulse device makes the breach
-  VISIBLE instead of only labeled.
+- Opening string has clear origin/destination; the breach stays editorial (labels +
+  question punches) because its mechanism is unknown.
 - Camera moves only with purpose (travel to next reveal); purposeful holds allowed when
   the mechanism is animating. No idle bobbing-as-fix.
 - Keep: all honesty labels (APPARENT BREACH / UNKNOWN / CLAIMED / single-source),
@@ -98,7 +101,9 @@ pulls data). Pulses turn narration into mechanism without any simulated system U
 
 1. Full-motion frame QC: contact strips every 0.5s, checked for text occlusion,
    parked frames outside mechanism holds, caption sync.
-2. Freeze diagnostic (ffmpeg freezedetect) as a check, not a score.
+2. Freeze diagnostic (ffmpeg freezedetect) and contact strips are DIAGNOSTICS ONLY,
+   not playback review; final report must state exactly what review was performed
+   (sampling vs continuous audiovisual playback) without conflating them.
 3. Audio re-sync of SFX to corrected visual timings; loudness chain unchanged
    (-15.0 LUFS, TP-safe export variants).
 4. Gemini advisory as one input; parent reviews the actual cut in motion before the
