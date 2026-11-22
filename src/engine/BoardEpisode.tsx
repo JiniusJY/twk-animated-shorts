@@ -1,6 +1,8 @@
 import React from "react";
 import {useCurrentFrame, interpolate, spring, Img, staticFile} from "remotion";
 import {sPath, sRect, sLine, DrawOn, clamp01} from "./sketch";
+import {Captions} from "./Captions";
+import ep2Words from "./ep2-words.json";
 
 /**
  * BOARD EPISODE - full ep2 rebuild in the approved case-board language.
@@ -82,8 +84,8 @@ export const BoardEpisode: React.FC = () => {
 
   // ---- camera journey ----
   const lookX = interpolate(f,
-    [0, 105, 390, 470, 730, 890, 985, 1280, 1365, 1470, 1695, 1780, 1851, 2046],
-    [600, 600, 1550, 2450, 2450, 3300, 4200, 4800, 4950, 5730, 5730, 3300, 1580, 1580],
+    [0, 105, 190, 470, 730, 775, 890, 950, 1125, 1185, 1365, 1470, 1695, 1780, 1851, 2046],
+    [600, 600, 1550, 2450, 2450, 3300, 3300, 4200, 4200, 4800, 4950, 5730, 5730, 3300, 1700, 1700],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const lookY = interpolate(f,
     [0, 900, 1125, 1410, 1695, 1851, 2046],
@@ -91,7 +93,7 @@ export const BoardEpisode: React.FC = () => {
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const cam = interpolate(f,
     [0, 60, 900, 1050, 1125, 1695, 1851, 2046],
-    [1.25, 1.06, 1.06, 1.32, 1.2, 1.06, 1.55, 1.7],
+    [1.25, 1.06, 1.06, 1.32, 1.2, 1.06, 1.3, 1.7],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const camX = lookX - 540 / cam, camY = lookY - 960 / cam;
 
@@ -174,7 +176,7 @@ export const BoardEpisode: React.FC = () => {
         {/* SYSTEM: traffic stop + one-system label */}
         <PhotoCard x={TRAFFIC.x} y={TRAFFIC.y} rot={-3} f={f} enter={130} img="photos/traffic-stop.jpg"
           label="The answer routinely comes from one FBI system" credit="Ildar Sagdejev, CC BY-SA 4.0"/>
-        <PaperCard x={1640} y={880} rot={2} f={f} enter={310} w={520}>
+        <PaperCard x={1500} y={880} rot={2} f={f} enter={310} w={520}>
           <div style={{fontFamily: "Arial,sans-serif", fontSize: 22, color: DIM, letterSpacing: 3}}>NATIONAL CRIME INFORMATION CENTER</div>
           <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 64, color: "#26352f", marginTop: 8}}>NCIC</div>
         </PaperCard>
@@ -217,7 +219,7 @@ export const BoardEpisode: React.FC = () => {
             {counter90 >= 90000 ? "90,000+" : f >= 968 ? counter90.toLocaleString("en-US") : ""}
           </div>
         </div>
-        <PaperCard x={TERM.x + 360} y={TERM.y - 150} rot={3} f={f} enter={776} w={330}>
+        <PaperCard x={TERM.x + 160} y={TERM.y - 150} rot={3} f={f} enter={776} w={330}>
           <div style={{fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 34, color: "#26352f"}}>since January 1967</div>
         </PaperCard>
         {/* crossed-out office hours */}
@@ -313,8 +315,8 @@ export const BoardEpisode: React.FC = () => {
 
         {/* STAKES: push into the traffic-stop card; record line highlights */}
         {f >= 1780 && (
-          <div style={{position: "absolute", left: TRAFFIC.x - 40, top: TRAFFIC.y + 420, width: 560,
-            fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 44, color: INK,
+          <div style={{position: "absolute", left: TRAFFIC.x + 80, top: TRAFFIC.y + 420, width: 560,
+            fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 40, color: INK,
             opacity: clamp01((f - 1790) / 16)}}>every line can put a real person in handcuffs.</div>
         )}
       </div>
@@ -322,7 +324,7 @@ export const BoardEpisode: React.FC = () => {
       {/* foreground scraps */}
       <div style={{...layerStyle(1.28, 7), opacity: 0.5, pointerEvents: "none"}}>
         <div style={{position: "absolute", left: 900, top: 1500, width: 300, height: 380, background: CARD, transform: "rotate(14deg)"}}/>
-        <div style={{position: "absolute", left: 2900, top: 100, width: 260, height: 330, background: "#d9d2ba", transform: "rotate(-11deg)"}}/>
+        <div style={{position: "absolute", left: 2900, top: 650, width: 260, height: 330, background: "#d9d2ba", transform: "rotate(-11deg)"}}/>
         <div style={{position: "absolute", left: 5100, top: 1560, width: 280, height: 360, background: CARD, transform: "rotate(9deg)"}}/>
       </div>
 
@@ -336,6 +338,9 @@ export const BoardEpisode: React.FC = () => {
           opacity: clamp01((f - beatStart) / 14), maxWidth: 900}}>{headline}</div>
         <div style={{width: 340 * clamp01((f - 10) / 22), height: 6, background: RED, marginTop: 16}}/>
       </div>
+
+      {/* word captions (fixed safe layer, above all board planes) */}
+      <Captions words={ep2Words as {w: string; s: number; e: number}[]} config={{theme: "editorial"}}/>
 
       {/* OUT: fade to end card */}
       <div style={{position: "absolute", inset: 0, background: BOARD, opacity: clamp01((f - 1904) / 30), pointerEvents: "none",
