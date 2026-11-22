@@ -145,3 +145,12 @@ Changes in `src/engine/BoardEpisode.tsx`:
 
 Not done in this pass: SFX cues were not re-timed to the new visual hits (the CLAIMED slam
 moved +17 frames, the office-hours strike moved), and no full-resolution or listening review.
+
+### Merge with upstream de-label pass (ca3c85c, 4c35779)
+
+Owner rule "show not tell" wins over v4 where they clashed: no UNKNOWN or CLAIMED stamps,
+no photo label/credit, no apnews/claim-not-proof citation lines, no AP masthead line (VO says
+"The Associated Press says"), no separate "unpatched software" card or crack - the second report
+assembles line by line on the spoken words instead. Credits live in the post description
+(CREDITS.md). Kept from v4: alarm hook, kicks, drawer chips, hub-as-padlock, 24/7 and 2ND TIME
+punches, framing fixes, exact-handle end card.

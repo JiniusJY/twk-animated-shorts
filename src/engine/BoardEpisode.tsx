@@ -40,7 +40,7 @@ const KICKS: [number, number][] = [[23, 0.07], [419, 0.04], [965, 0.04], [1087, 
   [1489, 0.06], [1592, 0.04], [1726, 0.05], [1808, 0.06]];
 const kickAt = (f: number) => KICKS.reduce((s, [t, a]) =>
   f >= t ? s + a * Math.exp(-(f - t) / 6) * Math.min(1, (f - t + 1) / 2) : s, 0);
-const SHAKES = [23, 1489];
+const SHAKES = [23];
 const shakeAt = (f: number) => SHAKES.reduce((s, t) =>
   f >= t && f < t + 24 ? s + 14 * Math.sin((f - t) * 2.3) * Math.exp(-(f - t) / 5) : s, 0);
 
@@ -101,7 +101,7 @@ const Pin: React.FC<{x: number; y: number; t: number; f: number}> = ({x, y, t, f
 };
 
 const PhotoCard: React.FC<{x: number; y: number; rot: number; f: number; enter: number; img: string;
-  label: string; credit: string; w?: number}> = ({x, y, rot, f, enter, img, label, credit, w = 480}) => {
+  label?: string; credit?: string; w?: number}> = ({x, y, rot, f, enter, img, label, credit, w = 480}) => {
   const pop = spring({frame: Math.max(0, f - enter), fps: 30, config: {damping: 12, stiffness: 220, mass: 0.7}});
   if (pop <= 0) return null;
   const kb = 1 + 0.09 * clamp01((f - enter) / 360);
@@ -113,8 +113,8 @@ const PhotoCard: React.FC<{x: number; y: number; rot: number; f: number; enter: 
         <Img src={staticFile(img)} style={{width: w - 32, height: 300, objectFit: "cover",
           transform: `scale(${kb})`, filter: "contrast(1.08) saturate(0.82) sepia(0.14)"}}/>
       </div>
-      <div style={{fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 28, color: "#26352f", marginTop: 10}}>{label}</div>
-      <div style={{fontFamily: "Arial,sans-serif", fontSize: 17, color: DIM, marginTop: 4}}>{credit}</div>
+      {label && <div style={{fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 28, color: "#26352f", marginTop: 10}}>{label}</div>}
+      {credit && <div style={{fontFamily: "Arial,sans-serif", fontSize: 17, color: DIM, marginTop: 4}}>{credit}</div>}
       <div style={{position: "absolute", top: -16, left: w / 2 - 16, width: 22, height: 22, borderRadius: 11,
         background: RED, boxShadow: "0 3px 8px rgba(0,0,0,0.5)"}}/>
     </div>
@@ -173,9 +173,9 @@ const PUNCHES: {at: number; hold: number; text: string; sub?: string; stamp?: st
   {at: 669, hold: 46, text: "10 MILLION", sub: "checks a day"},
   {at: 823, hold: 34, text: "24/7", sub: "never closes"},
   {at: 963, hold: 52, text: "90,000+", sub: "agencies connected", dy: -380},
-  {at: 1299, hold: 19, text: "WHO GOT IN?", stamp: "UNKNOWN"},
-  {at: 1320, hold: 19, text: "HOW?", stamp: "UNKNOWN"},
-  {at: 1341, hold: 30, text: "ANYTHING TAKEN?", stamp: "UNKNOWN"},
+  {at: 1299, hold: 19, text: "WHO GOT IN?"},
+  {at: 1320, hold: 19, text: "HOW?"},
+  {at: 1341, hold: 30, text: "ANYTHING TAKEN?"},
   {at: 1411, hold: 40, text: "2ND TIME", sub: "in two months"},
 ];
 
@@ -192,7 +192,7 @@ export const BoardEpisode: React.FC = () => {
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const lookY = interpolate(f,
     [0, 900, 1060, 1110, 1125, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
-    [1000, 960, 1010, 1010, 880, 880, 980, 980, 700, 720, 960, 960],
+    [1000, 960, 1010, 1010, 880, 880, 900, 900, 700, 720, 960, 960],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const camBase = interpolate(f,
     [0, 60, 190, 470, 560, 600, 730, 775, 890, 950, 1050, 1125, 1185, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
@@ -338,7 +338,7 @@ export const BoardEpisode: React.FC = () => {
 
         {/* SYSTEM: traffic stop photo; a query pulse runs to the NCIC card as the VO says where answers come from */}
         <PhotoCard x={TRAFFIC.x} y={TRAFFIC.y} rot={-3} f={f} enter={130} img="photos/traffic-stop.jpg"
-          label="The answer routinely comes from one FBI system" credit="Ildar Sagdejev, CC BY-SA 4.0"/>
+/>
         <PaperCard x={1500} y={880} rot={2} f={f} enter={310} w={520}>
           <div style={{fontFamily: "Arial,sans-serif", fontSize: 26, color: DIM, letterSpacing: 2}}>
             {"NATIONAL CRIME INFORMATION CENTER".split("").map((ch, i) => (
@@ -462,8 +462,7 @@ export const BoardEpisode: React.FC = () => {
 
         {/* BREACH: editorial only - AP card assembles; questions punch in the fixed overlay */}
         <PaperCard x={APCARD.x} y={APCARD.y} rot={-2} f={f} enter={1138} w={640}>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 24, color: DIM, letterSpacing: 2}}>ASSOCIATED PRESS, 21 NOV 2026</div>
-          <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 40, color: "#26352f", marginTop: 10, lineHeight: 1.25}}>
+          <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 40, color: "#26352f", lineHeight: 1.25}}>
             {["FBI investigating", "an apparent breach,", "found in recent days"].map((line, i) => {
               const lp = clamp01((f - (1155 + i * 13)) / 10);
               return (
@@ -471,33 +470,21 @@ export const BoardEpisode: React.FC = () => {
               );
             })}
           </div>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 20, color: DIM, marginTop: 12}}>apnews.com - single-source report; FBI had not publicly confirmed</div>
         </PaperCard>
 
-        {/* SECOND: claimed breach card + slow-creeping cracks (mechanism animates the dwell) */}
-        <PaperCard x={SECOND.x} y={SECOND.y} rot={2} f={f} enter={1452} w={560} stamp="CLAIMED" stampAt={1489}>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 24, color: DIM, letterSpacing: 2}}>TWO MONTHS EARLIER</div>
-          <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 34, color: "#26352f", marginTop: 10, lineHeight: 1.3}}>
-            Extortion gang says it breached a platform behind the FBI's jobs website
+        {/* SECOND: report assembles on the spoken words (owner de-label rule: no stamp, no citation line) */}
+        <PaperCard x={SECOND.x} y={SECOND.y} rot={2} f={f} enter={1452} w={560}>
+          <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 34, color: "#26352f", lineHeight: 1.3}}>
+            {[["Extortion gang says it breached", 1460], ["a platform behind", 1510], ["the FBI's jobs website", 1541], ["through unpatched software", 1592]].map(([line, at]) => {
+              const lp = clamp01((f - (at as number)) / 10);
+              return (
+                <div key={line as string} style={{opacity: lp, transform: `translateY(${14 * (1 - lp)}px)`}}>{line}</div>
+              );
+            })}
           </div>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 20, color: DIM, marginTop: 12, paddingRight: 150, paddingBottom: 40}}>A claim, not proof - no indication the two are linked</div>
-        </PaperCard>
-        {/* v4: the crack runs on the board beside the card (never across its text), from "breached" toward the cause */}
-        <svg width={W} height={H} style={{position: "absolute", inset: 0, pointerEvents: "none"}}>
-          <DrawOn paths={sPath("M5610 860 L5585 960 L5625 1030 L5575 1110 L5612 1190", RED, 5, 90)} p={clamp01((f - 1503) / 89)}/>
-          <DrawOn paths={sPath("M5585 960 L5525 990 M5575 1110 L5515 1140", RED, 4, 91)} p={clamp01((f - 1540) / 52)}/>
-        </svg>
-        <PaperCard x={SECOND.x + 60} y={SECOND.y + 490} rot={-3} f={f} enter={1588} w={380}>
-          <div style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 26, color: "#26352f"}}>unpatched software</div>
-          <svg width="340" height="120" style={{overflow: "visible"}}>
-            <DrawOn paths={sRect(320, 100, "#26352f", 5, 61)} p={clamp01((f - 1594) / 12)}/>
-            <DrawOn paths={sPath("M160 10 L120 50 L170 60 L140 95", RED, 6, 62)} p={clamp01((f - 1606) / 10)}/>
-            <DrawOn paths={sPath("M160 10 L200 45 L180 70 L215 95", RED, 6, 63)} p={clamp01((f - 1612) / 10)}/>
-          </svg>
         </PaperCard>
 
-        {/* STAKES: pullback; one last pulse arrives at the photo as the sentence lands */}
-        {/* v4: no duplicate on-board sentence (caption carries it); the last query lands on the photo on "handcuffs" */}
+        {/* STAKES: no duplicate on-board sentence (caption carries it); the last query lands on the photo on "handcuffs" */}
         <svg width={W} height={H} style={{position: "absolute", inset: 0, pointerEvents: "none"}}>
           <Pulse c={[3320, 620, 2800, 560, 2100, 520, 1500, 570]} f={f} start={1688} period={400} dur={40} r={14}/>
         </svg>
