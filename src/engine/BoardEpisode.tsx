@@ -4,7 +4,7 @@ import {sPath, sRect, sLine, DrawOn, clamp01} from "./sketch";
 import {Captions} from "./Captions";
 import ep2Words from "./ep2-words.json";
 import {EndCard} from "./EndCard";
-import {CARDS, HUB, W, H, BUILT_LINKS, linkById, reverseCubic, ringBoxes, cubicAt, type Cubic} from "./boardLayout";
+import {CARDS, ENTER, HUB, W, H, BUILT_LINKS, FOCUS, cameraAt, linkById, reverseCubic, ringBoxes, cubicAt, type Cubic} from "./boardLayout";
 
 /**
  * BOARD EPISODE v3 - "demonstrate, don't describe" rebuild (docs/EP2_REDESIGN.md).
@@ -150,24 +150,12 @@ const PUNCHES: {at: number; hold: number; text: string; sub?: string; stamp?: st
 export const BoardEpisode: React.FC = () => {
   const f = useCurrentFrame();
 
-  // ---- camera journey: moves with purpose; dwells only where the mechanism animates ----
-  // v4: framing keeps the active card fully in frame; stakes whips back along the strings,
-  // then pulls wide on "five alarm fire" so the whole lit network reads as the payoff.
-  const lookX = interpolate(f,
-    [0, 105, 190, 470, 560, 730, 775, 890, 950, 1125, 1185, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
-    [600, 640, 1550, 2600, 2640, 2660, 3620, 3640, 4450, 4486, 5280, 5300, 6100, 6110, 1500, 1500, 1640, 1650],
-    {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const lookY = interpolate(f,
-    [0, 900, 1060, 1110, 1125, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
-    [1000, 960, 1010, 1010, 880, 880, 900, 900, 700, 720, 960, 960],
-    {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const camBase = interpolate(f,
-    [0, 60, 190, 470, 560, 600, 730, 775, 890, 950, 1050, 1125, 1185, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
-    [1.25, 1.06, 1.065, 1.09, 1.16, 1.12, 1.10, 1.075, 1.10, 1.14, 1.32, 1.2, 1.21, 1.32, 1.12, 1.24, 1.1, 1.28, 0.95, 1.0],
-    {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const cam = camBase * (1 + kickAt(f));
+  // ---- camera: one held shot per topic (boardLayout.SHOTS). Still while the topic is spoken;
+  // travels only after the next topic's first word. Kicks are brief word-locked emphasis. ----
+  const shot = cameraAt(f);
+  const cam = shot.zoom * (1 + kickAt(f));
   const shake = shakeAt(f);
-  const camX = lookX - 540 / cam + shake, camY = lookY - 960 / cam + shake * 0.6;
+  const camX = shot.cx - FOCUS.x / cam + shake, camY = shot.cy - FOCUS.y / cam + shake * 0.6;
 
   // ---- shared progress ----
   const dim = interpolate(f, [1020, 1060, 1090, 1125], [0, 0.55, 0.55, 0.3], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
@@ -190,8 +178,7 @@ export const BoardEpisode: React.FC = () => {
     [0, 0.62, 0.62, 0, 0, 0.62, 0.62, 0, 0, 0.62, 0.62, 0, 0, 0.62, 0.62, 0, 0, 0.74, 0.74, 0, 0, 0.62, 0.62, 0],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
 
-  const bgDriftX = 16 * Math.sin(f / 240);
-  const bgDriftY = 9 * Math.cos(f / 310);
+  const bgDriftX = 0, bgDriftY = 0; // no idle drift: the frame is still while a topic is held
 
   const layerStyle = (k: number, blur = 0, drift = 0): React.CSSProperties => ({
     position: "absolute", left: 0, top: 0, width: W, height: H,
@@ -288,8 +275,8 @@ export const BoardEpisode: React.FC = () => {
         })()}
 
         {/* SYSTEM: traffic stop photo; a query pulse runs to the NCIC card as the VO says where answers come from */}
-        <PhotoCard x={TRAFFIC.x} y={TRAFFIC.y} w={TRAFFIC.w} h={TRAFFIC.h} rot={-3} f={f} enter={130} img="photos/traffic-stop.jpg"/>
-        <PaperCard x={CARDS.ncic.x} y={CARDS.ncic.y} rot={2} f={f} enter={310} w={CARDS.ncic.w} h={CARDS.ncic.h}>
+        <PhotoCard x={TRAFFIC.x} y={TRAFFIC.y} w={TRAFFIC.w} h={TRAFFIC.h} rot={-3} f={f} enter={ENTER.photo} img="photos/traffic-stop.jpg"/>
+        <PaperCard x={CARDS.ncic.x} y={CARDS.ncic.y} rot={2} f={f} enter={ENTER.ncic} w={CARDS.ncic.w} h={CARDS.ncic.h}>
           <div style={{fontFamily: "Arial,sans-serif", fontSize: 26, color: DIM, letterSpacing: 2}}>
             {"NATIONAL CRIME INFORMATION CENTER".split("").map((ch, i) => (
               <span key={i} style={{opacity: clamp01((f - (312 + i * 1.1)) / 4)}}>{ch}</span>
@@ -299,7 +286,7 @@ export const BoardEpisode: React.FC = () => {
         </PaperCard>
 
         {/* DRAWERS: filing cabinet + counters (numbers punch in the fixed overlay) */}
-        <PaperCard x={CABINET.x} y={CABINET.y} rot={-2} f={f} enter={395} w={CABINET.w} h={CABINET.h}>
+        <PaperCard x={CABINET.x} y={CABINET.y} rot={-2} f={f} enter={ENTER.cabinet} w={CABINET.w} h={CABINET.h}>
           <div style={{fontFamily: "Arial,sans-serif", fontSize: 26, color: DIM, letterSpacing: 2, marginBottom: 12}}>21 DRAWERS</div>
           <div style={{display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8}}>
             {Array.from({length: 21}, (_, i) => {
@@ -347,7 +334,7 @@ export const BoardEpisode: React.FC = () => {
         <div style={{position: "absolute", left: TERMR.x, top: TERMR.y, width: TERMR.w, height: TERMR.h, boxSizing: "border-box",
           background: "#0b120e", border: "3px solid #33503f", borderRadius: 10, padding: "26px 30px",
           boxShadow: "0 24px 70px rgba(0,0,0,0.6)",
-          opacity: clamp01((f - 736) / 12), transform: `translateY(${26 * (1 - clamp01((f - 736) / 12))}px)`}}>
+          opacity: clamp01((f - ENTER.terminal) / 12), transform: `translateY(${26 * (1 - clamp01((f - ENTER.terminal) / 12))}px)`}}>
           <div style={{fontFamily: "monospace", fontSize: 30, color: GRN}}>
             {typed.slice(0, typedN)}<span style={{opacity: f % 16 < 8 ? 1 : 0}}>&#9608;</span>
           </div>
@@ -356,10 +343,10 @@ export const BoardEpisode: React.FC = () => {
             {counter90 >= 90000 ? "90,000+" : f >= 968 ? counter90.toLocaleString("en-US") : ""}
           </div>
         </div>
-        <PaperCard x={CARDS.chip1967.x} y={CARDS.chip1967.y} rot={3} f={f} enter={776} w={CARDS.chip1967.w} h={CARDS.chip1967.h}>
+        <PaperCard x={CARDS.chip1967.x} y={CARDS.chip1967.y} rot={3} f={f} enter={ENTER.chip1967} w={CARDS.chip1967.w} h={CARDS.chip1967.h}>
           <div style={{fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 32, color: "#26352f", lineHeight: 1.15}}>since<br/>January 1967</div>
         </PaperCard>
-        <PaperCard x={CARDS.office.x} y={CARDS.office.y} rot={-2} f={f} enter={860} w={CARDS.office.w} h={CARDS.office.h}>
+        <PaperCard x={CARDS.office.x} y={CARDS.office.y} rot={-2} f={f} enter={ENTER.office} w={CARDS.office.w} h={CARDS.office.h}>
           <div style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 30, color: "#26352f"}}>OFFICE HOURS 9-5</div>
           <svg width="280" height="60" style={{position: "absolute", left: 10, top: 10, overflow: "visible"}}>
             <DrawOn paths={sLine(10, 30, 260, 30, RED, 9, 55)} p={clamp01((f - 887) / 8)}/>
@@ -368,7 +355,7 @@ export const BoardEpisode: React.FC = () => {
         </PaperCard>
         {/* status dots */}
         {Array.from({length: 24}, (_, i) => {
-          const on = f > 806 + i * 2.4;
+          const on = f > ENTER.dots + i * 2.4;
           return <div key={"d" + i} style={{position: "absolute", left: CARDS.dots.x + (i % 12) * 46, top: CARDS.dots.y + Math.floor(i / 12) * 46,
             width: 18, height: 18, borderRadius: 9, background: on ? GRN : "#2a3a30",
             boxShadow: on ? "0 0 10px rgba(125,216,160,0.7)" : undefined}}/>;
@@ -378,8 +365,8 @@ export const BoardEpisode: React.FC = () => {
         <div style={{position: "absolute", left: CARDS.hub.x, top: CARDS.hub.y, width: CARDS.hub.w, height: CARDS.hub.h, boxSizing: "border-box",
           borderRadius: 130, border: `7px solid ${INK}`, display: "flex", alignItems: "center", justifyContent: "center",
           background: "#1d2b24", boxShadow: `0 0 ${30 + 40 * threadGlow}px rgba(224,73,46,${0.25 + 0.5 * threadGlow})`,
-          opacity: clamp01((f - 920) / 20),
-          transform: `scale(${(0.7 + 0.3 * clamp01((f - 920) / 20)) * (1 + 0.12 * Math.sin(Math.PI * clamp01((f - 1087) / 14)))})`}}>
+          opacity: clamp01((f - ENTER.hub) / 20),
+          transform: `scale(${(0.7 + 0.3 * clamp01((f - ENTER.hub) / 20)) * (1 + 0.12 * Math.sin(Math.PI * clamp01((f - 1087) / 14)))})`}}>
           <span style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 52, color: INK, letterSpacing: 6, opacity: 1 - hubSwap}}>NCIC</span>
           {/* v4: the hub itself becomes the open padlock - "a door the FBI can't lock". Drawn metaphor;
               no traffic depicted through it. Caption carries the sentence, so no duplicate on-board text. */}
@@ -408,7 +395,7 @@ export const BoardEpisode: React.FC = () => {
         })}
 
         {/* BREACH: editorial only - AP card assembles; questions punch in the fixed overlay */}
-        <PaperCard x={APCARD.x} y={APCARD.y} rot={-2} f={f} enter={1138} w={APCARD.w} h={APCARD.h}>
+        <PaperCard x={APCARD.x} y={APCARD.y} rot={-2} f={f} enter={ENTER.ap} w={APCARD.w} h={APCARD.h}>
           <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 40, color: "#26352f", lineHeight: 1.25}}>
             {["FBI investigating", "an apparent breach,", "found in recent days"].map((line, i) => {
               const lp = clamp01((f - (1155 + i * 13)) / 10);
@@ -420,7 +407,7 @@ export const BoardEpisode: React.FC = () => {
         </PaperCard>
 
         {/* SECOND: report assembles on the spoken words (owner de-label rule: no stamp, no citation line) */}
-        <PaperCard x={SECOND.x} y={SECOND.y} rot={2} f={f} enter={1452} w={SECOND.w} h={SECOND.h}>
+        <PaperCard x={SECOND.x} y={SECOND.y} rot={2} f={f} enter={ENTER.second} w={SECOND.w} h={SECOND.h}>
           <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 32, color: "#26352f", lineHeight: 1.3, whiteSpace: "nowrap"}}>
             {[["Extortion gang says", 1460], ["it breached a platform", 1503], ["behind the FBI's jobs website", 1526], ["through unpatched software", 1592]].map(([line, at]) => {
               const lp = clamp01((f - (at as number)) / 10);
