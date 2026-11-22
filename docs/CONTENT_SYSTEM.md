@@ -12,7 +12,7 @@ Choose one surprising, supportable question. Record primary sources, exact suppo
 
 ### 2. Performance and script
 
-Write spoken English, not an article read aloud. Open on the interesting fact, without a channel intro. Build curiosity, then answer it. Default length is roughly 45-65 seconds only when the story fits; do not race a long script to hit a number. Preserve sources when shortening.
+Write spoken English, not an article read aloud. Open on the interesting fact, without a channel intro. The first three seconds must establish the specific tension, question or supported consequence in both voice and picture; do not spend them on a logo, greeting or generic setup. This is an editorial design rule, not a claim that three seconds alone determine distribution. Deliver the hook's promise and preserve uncertainty labels. Build curiosity, then answer it. Default length is roughly 45-65 seconds only when the story fits; do not race a long script to hit a number. Preserve sources when shortening.
 
 Use `voice.direction` for overall character and `voice.beats` for local sentence-entry intent. One primary intent per sentence, spaced naturally. Put the exact phrase in `before`; missing or duplicate anchors fail. Do not put stage directions in captions.
 

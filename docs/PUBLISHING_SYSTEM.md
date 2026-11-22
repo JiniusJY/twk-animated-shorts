@@ -90,7 +90,7 @@ Escalate legal or safety claims, factual disputes about the video, harassment, r
 
 ## Daily cadence and quality gate
 
-The owner requested one great episode per day on 22 November 2026, correcting a weekly proposal. Plan one daily episode for the three existing video platforms, with a repeatable audience-local window per platform. Do not confuse daily intent with a blanket approval to publish an unreviewed episode, change accounts, buy services or expand to new networks. Quality, sourcing, voice, visual QA, rights and the release contract still apply; if a release fails its checks, fix it rather than shipping solely to fill a calendar slot. No new recurring production or automatic-publication job is implemented by this document.
+The owner requested one great episode per day on 22 November 2026, correcting a weekly proposal. Focus stays on YouTube Shorts, Instagram Reels and TikTok only, as the owner confirmed later that morning. Plan one daily episode for those three existing video platforms, with a repeatable audience-local window per platform. Do not confuse daily intent with a blanket approval to publish an unreviewed episode, change accounts, buy services or expand to new networks. Quality, sourcing, voice, visual QA, rights and the release contract still apply; if a release fails its checks, fix it rather than shipping solely to fill a calendar slot. No new recurring production or automatic-publication job is implemented by this document.
 
 ## Posting windows: audience-local experiments
 
