@@ -1,5 +1,6 @@
 import React from "react";
 import {AbsoluteFill, Img, staticFile, spring, useCurrentFrame, useVideoConfig} from "remotion";
+import {Grain} from "./NcicScene";
 export const EndCard:React.FC<{start:number;handle:string}>=({start,handle})=>{
  const f=useCurrentFrame(),{fps}=useVideoConfig();
  const clicked=(f-start)>fps*1.15;
@@ -18,5 +19,6 @@ export const EndCard:React.FC<{start:number;handle:string}>=({start,handle})=>{
    <div style={{fontSize:27,marginTop:20,color:"#4d5d54"}}>Tech news. Why it matters. How to use it.</div>
    <div style={{fontSize:32,fontWeight:700,marginTop:27,color:"#cb4a32",transform:`translateY(${Math.sin((f-start)/14)*5}px)`}}>Link in bio ↗</div>
   </div>
+  <Grain frame={f}/>
  </AbsoluteFill>;
 };

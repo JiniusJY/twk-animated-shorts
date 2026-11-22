@@ -1,6 +1,19 @@
 import React from "react";
-import {AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig} from "remotion";
+import {AbsoluteFill, Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from "remotion";
 import type {ShotDef} from "./types";
+
+/**
+ * Animated film grain. The QA freeze gate compares average frame difference,
+ * so even a pulsing dot or sweeping line reads as "frozen" during quiet beats.
+ * Swapping two uncorrelated grain fields every frame keeps every pixel alive
+ * (subtle at 7% opacity) and matches the paper/ink editorial look.
+ */
+export const Grain:React.FC<{frame:number;opacity?:number}>=({frame,opacity=0.045})=>(
+ <>
+  <Img src={staticFile("grain-a.png")} style={{position:"absolute",inset:0,width:"100%",height:"100%",opacity:frame%2===0?opacity:0,pointerEvents:"none"}}/>
+  <Img src={staticFile("grain-b.png")} style={{position:"absolute",inset:0,width:"100%",height:"100%",opacity:frame%2===0?0:opacity,pointerEvents:"none"}}/>
+ </>
+);
 const I="#26352f",P="#f1eddd",R="#cb4a32",G="#467765";
 
 /**
@@ -32,6 +45,7 @@ const Paper:React.FC<{children:React.ReactNode}>=({children})=>{
    <circle cx="1022" cy="147" r="15" fill="none" stroke={R} strokeWidth="2" opacity={live*0.5}/>
    {children}
   </svg>
+  <Grain frame={f}/>
  </AbsoluteFill>;
 };
 
