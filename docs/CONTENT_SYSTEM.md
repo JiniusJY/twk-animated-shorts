@@ -96,6 +96,22 @@ Use real screenshots or video excerpts when they supply evidence or context the 
 
 The end card uses the actual TechWhoKnows logo from the website brand asset, stored at `public/brand/twk-logo.svg`. Do not redraw or improvise the logo. Preserve its proportions and contrast. Website logo provenance is documented in `public/brand/README.md`. The current Boeing render does not add unrelated social footage.
 
+## Cover design (viewer psychology, standing per owner 22 November 2026)
+
+A cover is a value promise, not decoration. A viewer scrolling the feed gives it about two seconds and asks one question: what does watching this do for me. Every cover must answer it.
+
+Rules:
+- Headline is 3-5 words, concrete stakes or payoff for the viewer, not the topic. Say what the viewer learns or what changes for them ("What police know about you"), not a fact about the story ("Ninety thousand doors").
+- Curiosity lines are allowed only when they still promise the value ("Is your name in it?" promises a personal check; a bare riddle does not).
+- Readable at feed-thumbnail size: few words, large type, high contrast, one accent colour on the load-bearing word. Inspect the actual pixels at small size, not only at full resolution.
+- Real licensed photography with the credit printed on the image, paper/ink/red palette, 1080x1920.
+- Two-option shortlist per episode; the owner picks unless he delegates the choice.
+- Honesty rules still apply: a value line must not overclaim an unconfirmed story (for an apparent breach, promise what the viewer will understand, not unverified impact).
+
+Owner evidence for this system, 22 November 2026, on the first NCIC cover draft ("Ninety thousand doors."): "if im a viewer. i see the cover? im like ??? what value does it serve me." A clever topic line failed the two-second test; a viewer-stakes line passes it.
+
+Feedback loop: cover performance is training data. For every published episode, record the cover variant shipped and its performance (CTR / swipe-past rate / retention where the platform exposes it) in `docs/COVER_PERFORMANCE.md`, fed by the posting/metrics automation. Pre-production for each new episode includes reading that log and carrying forward what worked; losing patterns get retired explicitly. The loop only works if the data is recorded honestly, including failures.
+
 ## Publishing package
 
 Every episode also follows [PUBLISHING_SYSTEM.md](PUBLISHING_SYSTEM.md): platform-specific titles, captions and relevant hashtags; truthful hooks; per-platform music selection and rights; approved publishing manifests; destination and processing checks; and post-release measurement. These rules govern future releases. They do not mean an uploader or metrics monitor is already implemented.

@@ -65,11 +65,11 @@ def variant_a(photo):
     draw_tracked(d, (M, 84), "TECHWHOKNOWS", kf, RED, tracking=8)
     d.rectangle([M, 140, W - M, 142], fill=INK)
 
-    hf = f(SERIF, 108)
-    lh = 126
-    y = 230
-    draw_segments(d, (M, y), [("Someone ", INK), ("may", RED)], hf)
-    draw_segments(d, (M, y + lh), [("be ", INK), ("inside.", RED)], hf)
+    hf = f(SERIF, 96)
+    lh = 112
+    y = 240
+    draw_segments(d, (M, y), [("What ", INK), ("police", RED)], hf)
+    draw_segments(d, (M, y + lh), [("know about ", INK), ("you.", RED)], hf)
 
     plate_w = W - 2 * M
     plate_h = 760
@@ -121,8 +121,8 @@ def variant_b(photo):
     draw_tracked(d, (bx0 + pad, by0 + 48), "FBI  ·  NCIC  ·  NOV 2026", kf, RED, tracking=5)
 
     hf = f(SERIF, 96)
-    d.text((bx0 + pad, by0 + 118), "Ninety thousand", font=hf, fill=INK)
-    d.text((bx0 + pad, by0 + 118 + 112), "doors.", font=hf, fill=RED)
+    d.text((bx0 + pad, by0 + 118), "Is your", font=hf, fill=INK)
+    d.text((bx0 + pad, by0 + 118 + 112), "name in it?", font=hf, fill=RED)
 
     sf = f(SANS, 33)
     d.text((bx0 + pad, by0 + 118 + 2 * 112 + 30),
