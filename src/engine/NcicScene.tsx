@@ -338,7 +338,7 @@ export const NcicScene:React.FC<{shot:ShotDef}>=({shot})=>{
    <g transform={`translate(540 810) scale(${br(2.1).toFixed(4)}) translate(-540 -810)`}>
    {doors.map((d,i)=>{
     const isHot=hot.includes(i);
-    const open=isHot?Math.max(0,Math.min(1,popAt(Math.round(span*(0.3+i*0.12)))/1)):0;
+    const open=isHot?Math.max(0,Math.min(1,popAt(Math.round(span*(0.3+[2,7,12].indexOf(i)*0.22)))/1)):0;
     const dp=popAt(i*2);
     const lineLive=Math.min(1,u*1.3);
     return <g key={i} opacity={Math.min(1,dp*1.5)}>
