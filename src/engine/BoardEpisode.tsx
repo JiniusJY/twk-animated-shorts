@@ -10,16 +10,16 @@ import {CARDS, HUB, W, H, BUILT_LINKS, linkById, reverseCubic, ringBoxes, cubicA
  * BOARD EPISODE v3 - "demonstrate, don't describe" rebuild (docs/EP2_REDESIGN.md).
  * The case board is a LIVING SYSTEM: query pulses travel the strings as the VO
  * names the mechanism. Breach stays editorial (origin/path/method unknown).
- * Beat times derive from the SHIPPED voice take's words.json (run 44997857035):
- *   HOOK     0-105    "Someone may have just broken into..." (0.16-3.38s)
- *   SYSTEM   105-390  traffic stop 6.3s, NCIC name 10.34s
- *   DRAWERS  390-730  cabinet 13.08s, 21 drawers 13.96s, 12M 20.18s, 10M 22.36s
- *   ALWAYSON 730-900  never closes 24.38s, jan 1967 25.66s, business hours 29.58s
- *   WEAKNESS 900-1125 weakness 30.0s, 90,000 32.16s, can't lock 36.24s
- *   BREACH   1125-1410 AP 37.52s, apparent breach 40.48s, don't know 43.14s
- *   SECOND   1410-1695 second time 47.04s, gang 48.88s, unpatched 53.08s
- *   STAKES   1695-1851 handcuffs 56.8s, five alarm 60.26s
- *   OUT      1851-2046 follow 61.7s, VO ends 63.48s
+ * Beat times derive from the SHIPPED voice take's words.json (run 45010023328, stats-omitted VO):
+ *   HOOK     0-110    "Someone may have just broken into..." (0.22-3.52s)
+ *   SYSTEM   110-423  traffic stop 6.74s, NCIC name 11.28s
+ *   DRAWERS  423-678  cabinet 14.52s, 22 drawers 15.28s (record-count/checks stats omitted: unverifiable at FBI primary source)
+ *   ALWAYSON 678-895  never closes 22.64s, jan 1967 24.12s, business hours 28.72s
+ *   WEAKNESS 895-1100 weakness 29.84s, 90,000 31.5s, can't lock 35.56s
+ *   BREACH   1100-1375 AP 36.7s, apparent breach 39.34s, don't know 42.0s
+ *   SECOND   1375-1624 second time 45.88s, gang 47.5s, unpatched 52.6s
+ *   STAKES   1624-1851 handcuffs 57.28s, five-alarm 60.2s
+ *   OUT      1851-2014 follow 61.7s, VO ends 63.58s
  * Rules: docs/MOTION_LANGUAGE.md (safe fixed overlay; supported numbers only;
  * drawn metaphors, no simulated system states; attribution labels stay).
  */
@@ -32,11 +32,11 @@ const sway = (f: number, seed: number) => Math.sin((f + seed) / 55) * 0.35;
 const bob = (f: number, seed: number) => Math.sin((f + seed) / 67) * 2.5;
 
 // v4: word-locked camera kicks (zoom impulse) and two hard shakes, scene layers only
-const KICKS: [number, number][] = [[23, 0.07], [419, 0.04], [965, 0.04], [1087, 0.05], [1225, 0.05],
-  [1489, 0.06], [1592, 0.04], [1726, 0.05], [1808, 0.06]];
+const KICKS: [number, number][] = [[26, 0.07], [458, 0.04], [945, 0.04], [1067, 0.05], [1191, 0.05],
+  [1453, 0.06], [1578, 0.04], [1718, 0.05], [1806, 0.06]];
 const kickAt = (f: number) => KICKS.reduce((s, [t, a]) =>
   f >= t ? s + a * Math.exp(-(f - t) / 6) * Math.min(1, (f - t + 1) / 2) : s, 0);
-const SHAKES = [23];
+const SHAKES = [26];
 const shakeAt = (f: number) => SHAKES.reduce((s, t) =>
   f >= t && f < t + 24 ? s + 14 * Math.sin((f - t) * 2.3) * Math.exp(-(f - t) / 5) : s, 0);
 
@@ -56,11 +56,11 @@ const Alarm: React.FC<{x: number; y: number; f: number; times: number[]; r0?: nu
 
 // v4: categories light up on the spoken word
 const DRAWER_HL: {i: number; at: number; label: string}[] = [
-  {i: 0, at: 441, label: "WANTED FUGITIVES"},
-  {i: 1, at: 488, label: "MISSING PERSONS"},
-  {i: 2, at: 519, label: "STOLEN CARS"},
-  {i: 3, at: 547, label: "STOLEN GUNS"},
-  {i: 4, at: 562, label: "PROTECTION ORDERS"},
+  {i: 0, at: 480, label: "WANTED FUGITIVES"},
+  {i: 1, at: 533, label: "MISSING PERSONS"},
+  {i: 2, at: 569, label: "STOLEN CARS"},
+  {i: 3, at: 600, label: "STOLEN GUNS"},
+  {i: 4, at: 630, label: "PROTECTION ORDERS"},
 ];
 
 // ---- query pulses: glowing dots traveling a cubic string -------------------
@@ -136,14 +136,12 @@ const LOCK_SHACKLE = sPath("M-38 -20 L-38 -52 A38 38 0 0 1 38 -52 L38 -20", RED,
 
 // fixed-overlay punches, locked to the spoken words
 const PUNCHES: {at: number; hold: number; text: string; sub?: string; stamp?: string; dy?: number}[] = [
-  {at: 604, hold: 58, text: "12 MILLION", sub: "active records"},
-  {at: 669, hold: 46, text: "10 MILLION", sub: "checks a day"},
-  {at: 823, hold: 34, text: "24/7", sub: "never closes"},
-  {at: 963, hold: 52, text: "90,000+", sub: "agencies connected", dy: -380},
-  {at: 1299, hold: 19, text: "WHO GOT IN?"},
-  {at: 1320, hold: 19, text: "HOW?"},
-  {at: 1341, hold: 30, text: "ANYTHING TAKEN?"},
-  {at: 1411, hold: 40, text: "2ND TIME", sub: "in two months"},
+  {at: 785, hold: 34, text: "24/7", sub: "never closes"},
+  {at: 943, hold: 52, text: "90,000+", sub: "agencies connected", dy: -380},
+  {at: 1265, hold: 19, text: "WHO GOT IN?"},
+  {at: 1286, hold: 19, text: "HOW?"},
+  {at: 1307, hold: 38, text: "ANYTHING TAKEN?"},
+  {at: 1376, hold: 40, text: "2ND TIME", sub: "in two months"},
 ];
 
 
@@ -154,15 +152,15 @@ export const BoardEpisode: React.FC = () => {
   // v4: framing keeps the active card fully in frame; stakes whips back along the strings,
   // then pulls wide on "five alarm fire" so the whole lit network reads as the payoff.
   const lookX = interpolate(f,
-    [0, 105, 190, 470, 560, 730, 775, 890, 950, 1125, 1185, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
+    [0, 110, 203, 503, 628, 678, 729, 865, 930, 1100, 1160, 1331, 1415, 1624, 1712, 1788, 1828, 2014],
     [600, 640, 1550, 2600, 2640, 2660, 3620, 3640, 4450, 4486, 5280, 5300, 6100, 6110, 1500, 1500, 1640, 1650],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const lookY = interpolate(f,
-    [0, 900, 1060, 1110, 1125, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
+    [0, 895, 1040, 1085, 1100, 1331, 1415, 1624, 1712, 1788, 1828, 2014],
     [1000, 960, 1010, 1010, 880, 880, 900, 900, 700, 720, 960, 960],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const camBase = interpolate(f,
-    [0, 60, 190, 470, 560, 600, 730, 775, 890, 950, 1050, 1125, 1185, 1365, 1450, 1636, 1720, 1790, 1830, 2046],
+    [0, 60, 203, 503, 628, 668, 678, 729, 865, 930, 1030, 1100, 1160, 1331, 1415, 1624, 1712, 1788, 1828, 2014],
     [1.25, 1.06, 1.065, 1.09, 1.16, 1.12, 1.10, 1.075, 1.10, 1.14, 1.32, 1.2, 1.21, 1.32, 1.12, 1.24, 1.1, 1.28, 0.95, 1.0],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const cam = camBase * (1 + kickAt(f));
@@ -170,24 +168,24 @@ export const BoardEpisode: React.FC = () => {
   const camX = lookX - 540 / cam + shake, camY = lookY - 960 / cam + shake * 0.6;
 
   // ---- shared progress ----
-  const dim = interpolate(f, [1020, 1060, 1090, 1125], [0, 0.55, 0.55, 0.3], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const threadGlow = interpolate(f, [1020, 1060], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const stakesPulse = f >= 1808 && f < 1860 ? 1 + Math.sin((f - 1808) / 52 * Math.PI) * 0.5 : 1;
-  const lockPop = spring({frame: Math.max(0, f - 1087), fps: 30, config: {damping: 12, stiffness: 200, mass: 0.8}});
+  const dim = interpolate(f, [1000, 1040, 1070, 1100], [0, 0.55, 0.55, 0.3], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
+  const threadGlow = interpolate(f, [1000, 1040], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
+  const stakesPulse = f >= 1806 && f < 1858 ? 1 + Math.sin((f - 1806) / 52 * Math.PI) * 0.5 : 1;
+  const lockPop = spring({frame: Math.max(0, f - 1067), fps: 30, config: {damping: 12, stiffness: 200, mass: 0.8}});
   const shackleRot = interpolate(lockPop, [0.55, 1], [0, -40], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const lockP = clamp01((f - 1048) / 16);
-  const hubSwap = clamp01((f - 1040) / 8);
-  const counter90 = Math.floor(interpolate(f, [968, 1008], [0, 90000], {extrapolateLeft: "clamp", extrapolateRight: "clamp"}));
-  const hl = [...DRAWER_HL].reverse().find((d) => f >= d.at && f < 604) || null;
+  const lockP = clamp01((f - 1028) / 16);
+  const hubSwap = clamp01((f - 1020) / 8);
+  const counter90 = Math.floor(interpolate(f, [948, 988], [0, 90000], {extrapolateLeft: "clamp", extrapolateRight: "clamp"}));
+  const hl = [...DRAWER_HL].reverse().find((d) => f >= d.at && f < 679) || null;
   const typed = "STATUS: ONLINE  24/7/365";
-  const typedN = Math.floor(clamp01((f - 740) / 40) * typed.length);
+  const typedN = Math.floor(clamp01((f - 688) / 40) * typed.length);
 
   // active overlay punch (at most one; sequence is disjoint)
   const punch = PUNCHES.find((p) => f >= p.at && f < p.at + p.hold) || null;
   const punchIn = punch ? spring({frame: f - punch.at, fps: 30, config: {damping: 11, stiffness: 260, mass: 0.6}}) : 0;
   const punchDim = interpolate(f,
-    [604, 614, 652, 662, 669, 679, 705, 715, 823, 831, 849, 857, 963, 973, 1005, 1015, 1297, 1305, 1363, 1371, 1411, 1419, 1443, 1451],
-    [0, 0.62, 0.62, 0, 0, 0.62, 0.62, 0, 0, 0.62, 0.62, 0, 0, 0.62, 0.62, 0, 0, 0.74, 0.74, 0, 0, 0.62, 0.62, 0],
+    [785, 795, 809, 819, 943, 953, 995, 1005, 1263, 1271, 1337, 1345, 1376, 1384, 1408, 1416],
+    [0, 0.62, 0.62, 0, 0, 0.62, 0.62, 0, 0, 0.74, 0.74, 0, 0, 0.62, 0.62, 0],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
 
   const bgDriftX = 16 * Math.sin(f / 240);
@@ -199,21 +197,21 @@ export const BoardEpisode: React.FC = () => {
     transformOrigin: "0 0", filter: blur ? `blur(${blur}px)` : undefined,
   });
 
-  const headline = f < 105 ? "Someone may have just broken in."
-    : f < 390 ? "One FBI system answers."
-    : f < 730 ? "21 drawers. 12 million records."
-    : f < 900 ? "It never closes."
-    : f < 1125 ? "Every connection is a door."
-    : f < 1410 ? "An apparent breach."
-    : f < 1695 ? "The second time in two months."
+  const headline = f < 110 ? "Someone may have just broken in."
+    : f < 423 ? "One FBI system answers."
+    : f < 678 ? "A filing cabinet with 22 drawers."
+    : f < 895 ? "It never closes."
+    : f < 1100 ? "Every connection is a door."
+    : f < 1375 ? "An apparent breach."
+    : f < 1683 ? "The second time in two months."
     : f < 1851 ? "Every line can put a real person in handcuffs."
     : "";
-  const beatStart = f < 105 ? 0 : f < 390 ? 108 : f < 730 ? 393 : f < 900 ? 733 : f < 1125 ? 903 : f < 1410 ? 1128 : f < 1636 ? 1453 : f < 1851 ? 1640 : 1854;
+  const beatStart = f < 110 ? 0 : f < 423 ? 113 : f < 678 ? 426 : f < 895 ? 681 : f < 1100 ? 898 : f < 1375 ? 1103 : f < 1624 ? 1418 : f < 1851 ? 1628 : 1854;
   // v4: one text track at a time - the headline sets context, then hands the frame to captions
   const headlineOp = beatStart === 0 ? 1 : clamp01((f - beatStart) / 14) * (1 - clamp01((f - beatStart - 80) / 14));
 
-  const drawerOn = (i: number) => clamp01((f - (400 + i * 6)) / 10);
-  const agencyPop = (i: number) => spring({frame: Math.max(0, f - (1000 + i * 4)), fps: 30, config: {damping: 13, stiffness: 240, mass: 0.6}});
+  const drawerOn = (i: number) => clamp01((f - (433 + i * 6)) / 10);
+  const agencyPop = (i: number) => spring({frame: Math.max(0, f - (980 + i * 4)), fps: 30, config: {damping: 13, stiffness: 240, mass: 0.6}});
 
   return (
     <div style={{position: "absolute", inset: 0, background: BOARD, overflow: "hidden"}}>
@@ -253,16 +251,16 @@ export const BoardEpisode: React.FC = () => {
 
         {/* v4 alarm shockwaves: hook (open already ringing, big hit on "broken"), breach, five-alarm payoff */}
         <svg width={W} height={H} style={{position: "absolute", inset: 0, pointerEvents: "none", overflow: "visible"}}>
-          <Alarm x={CARDS.hook.x + CARDS.hook.w / 2} y={CARDS.hook.y + CARDS.hook.h / 2} f={f} times={[0, 11, 23, 31, 46]} r0={190} grow={560}/>
-          <Alarm x={APCARD.x + APCARD.w / 2} y={APCARD.y + APCARD.h / 2} f={f} times={[1225, 1235]} r0={300} grow={420}/>
-          <Alarm x={TRAFFIC.x + TRAFFIC.w / 2} y={TRAFFIC.y + TRAFFIC.h / 2} f={f} times={[1808, 1818, 1828]} r0={280} grow={700}/>
+          <Alarm x={CARDS.hook.x + CARDS.hook.w / 2} y={CARDS.hook.y + CARDS.hook.h / 2} f={f} times={[0, 11, 26, 31, 49]} r0={190} grow={560}/>
+          <Alarm x={APCARD.x + APCARD.w / 2} y={APCARD.y + APCARD.h / 2} f={f} times={[1191, 1201]} r0={300} grow={420}/>
+          <Alarm x={TRAFFIC.x + TRAFFIC.w / 2} y={TRAFFIC.y + TRAFFIC.h / 2} f={f} times={[1806, 1816, 1826]} r0={280} grow={700}/>
         </svg>
 
         {/* HOOK: face-down card; the string grows OUT of it toward where we travel; card flips to NCIC */}
         {(() => {
-          const flip = interpolate(f, [70, 95], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
+          const flip = interpolate(f, [75, 100], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
           const pop = spring({frame: f + 8, fps: 30, config: {damping: 13, stiffness: 200, mass: 0.8}});
-          const crackP = clamp01((f - 23) / 6);
+          const crackP = clamp01((f - 26) / 6);
           return (
             <div style={{position: "absolute", left: CARDS.hook.x, top: CARDS.hook.y, width: CARDS.hook.w, height: CARDS.hook.h, boxSizing: "border-box",
               transform: `scale(${0.6 + 0.4 * pop}) rotate(${-3 + flip * 3}deg) scaleX(${Math.abs(1 - flip * 2)})`,
@@ -272,13 +270,13 @@ export const BoardEpisode: React.FC = () => {
               {flip < 0.5 && crackP > 0 && (
                 <svg width="300" height="380" style={{position: "absolute", left: -6, top: -6, overflow: "visible"}}>
                   <DrawOn paths={sPath("M150 -10 L128 90 L176 150 L120 230 L168 300 L140 390", RED, 8, 70)} p={crackP}/>
-                  <DrawOn paths={sPath("M176 150 L250 175 M120 230 L50 250", RED, 6, 71)} p={clamp01((f - 27) / 6)}/>
+                  <DrawOn paths={sPath("M176 150 L250 175 M120 230 L50 250", RED, 6, 71)} p={clamp01((f - 30) / 6)}/>
                 </svg>
               )}
               {flip >= 0.5 && (
                 <span style={{fontFamily: "Arial,sans-serif", fontWeight: 800, fontSize: 58, color: "#26352f", letterSpacing: 5}}>
                   {"NCIC".split("").map((ch, i) => {
-                    const lp = clamp01((f - (76 + i * 3)) / 6);
+                    const lp = clamp01((f - (81 + i * 3)) / 6);
                     return <span key={i} style={{display: "inline-block", opacity: lp, transform: `translateY(${10 * (1 - lp)}px)`}}>{ch}</span>;
                   })}
                 </span>
@@ -288,21 +286,21 @@ export const BoardEpisode: React.FC = () => {
         })()}
 
         {/* SYSTEM: traffic stop photo; a query pulse runs to the NCIC card as the VO says where answers come from */}
-        <PhotoCard x={TRAFFIC.x} y={TRAFFIC.y} w={TRAFFIC.w} h={TRAFFIC.h} rot={-3} f={f} enter={130} img="photos/traffic-stop.jpg"/>
-        <PaperCard x={CARDS.ncic.x} y={CARDS.ncic.y} rot={2} f={f} enter={310} w={CARDS.ncic.w} h={CARDS.ncic.h}>
+        <PhotoCard x={TRAFFIC.x} y={TRAFFIC.y} w={TRAFFIC.w} h={TRAFFIC.h} rot={-3} f={f} enter={135} img="photos/traffic-stop.jpg"/>
+        <PaperCard x={CARDS.ncic.x} y={CARDS.ncic.y} rot={2} f={f} enter={338} w={CARDS.ncic.w} h={CARDS.ncic.h}>
           <div style={{fontFamily: "Arial,sans-serif", fontSize: 26, color: DIM, letterSpacing: 2}}>
             {"NATIONAL CRIME INFORMATION CENTER".split("").map((ch, i) => (
-              <span key={i} style={{opacity: clamp01((f - (312 + i * 1.1)) / 4)}}>{ch}</span>
+              <span key={i} style={{opacity: clamp01((f - (340 + i * 1.1)) / 4)}}>{ch}</span>
             ))}
           </div>
           <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 64, color: "#26352f", marginTop: 8}}>NCIC</div>
         </PaperCard>
 
         {/* DRAWERS: filing cabinet + counters (numbers punch in the fixed overlay) */}
-        <PaperCard x={CABINET.x} y={CABINET.y} rot={-2} f={f} enter={395} w={CABINET.w} h={CABINET.h}>
-          <div style={{fontFamily: "Arial,sans-serif", fontSize: 26, color: DIM, letterSpacing: 2, marginBottom: 12}}>21 DRAWERS</div>
+        <PaperCard x={CABINET.x} y={CABINET.y} rot={-2} f={f} enter={428} w={CABINET.w} h={CABINET.h}>
+          <div style={{fontFamily: "Arial,sans-serif", fontSize: 26, color: DIM, letterSpacing: 2, marginBottom: 12}}>22 DRAWERS</div>
           <div style={{display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8}}>
-            {Array.from({length: 21}, (_, i) => {
+            {Array.from({length: 22}, (_, i) => {
               const on = hl && hl.i === i;
               const seen = DRAWER_HL.some((d) => d.i === i && f >= d.at);
               const hp = on ? spring({frame: f - hl!.at, fps: 30, config: {damping: 10, stiffness: 280, mass: 0.5}}) : 0;
@@ -317,21 +315,11 @@ export const BoardEpisode: React.FC = () => {
               );
             })}
           </div>
-          <div style={{display: "flex", gap: 40, marginTop: 18, fontFamily: "monospace"}}>
-            <div>
-              <div style={{fontSize: 54, fontWeight: 700, color: "#26352f"}}>{f >= 610 ? "12M" : ""}</div>
-              <div style={{fontSize: 24, color: DIM}}>active records</div>
-            </div>
-            <div>
-              <div style={{fontSize: 54, fontWeight: 700, color: "#26352f"}}>{f >= 676 ? "10M" : ""}</div>
-              <div style={{fontSize: 24, color: DIM}}>checks a day</div>
-            </div>
-          </div>
         </PaperCard>
         {/* v4: the spoken category, pinned under the cabinet as it is named */}
         {hl && (() => {
           const cp = spring({frame: f - hl.at, fps: 30, config: {damping: 12, stiffness: 260, mass: 0.5}});
-          const out = clamp01((f - 590) / 10);
+          const out = clamp01((f - 658) / 10);
           return (
             <div key={hl.label} style={{position: "absolute", left: CARDS.drawerChip.x, top: CARDS.drawerChip.y, height: CARDS.drawerChip.h, boxSizing: "border-box", whiteSpace: "nowrap",
               background: "#0b120e", border: `3px solid ${RED}`, padding: "14px 26px", borderRadius: 6,
@@ -347,28 +335,28 @@ export const BoardEpisode: React.FC = () => {
         <div style={{position: "absolute", left: TERMR.x, top: TERMR.y, width: TERMR.w, height: TERMR.h, boxSizing: "border-box",
           background: "#0b120e", border: "3px solid #33503f", borderRadius: 10, padding: "26px 30px",
           boxShadow: "0 24px 70px rgba(0,0,0,0.6)",
-          opacity: clamp01((f - 736) / 12), transform: `translateY(${26 * (1 - clamp01((f - 736) / 12))}px)`}}>
+          opacity: clamp01((f - 684) / 12), transform: `translateY(${26 * (1 - clamp01((f - 684) / 12))}px)`}}>
           <div style={{fontFamily: "monospace", fontSize: 30, color: GRN}}>
             {typed.slice(0, typedN)}<span style={{opacity: f % 16 < 8 ? 1 : 0}}>&#9608;</span>
           </div>
           <div style={{fontFamily: "monospace", fontSize: 26, color: "#4a7a5f", marginTop: 18}}>&gt; agencies connected</div>
           <div style={{fontFamily: "monospace", fontSize: 62, fontWeight: 700, color: GRN, marginTop: 4}}>
-            {counter90 >= 90000 ? "90,000+" : f >= 968 ? counter90.toLocaleString("en-US") : ""}
+            {counter90 >= 90000 ? "90,000+" : f >= 948 ? counter90.toLocaleString("en-US") : ""}
           </div>
         </div>
-        <PaperCard x={CARDS.chip1967.x} y={CARDS.chip1967.y} rot={3} f={f} enter={776} w={CARDS.chip1967.w} h={CARDS.chip1967.h}>
+        <PaperCard x={CARDS.chip1967.x} y={CARDS.chip1967.y} rot={3} f={f} enter={730} w={CARDS.chip1967.w} h={CARDS.chip1967.h}>
           <div style={{fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 32, color: "#26352f", lineHeight: 1.15}}>since<br/>January 1967</div>
         </PaperCard>
-        <PaperCard x={CARDS.office.x} y={CARDS.office.y} rot={-2} f={f} enter={860} w={CARDS.office.w} h={CARDS.office.h}>
+        <PaperCard x={CARDS.office.x} y={CARDS.office.y} rot={-2} f={f} enter={835} w={CARDS.office.w} h={CARDS.office.h}>
           <div style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 30, color: "#26352f"}}>OFFICE HOURS 9-5</div>
           <svg width="280" height="60" style={{position: "absolute", left: 10, top: 10, overflow: "visible"}}>
-            <DrawOn paths={sLine(10, 30, 260, 30, RED, 9, 55)} p={clamp01((f - 887) / 8)}/>
-            <DrawOn paths={sLine(10, 50, 260, 10, RED, 9, 56)} p={clamp01((f - 893) / 8)}/>
+            <DrawOn paths={sLine(10, 30, 260, 30, RED, 9, 55)} p={clamp01((f - 862) / 8)}/>
+            <DrawOn paths={sLine(10, 50, 260, 10, RED, 9, 56)} p={clamp01((f - 868) / 8)}/>
           </svg>
         </PaperCard>
         {/* status dots */}
         {Array.from({length: 24}, (_, i) => {
-          const on = f > 806 + i * 2.4;
+          const on = f > 768 + i * 2.4;
           return <div key={"d" + i} style={{position: "absolute", left: CARDS.dots.x + (i % 12) * 46, top: CARDS.dots.y + Math.floor(i / 12) * 46,
             width: 18, height: 18, borderRadius: 9, background: on ? GRN : "#2a3a30",
             boxShadow: on ? "0 0 10px rgba(125,216,160,0.7)" : undefined}}/>;
@@ -378,12 +366,12 @@ export const BoardEpisode: React.FC = () => {
         <div style={{position: "absolute", left: CARDS.hub.x, top: CARDS.hub.y, width: CARDS.hub.w, height: CARDS.hub.h, boxSizing: "border-box",
           borderRadius: 130, border: `7px solid ${INK}`, display: "flex", alignItems: "center", justifyContent: "center",
           background: "#1d2b24", boxShadow: `0 0 ${30 + 40 * threadGlow}px rgba(224,73,46,${0.25 + 0.5 * threadGlow})`,
-          opacity: clamp01((f - 920) / 20),
-          transform: `scale(${(0.7 + 0.3 * clamp01((f - 920) / 20)) * (1 + 0.12 * Math.sin(Math.PI * clamp01((f - 1087) / 14)))})`}}>
+          opacity: clamp01((f - 895) / 20),
+          transform: `scale(${(0.7 + 0.3 * clamp01((f - 895) / 20)) * (1 + 0.12 * Math.sin(Math.PI * clamp01((f - 1067) / 14)))})`}}>
           <span style={{fontFamily: "Arial,sans-serif", fontWeight: 700, fontSize: 52, color: INK, letterSpacing: 6, opacity: 1 - hubSwap}}>NCIC</span>
           {/* v4: the hub itself becomes the open padlock - "a door the FBI can't lock". Drawn metaphor;
               no traffic depicted through it. Caption carries the sentence, so no duplicate on-board text. */}
-          {f >= 1048 && (
+          {f >= 1028 && (
             <svg width="260" height="260" style={{position: "absolute", left: 0, top: 0, overflow: "visible", opacity: lockP}}>
               <g transform="translate(130 150) scale(1.15)">
                 <g transform={`rotate(${shackleRot} -38 -20)`}><DrawOn paths={LOCK_SHACKLE} p={lockP}/></g>
@@ -408,10 +396,10 @@ export const BoardEpisode: React.FC = () => {
         })}
 
         {/* BREACH: editorial only - AP card assembles; questions punch in the fixed overlay */}
-        <PaperCard x={APCARD.x} y={APCARD.y} rot={-2} f={f} enter={1138} w={APCARD.w} h={APCARD.h}>
+        <PaperCard x={APCARD.x} y={APCARD.y} rot={-2} f={f} enter={1113} w={APCARD.w} h={APCARD.h}>
           <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 40, color: "#26352f", lineHeight: 1.25}}>
             {["FBI investigating", "an apparent breach,", "found in recent days"].map((line, i) => {
-              const lp = clamp01((f - (1155 + i * 13)) / 10);
+              const lp = clamp01((f - (1130 + i * 13)) / 10);
               return (
                 <div key={line} style={{opacity: lp, transform: `translateY(${14 * (1 - lp)}px)`}}>{line}</div>
               );
@@ -420,9 +408,9 @@ export const BoardEpisode: React.FC = () => {
         </PaperCard>
 
         {/* SECOND: report assembles on the spoken words (owner de-label rule: no stamp, no citation line) */}
-        <PaperCard x={SECOND.x} y={SECOND.y} rot={2} f={f} enter={1452} w={SECOND.w} h={SECOND.h}>
+        <PaperCard x={SECOND.x} y={SECOND.y} rot={2} f={f} enter={1417} w={SECOND.w} h={SECOND.h}>
           <div style={{fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 32, color: "#26352f", lineHeight: 1.3, whiteSpace: "nowrap"}}>
-            {[["Extortion gang says", 1460], ["it breached a platform", 1503], ["behind the FBI's jobs website", 1526], ["through unpatched software", 1592]].map(([line, at]) => {
+            {[["Extortion gang says", 1419], ["it breached a platform", 1477], ["behind the FBI's jobs website", 1507], ["through unpatched software", 1578]].map(([line, at]) => {
               const lp = clamp01((f - (at as number)) / 10);
               return (
                 <div key={line as string} style={{opacity: lp, transform: `translateY(${14 * (1 - lp)}px)`}}>{line}</div>
@@ -433,7 +421,7 @@ export const BoardEpisode: React.FC = () => {
 
         {/* STAKES: no duplicate on-board sentence (caption carries it); the last query lands on the photo on "handcuffs" */}
         <svg width={W} height={H} style={{position: "absolute", inset: 0, pointerEvents: "none"}}>
-          <Pulse c={reverseCubic(linkById("photo-ncic").route) as Cubic} f={f} start={1700} period={400} dur={26} r={14}/>
+          <Pulse c={reverseCubic(linkById("photo-ncic").route) as Cubic} f={f} start={1692} period={400} dur={26} r={14}/>
         </svg>
       </div>
 

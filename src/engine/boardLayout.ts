@@ -73,16 +73,16 @@ export type LinkSpec = {
 // The chain the story walks. Each string joins neighbours only.
 export const LINKS: LinkSpec[] = [
   {id: "hook-ncic",      from: ["hook", "right"],     to: ["ncic", "left"],     start: 15,   dur: 55, seed: 40},
-  {id: "photo-ncic",     from: ["photo", "bottom"],   to: ["ncic", "top"],      start: 250,  dur: 30, seed: 80,
-    pulse: {start: 335, period: 65, dur: 30}},
-  {id: "ncic-cabinet",   from: ["ncic", "right"],     to: ["cabinet", "left"],  start: 400,  dur: 35, seed: 81,
-    pulse: {start: 445, period: 80, dur: 34}},
-  {id: "cabinet-term",   from: ["cabinet", "right"],  to: ["terminal", "left"], start: 748,  dur: 25, seed: 82,
-    pulse: {start: 785, period: 55, dur: 22}},
-  {id: "term-hub",       from: ["terminal", "bottom"], to: ["hub", "left"],     start: 960,  dur: 40, seed: 41,
-    pulse: {start: 1030, period: 58, dur: 44}, k: [0.3, 0.7]},
-  {id: "hub-ap",         from: ["hub", "right"],      to: ["ap", "bottom"],     start: 1132, dur: 35, seed: 83, k: [0.8, 0.3]},
-  {id: "ap-second",      from: ["ap", "right"],       to: ["second", "top"],    start: 1440, dur: 24, seed: 84},
+  {id: "photo-ncic",     from: ["photo", "bottom"],   to: ["ncic", "top"],      start: 265,  dur: 30, seed: 80,
+    pulse: {start: 363, period: 65, dur: 30}},
+  {id: "ncic-cabinet",   from: ["ncic", "right"],     to: ["cabinet", "left"],  start: 433,  dur: 35, seed: 81,
+    pulse: {start: 478, period: 80, dur: 34}},
+  {id: "cabinet-term",   from: ["cabinet", "right"],  to: ["terminal", "left"], start: 696,  dur: 25, seed: 82,
+    pulse: {start: 739, period: 55, dur: 22}},
+  {id: "term-hub",       from: ["terminal", "bottom"], to: ["hub", "left"],     start: 940,  dur: 40, seed: 41,
+    pulse: {start: 1010, period: 58, dur: 44}, k: [0.3, 0.7]},
+  {id: "hub-ap",         from: ["hub", "right"],      to: ["ap", "bottom"],     start: 1107, dur: 35, seed: 83, k: [0.8, 0.3]},
+  {id: "ap-second",      from: ["ap", "right"],       to: ["second", "top"],    start: 1405, dur: 24, seed: 84},
 ];
 
 export type Link = LinkSpec & {route: Cubic; d: string; a: Pt; b: Pt};
