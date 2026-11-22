@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       take:
-        description: "Which take(s) to generate: all, ab, or c"
+        description: "Which take(s) to generate: all, ab, c, or d"
         required: true
         default: "all"
 
