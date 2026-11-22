@@ -33,7 +33,7 @@ Judge it as a viewer with a skip thumb, against this release rubric:
 6. ALIVENESS: no frozen frames; static scenes must still breathe. Flag any segment that looks frozen or dead.
 7. THE SKIP TEST: name EVERY timestamp range where a viewer would be inclined to skip, and why. "Inclined to skip" is a fail for that beat.
 
-Return ONLY JSON with this shape:
+Return ONLY compact JSON (no whitespace, no markdown fence) with this shape:
 {"overall_score": 0-100, "pass": true/false, "hook_verdict": "...", "skip_risk": [{"start_s": 0.0, "end_s": 0.0, "reason": "..."}], "caption_issues": [{"at_s": 0.0, "issue": "..."}], "energy_flat_spans": [{"start_s": 0.0, "end_s": 0.0}], "frozen_look_spans": [{"start_s": 0.0, "end_s": 0.0}], "top_fixes": ["..."]}"""
 
 
@@ -115,11 +115,14 @@ def main():
 
     payload = {
         "contents": [{"parts": [part, {"text": RUBRIC}]}],
-        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.2},
+        "generationConfig": {"response_mime_type": "application/json", "temperature": 0.2, "maxOutputTokens": 8192},
     }
     print(f"reviewing with {args.model}...", flush=True)
     resp = post_json(f"{API}/models/{args.model}:generateContent?key={key}", payload)
-    text = resp["candidates"][0]["content"]["parts"][0]["text"]
+    cand = resp["candidates"][0]
+    text = cand["content"]["parts"][0]["text"]
+    if cand.get("finishReason") == "MAX_TOKENS":
+        raise RuntimeError("model output truncated at maxOutputTokens")
     usage = resp.get("usageMetadata", {})
     print(f"tokens: prompt={usage.get('promptTokenCount')} out={usage.get('candidatesTokenCount')}", flush=True)
     verdict = json.loads(text)

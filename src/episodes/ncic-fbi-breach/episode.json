@@ -278,7 +278,7 @@
       0,
       0.35
      ],
-     "expr": "grin",
+     "expr": "nervous",
      "walk": false,
      "facing": 1,
      "look": 1,
@@ -291,7 +291,7 @@
       0,
       0.35
      ],
-     "expr": "laugh",
+     "expr": "shock",
      "talk": true,
      "facing": 1
     }
@@ -323,7 +323,7 @@
       0,
       0.15
      ],
-     "expr": "relief",
+     "expr": "nervous",
      "walk": false,
      "facing": -1,
      "look": -1,
@@ -336,7 +336,7 @@
       0,
       0.15
      ],
-     "expr": "grin",
+     "expr": "shock",
      "talk": true,
      "facing": -1
     }
@@ -368,7 +368,7 @@
       0,
       0.3
      ],
-     "expr": "grin",
+     "expr": "stern",
      "walk": false,
      "facing": -1,
      "look": 0,
@@ -381,7 +381,7 @@
       0,
       0.3
      ],
-     "expr": "laugh",
+     "expr": "nervous",
      "talk": false,
      "facing": -1
     }
@@ -1234,7 +1234,7 @@
   {
    "id": 2,
    "a": 92,
-   "b": 334,
+   "b": 180,
    "purpose": "context: what NCIC does at a routine traffic stop",
    "world": "town",
    "light": "day",
@@ -1242,12 +1242,12 @@
    "cam": {
     "from": [
      -2.6,
-     2.0,
+     2,
      5.8
     ],
     "to": [
-     2.2,
-     1.95,
+     -1.6,
+     2,
      5.8
     ],
     "lookFrom": [
@@ -1256,20 +1256,87 @@
      -3.5
     ],
     "lookTo": [
-     1.0,
+     -0.9,
      1.6,
      -3.5
     ],
-    "fovFrom": 40,
-    "fovTo": 40
+    "fovFrom": 40
    },
    "move": "truck",
    "transitionIn": "whip-right"
   },
   {
    "id": 3,
+   "a": 180,
+   "b": 260,
+   "purpose": "context: what NCIC does at a routine traffic stop",
+   "world": "town",
+   "light": "day",
+   "dof": 0,
+   "cam": {
+    "from": [
+     0.2,
+     2.1,
+     6.0
+    ],
+    "to": [
+     0.2,
+     2.1,
+     6.0
+    ],
+    "lookFrom": [
+     1.8,
+     1.4,
+     -3.2
+    ],
+    "lookTo": [
+     0.4,
+     1.5,
+     -2.6
+    ],
+    "fovFrom": 40
+   },
+   "move": "pan",
+   "transitionIn": "cut"
+  },
+  {
+   "id": 4,
+   "a": 260,
+   "b": 334,
+   "purpose": "context: what NCIC does at a routine traffic stop",
+   "world": "town",
+   "light": "day",
+   "dof": 0,
+   "cam": {
+    "from": [
+     0.5,
+     1.8,
+     3.6
+    ],
+    "to": [
+     0.7,
+     1.75,
+     2.9
+    ],
+    "lookFrom": [
+     0.85,
+     1.35,
+     0.35
+    ],
+    "lookTo": [
+     0.85,
+     1.35,
+     0.35
+    ],
+    "fovFrom": 38
+   },
+   "move": "push",
+   "transitionIn": "cut"
+  },
+  {
+   "id": 5,
    "a": 334,
-   "b": 509,
+   "b": 430,
    "purpose": "evidence: the 21 files inside the cabinet",
    "world": "office",
    "light": "day",
@@ -1295,14 +1362,47 @@
      2.0,
      -6.0
     ],
-    "fovFrom": 41,
-    "fovTo": 41
+    "fovFrom": 41
    },
    "move": "static",
    "transitionIn": "whip-left"
   },
   {
-   "id": 4,
+   "id": 6,
+   "a": 430,
+   "b": 509,
+   "purpose": "evidence: the 21 files inside the cabinet",
+   "world": "office",
+   "light": "day",
+   "dof": 5,
+   "cam": {
+    "from": [
+     -1.5,
+     1.3,
+     3.0
+    ],
+    "to": [
+     1.5,
+     1.3,
+     3.0
+    ],
+    "lookFrom": [
+     -1.0,
+     0.9,
+     -2.7
+    ],
+    "lookTo": [
+     1.0,
+     0.9,
+     -2.7
+    ],
+    "fovFrom": 38
+   },
+   "move": "truck",
+   "transitionIn": "cut"
+  },
+  {
+   "id": 7,
    "a": 509,
    "b": 601,
    "purpose": "scale: 12M records, ~10M checks/day as a live counter",
@@ -1340,7 +1440,7 @@
    "transitionIn": "cut"
   },
   {
-   "id": 5,
+   "id": 8,
    "a": 601,
    "b": 734,
    "purpose": "stakes: always on, 24/7 since Jan 1967",
@@ -1379,9 +1479,9 @@
    "transitionIn": "whip-right"
   },
   {
-   "id": 6,
+   "id": 9,
    "a": 734,
-   "b": 909,
+   "b": 830,
    "purpose": "mechanism: 90k connected agencies means 90k doors",
    "world": "federal",
    "light": "golden",
@@ -1393,7 +1493,7 @@
      5.2
     ],
     "to": [
-     -2.2,
+     0.2,
      2.1,
      5.2
     ],
@@ -1403,19 +1503,87 @@
      -13.5
     ],
     "lookTo": [
-     0.5,
+     -0.2,
      2.8,
      -13.5
     ],
-    "fovFrom": 40,
-    "fovTo": 40
+    "fovFrom": 40
    },
    "move": "truck",
    "transitionIn": "dissolve"
   },
   {
-   "id": 7,
+   "id": 10,
+   "a": 830,
+   "b": 909,
+   "purpose": "mechanism: 90k connected agencies means 90k doors",
+   "world": "federal",
+   "light": "golden",
+   "dof": 0,
+   "cam": {
+    "from": [
+     -0.3,
+     1.9,
+     3.9
+    ],
+    "to": [
+     -0.3,
+     1.9,
+     3.9
+    ],
+    "lookFrom": [
+     -0.5,
+     1.6,
+     -4.2
+    ],
+    "lookTo": [
+     -0.5,
+     1.6,
+     -4.2
+    ],
+    "fovFrom": 38
+   },
+   "move": "static",
+   "transitionIn": "cut"
+  },
+  {
+   "id": 11,
    "a": 909,
+   "b": 1030,
+   "purpose": "event: apparent breach, unknown who/how/what",
+   "world": "server_room",
+   "light": "day",
+   "dof": 3,
+   "cam": {
+    "from": [
+     0.4,
+     2.0,
+     5.4
+    ],
+    "to": [
+     0.25,
+     1.95,
+     4.6
+    ],
+    "lookFrom": [
+     0,
+     1.8,
+     -3.0
+    ],
+    "lookTo": [
+     0,
+     1.8,
+     -3.1
+    ],
+    "fovFrom": 41,
+    "fovTo": 39
+   },
+   "move": "push",
+   "transitionIn": "cut"
+  },
+  {
+   "id": 12,
+   "a": 1030,
    "b": 1151,
    "purpose": "event: apparent breach, unknown who/how/what",
    "world": "server_room",
@@ -1427,34 +1595,102 @@
    ],
    "cam": {
     "from": [
-     0.4,
-     2.0,
-     5.4
+     0.25,
+     1.9,
+     4.4
     ],
     "to": [
-     0.15,
-     1.9,
-     4.1
+     0.5,
+     2.1,
+     5.6
     ],
     "lookFrom": [
      0,
      1.8,
-     -3.0
+     -3.2
     ],
     "lookTo": [
-     0,
+     -0.3,
      1.8,
      -3.2
     ],
-    "fovFrom": 41,
-    "fovTo": 37
+    "fovFrom": 37,
+    "fovTo": 40
    },
-   "move": "push",
+   "move": "pull",
    "transitionIn": "cut"
   },
   {
-   "id": 8,
+   "id": 13,
    "a": 1151,
+   "b": 1220,
+   "purpose": "pattern: second claimed FBI breach in two months, honestly uncertain",
+   "world": "office",
+   "light": "day",
+   "dof": 6,
+   "cam": {
+    "from": [
+     -1.1,
+     1.9,
+     3.4
+    ],
+    "to": [
+     -0.8,
+     1.9,
+     3.4
+    ],
+    "lookFrom": [
+     -1.3,
+     1.4,
+     -3.8
+    ],
+    "lookTo": [
+     -1.0,
+     1.4,
+     -3.8
+    ],
+    "fovFrom": 36
+   },
+   "move": "pan",
+   "transitionIn": "cut"
+  },
+  {
+   "id": 14,
+   "a": 1220,
+   "b": 1290,
+   "purpose": "pattern: second claimed FBI breach in two months, honestly uncertain",
+   "world": "office",
+   "light": "day",
+   "dof": 6,
+   "cam": {
+    "from": [
+     1.1,
+     1.9,
+     3.4
+    ],
+    "to": [
+     1.1,
+     1.9,
+     3.4
+    ],
+    "lookFrom": [
+     1.0,
+     1.4,
+     -3.8
+    ],
+    "lookTo": [
+     1.0,
+     1.4,
+     -3.8
+    ],
+    "fovFrom": 36
+   },
+   "move": "static",
+   "transitionIn": "cut"
+  },
+  {
+   "id": 15,
+   "a": 1290,
    "b": 1359,
    "purpose": "pattern: second claimed FBI breach in two months, honestly uncertain",
    "world": "office",
@@ -1462,35 +1698,35 @@
    "dof": 6,
    "cam": {
     "from": [
-     -0.2,
+     0,
      2.0,
-     5.2
+     4.4
     ],
     "to": [
      -0.2,
-     2.0,
-     5.2
+     2.2,
+     6.0
     ],
     "lookFrom": [
      0,
-     1.7,
+     1.5,
      -3.8
     ],
     "lookTo": [
      0,
-     1.7,
+     1.6,
      -3.8
     ],
-    "fovFrom": 40,
+    "fovFrom": 38,
     "fovTo": 40
    },
-   "move": "static",
+   "move": "pull",
    "transitionIn": "cut"
   },
   {
-   "id": 9,
+   "id": 16,
    "a": 1359,
-   "b": 1620,
+   "b": 1490,
    "purpose": "payoff: records are real people; voiced follow CTA lands here",
    "world": "federal",
    "light": "golden",
@@ -1498,29 +1734,63 @@
    "cam": {
     "from": [
      0,
-     2.0,
-     4.6
+     3.2,
+     7.5
     ],
     "to": [
      0,
-     4.6,
-     10.0
+     1.9,
+     4.8
     ],
     "lookFrom": [
      0,
-     1.8,
-     -3.5
-    ],
-    "lookTo": [
-     0,
-     3.6,
+     3.2,
      -13.5
     ],
-    "fovFrom": 41,
-    "fovTo": 46
+    "lookTo": [
+     0.6,
+     1.6,
+     -3.3
+    ],
+    "fovFrom": 44,
+    "fovTo": 40
    },
    "move": "crane",
-   "transitionIn": "dissolve"
+   "transitionIn": "cut"
+  },
+  {
+   "id": 17,
+   "a": 1490,
+   "b": 1620,
+   "purpose": "payoff: records are real people; voiced follow CTA lands here",
+   "world": "federal",
+   "light": "golden",
+   "dof": 0,
+   "cam": {
+    "from": [
+     0.6,
+     1.8,
+     4.0
+    ],
+    "to": [
+     0.45,
+     1.7,
+     3.2
+    ],
+    "lookFrom": [
+     0.85,
+     1.2,
+     0.3
+    ],
+    "lookTo": [
+     0.85,
+     1.2,
+     0.3
+    ],
+    "fovFrom": 38
+   },
+   "move": "push",
+   "transitionIn": "cut"
   }
  ],
  "claim_ledger": [
