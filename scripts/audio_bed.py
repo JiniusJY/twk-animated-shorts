@@ -31,6 +31,35 @@ TARGET_LUFS = -15.0
 CEIL_DB = -2.2  # sample-peak ceiling; leaves ~1.2dB headroom for lossy (AAC) intersample overshoot so the muxed QA true-peak stays under -1.0 dBTP
 
 
+OUTRO_EXTRA_DB = -8.0  # extra drop under the end card, on top of the speech duck
+OUTRO_FADE_S = 1.2     # final fade to silence
+
+
+def outro_span(words: list[dict], dur: float) -> list[dict]:
+    """A pseudo-word covering everything after the last spoken word, so ducking holds."""
+    if not words:
+        return []
+    last = max(float(w["e"]) for w in words)
+    return [{"w": "<outro>", "s": last, "e": dur}] if dur > last else []
+
+
+def outro_envelope(n_samples: int, words: list[dict], dur: float) -> np.ndarray:
+    """Gain curve: 1.0 while speaking; after the last word glide down OUTRO_EXTRA_DB, then fade out."""
+    env = np.ones(n_samples, dtype=np.float64)
+    if not words:
+        return env
+    a = min(n_samples, ns(max(float(w["e"]) for w in words) + 0.15))
+    tail = n_samples - a
+    if tail <= 1:
+        return env
+    glide = min(tail, ns(1.5))
+    env[a:a + glide] = dbg(np.linspace(0.0, OUTRO_EXTRA_DB, glide))
+    env[a + glide:] = dbg(OUTRO_EXTRA_DB)
+    f = min(tail, ns(OUTRO_FADE_S))
+    env[n_samples - f:] *= np.linspace(1.0, 0.0, f) ** 2
+    return env
+
+
 def duck_envelope(n_samples: int, words: list[dict], duck_db: float = -3.5) -> np.ndarray:
     mask = np.zeros(n_samples, dtype=np.float64)
     for w in words:
@@ -362,7 +391,13 @@ def main():
         # episode directory so no two episodes ever share a bed.
         music_seed = int(hashlib.sha256(ep_dir.name.encode("utf-8")).hexdigest()[:8], 16) % (2**31)
         music = build_music(dur, ep.get("musicMood", "playful"), seed=music_seed)
-    music *= duck_envelope(n, words, duck_db=-4.0)
+    # OUTRO RULE root fix (owner, 22 Nov 2026: "final music towards the end was too loud"):
+    # ducking used to follow speech only, so after the last word the bed released to full level
+    # for the whole end card (only a 0.25s fade at the very end). Now the outro is treated as
+    # speech for ducking (the bed never swells up when the voice stops), then glides a further
+    # OUTRO_EXTRA_DB down under the end card and fades out smoothly over OUTRO_FADE_S.
+    music *= duck_envelope(n, words + outro_span(words, dur), duck_db=-4.0)
+    music *= outro_envelope(n, words, dur)
 
     # Set music bed ~10.5 dB below voice
     v_lufs = integrated(voice_st)
