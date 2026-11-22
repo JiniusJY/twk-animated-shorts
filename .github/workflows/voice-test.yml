@@ -1,0 +1,23 @@
+name: Voice AB Test
+# Zero-spend A/B audition on the free Fish model (s2.1-pro-free) - see scripts/voice_ab.py.
+on:
+  workflow_dispatch:
+
+jobs:
+  voice-ab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Generate A/B clips on the free Fish model
+        env:
+          FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
+          FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
+        run: python3 scripts/voice_ab.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voice-ab
+          path: voice-ab/*.mp3
+          retention-days: 7

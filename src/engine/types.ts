@@ -2,7 +2,7 @@ import type { Expr, Outfit } from "./toon";
 
 export type V3 = [number, number, number];
 export type LightMode = "day" | "golden";
-export type WorldPreset = "office" | "town" | "server_room" | "tarmac" | "courtroom";
+export type WorldPreset = "office" | "town" | "server_room" | "tarmac" | "courtroom" | "federal";
 export type MusicMood = "march" | "playful" | "tense" | "mystery";
 
 export type PropKind =
@@ -122,6 +122,15 @@ export interface CamPath {
   ease?: "smooth" | "out" | "linear";
 }
 
+/** Camera move classes (CONTENT_SYSTEM camera-language rule). Declared per shot;
+ * lint fails two adjacent shots with the same class. */
+export type CamMove = "static" | "truck" | "push" | "pull" | "crane" | "pan";
+
+/** Shot-boundary transition, declared on the INCOMING shot. "cut" = hard cut (default).
+ * whip-left/right sweeps the outgoing camera toward that side and sweeps the incoming
+ * camera in from the opposite side; "dissolve" crossfades DISSOLVE_FRAMES frames. */
+export type TransitionIn = "cut" | "whip-left" | "whip-right" | "dissolve";
+
 export interface ShotDef {
   id: number;
   a: number;
@@ -130,6 +139,10 @@ export interface ShotDef {
   purpose?: string;
   /** Spoken phrase that starts this shot, matched to real aligned words. */
   anchor?: string;
+  /** Declared camera move class; lint enforces adjacency variety. */
+  move?: CamMove;
+  /** How this shot arrives from the previous one. Default "cut". */
+  transitionIn?: TransitionIn;
   graphic?:
     | "counter" | "overflow" | "power" | "reset" | "hook" | "lab" | "stakes"
     | "question" | "clock" | "storage" | "odometer" | "directive" | "payoff"

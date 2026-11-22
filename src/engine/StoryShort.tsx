@@ -131,7 +131,22 @@ function glide(u: number): number {
   return x * x * x * (x * (6 * x - 15) + 10);
 }
 
-function evalShotCam(shot: ShotDef, f: number) {
+/** Whip-pan transition tuning: frames each side of the boundary, peak yaw, blur. */
+export const WHIP_FRAMES = 7;
+export const WHIP_DEG = 55;
+export const DISSOLVE_FRAMES = 9;
+
+/** Rotate the look vector around the camera position (yaw about +Y, degrees). */
+function yawLook(pos: V3, look: V3, deg: number): V3 {
+  const t = (deg * Math.PI) / 180;
+  const dx = look[0] - pos[0];
+  const dz = look[2] - pos[2];
+  const c = Math.cos(t);
+  const s = Math.sin(t);
+  return [pos[0] + dx * c + dz * s, look[1], pos[2] - dx * s + dz * c];
+}
+
+function evalShotCam(shot: ShotDef, f: number, whipYawDeg = 0) {
   const span = Math.max(1, shot.b - shot.a);
   const rawU = Math.max(0, Math.min(1, (f - shot.a) / span));
   const ease = shot.cam.ease ?? "smooth";
@@ -157,6 +172,7 @@ function evalShotCam(shot: ShotDef, f: number) {
       }
     }
   }
+  if (whipYawDeg !== 0) look = yawLook(pos, look, whipYawDeg);
   return { pos, look, fov, roll };
 }
 
@@ -208,11 +224,11 @@ const CHAR_W = 1080;
 const CHAR_H = 1800;
 const CHAR_SCALE = 1.8;
 
-const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
+const SceneCore: React.FC<{ spec: EpisodeSpec; forceShot?: ShotDef; whipYawDeg?: number }> = ({ spec, forceShot, whipYawDeg }) => {
   const f = useCurrentFrame();
   const { height } = useVideoConfig();
   const { camera, scene, advance, gl } = useThree();
-  const shot = findShot(spec.shots, f);
+  const shot = forceShot ?? findShot(spec.shots, f);
   const activeWorld: WorldPreset = shot.world ?? spec.world;
   const preset: LightPreset = LIGHTS[shot.light];
   const look = LOOK[shot.light];
@@ -345,7 +361,7 @@ const SceneCore: React.FC<{ spec: EpisodeSpec }> = ({ spec }) => {
   );
 
   // Sync camera, lighting, actors, props, and post-processing for frame f
-  const camState = evalShotCam(shot, f);
+  const camState = evalShotCam(shot, Math.min(f, shot.b - 1), whipYawDeg ?? 0);
   const persp = camera as THREE.PerspectiveCamera;
   persp.position.set(...camState.pos);
   persp.lookAt(...camState.look);
@@ -724,22 +740,57 @@ export const StoryShort: React.FC<StoryShortProps> = ({ spec, captions }) => {
   const { width, height, fps } = useVideoConfig();
   const endStart = spec.endCard ? spec.durationFrames - Math.round((spec.endCard.seconds ?? 2)*fps) : spec.durationFrames;
   if (spec.endCard && f >= endStart) return <EndCard start={endStart} handle={spec.endCard.handle} />;
-  const shot = findShot(spec.shots, f);
+  const shotIdx = spec.shots.findIndex((s) => f >= s.a && f < s.b);
+  const shot = shotIdx >= 0 ? spec.shots[shotIdx] : spec.shots[spec.shots.length - 1];
+  const prevShot = shotIdx > 0 ? spec.shots[shotIdx - 1] : undefined;
+  const nextShot = shotIdx >= 0 ? spec.shots[shotIdx + 1] : undefined;
+
+  // Transition vocabulary (CONTENT_SYSTEM camera-language rule):
+  // whip = outgoing camera sweeps toward the exit side over the last WHIP_FRAMES,
+  // incoming camera sweeps in from the opposite side; blur+scale sell the speed.
+  // dissolve = incoming shot crossfades over the frozen outgoing shot.
+  let whipYaw = 0;
+  let whipMix = 0;
+  if (nextShot?.transitionIn?.startsWith("whip") && f >= shot.b - WHIP_FRAMES) {
+    const u = (f - (shot.b - WHIP_FRAMES) + 1) / WHIP_FRAMES;
+    whipMix = u;
+    whipYaw = (nextShot.transitionIn === "whip-left" ? -1 : 1) * WHIP_DEG * u;
+  } else if (shot.transitionIn?.startsWith("whip") && f < shot.a + WHIP_FRAMES) {
+    const u = 1 - (f - shot.a + 1) / WHIP_FRAMES;
+    whipMix = u;
+    whipYaw = (shot.transitionIn === "whip-left" ? 1 : -1) * WHIP_DEG * u;
+  }
+  const dissolve = shot.transitionIn === "dissolve" && shotIdx > 0 && f < shot.a + DISSOLVE_FRAMES;
+  const inOpacity = dissolve ? Math.min(1, (f - shot.a + 1) / DISSOLVE_FRAMES) : 1;
+  const motionStyle: React.CSSProperties = {
+    opacity: inOpacity,
+    ...(whipMix > 0
+      ? { filter: `blur(${(whipMix * 14).toFixed(1)}px)`, transform: `scale(${(1 + whipMix * 0.07).toFixed(3)})` }
+      : {}),
+  };
+
   const flashOn = shot.flashAt !== undefined && f >= shot.flashAt && f < shot.flashAt + 4;
   const flashOpacity = flashOn ? 1 - (f - shot.flashAt!) / 4 : 0;
+  const canvasProps = {
+    width, height, shadows: true, dpr: 1,
+    gl: { preserveDrawingBuffer: true, antialias: false, stencil: false, powerPreference: "high-performance" as const },
+  };
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000" }}>
-      {!shot.graphic && <ThreeCanvas
-        width={width}
-        height={height}
-        shadows
-        dpr={1}
-        gl={{ preserveDrawingBuffer: true, antialias: false, stencil: false, powerPreference: "high-performance" }}
-      >
-        <SceneCore spec={spec} />
-      </ThreeCanvas>}
-      {shot.graphic && (shot.graphic.startsWith("ncic-") ? <NcicScene shot={shot} /> : ["counter", "overflow", "power", "reset"].includes(shot.graphic) ? <MechanismGraphic shot={shot} /> : <EditorialScene shot={shot} />)}
+      {dissolve && prevShot && !prevShot.graphic && (
+        <AbsoluteFill>
+          <ThreeCanvas {...canvasProps}>
+            <SceneCore spec={spec} forceShot={prevShot} />
+          </ThreeCanvas>
+        </AbsoluteFill>
+      )}
+      <AbsoluteFill style={motionStyle}>
+        {!shot.graphic && <ThreeCanvas {...canvasProps}>
+          <SceneCore spec={spec} whipYawDeg={shot.graphic ? 0 : whipYaw} />
+        </ThreeCanvas>}
+        {shot.graphic && (shot.graphic.startsWith("ncic-") ? <NcicScene shot={shot} /> : ["counter", "overflow", "power", "reset"].includes(shot.graphic) ? <MechanismGraphic shot={shot} /> : <EditorialScene shot={shot} />)}
+      </AbsoluteFill>
       {flashOn && (
         <AbsoluteFill style={{ backgroundColor: "#ffffff", opacity: flashOpacity, pointerEvents: "none" }} />
       )}
