@@ -299,7 +299,7 @@ export const BoardEpisode: React.FC = () => {
         {/* DRAWERS: filing cabinet + counters (numbers punch in the fixed overlay) */}
         <PaperCard x={CABINET.x} y={CABINET.y} rot={-2} f={f} enter={428} w={CABINET.w} h={CABINET.h}>
           <div style={{fontFamily: "Arial,sans-serif", fontSize: 26, color: DIM, letterSpacing: 2, marginBottom: 12}}>22 DRAWERS</div>
-          <div style={{display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8}}>
+          <div style={{display: "grid", gridTemplateColumns: "repeat(11, 1fr)", gap: 8}}>
             {Array.from({length: 22}, (_, i) => {
               const on = hl && hl.i === i;
               const seen = DRAWER_HL.some((d) => d.i === i && f >= d.at);
