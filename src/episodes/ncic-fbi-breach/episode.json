@@ -1437,7 +1437,7 @@
  ],
  "slug": "ncic-fbi-breach",
  "title": "The FBI's Own Crime Database May Have Been Hacked",
- "script": "Someone may have just broken into the FBI's own crime database. When a police officer in America runs a plate at a traffic stop, the answer routinely comes from one FBI system: the National Crime Information Center. Think of it as a filing cabinet with twenty-one drawers: wanted fugitives, missing persons, stolen cars, stolen guns, protection orders. Twelve million active records. About ten million checks a day. And it never closes: since January 1967, twenty-four seven, because crime doesn't keep business hours. That's the weakness. Over ninety thousand agencies connect to it, and every connection is a door the FBI can't lock. The Associated Press says the FBI is investigating an apparent breach, found in recent days. We don't know who got in, how, or whether anything was taken. And it's the second time in two months: an extortion gang claimed it breached a platform behind the FBI's jobs website through unpatched software. Remember, every line in that system can put a real person in handcuffs. That's why even a possible breach is a five-alarm fire. Follow TechWhoKnows for the next one.",
+ "script": "Someone may have just broken into the FBI's own crime database. When a police officer in America runs a plate at a traffic stop, the answer routinely comes from one FBI system: the National Crime Information Center. Think of it as a filing cabinet with twenty-two drawers: wanted fugitives, missing persons, stolen cars, stolen guns, protection orders. And it never closes: since January 1967, twenty-four seven, because crime doesn't keep business hours. That's the weakness. Over ninety thousand agencies connect to it, and every connection is a door the FBI can't lock. The Associated Press says the FBI is investigating an apparent breach, found in recent days. We don't know who got in, how, or whether anything was taken. And it's the second time in two months: an extortion gang claimed it breached a platform behind the FBI's jobs website through unpatched software. Remember, every line in that system can put a real person in handcuffs. That's why even a possible breach is a five-alarm fire. Follow TechWhoKnows for the next one.",
  "sourceUrl": "https://apnews.com/article/fbi-database-ncic-hack-d066cff87a64a564db0a00172c124972",
  "durationFrames": 1620,
  "shots": [
@@ -1820,10 +1820,6 @@
     "direction": "warm, curious"
    },
    {
-    "before": "Twelve million active records",
-    "direction": "emphatic, slower"
-   },
-   {
     "before": "And it never closes",
     "direction": "grave"
    },
@@ -1872,7 +1868,7 @@
     "direction": "emphasis"
    },
    {
-    "before": "twenty-one drawers",
+    "before": "twenty-two drawers",
     "direction": "emphasis"
    },
    {
