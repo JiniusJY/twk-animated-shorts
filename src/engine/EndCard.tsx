@@ -1,26 +1,23 @@
 import React from "react";
 import {AbsoluteFill, Img, staticFile, spring, useCurrentFrame, useVideoConfig} from "remotion";
 import {Grain} from "./NcicScene";
-import {siApple, siOpenai, siGoogle, siNvidia, siNasa} from "simple-icons";
 
 /**
  * TWK end card: logo + follow, then the site's newsletter card ("Master tech in 1 minute a day").
  * Mirrors the techwhoknows newsletter popup, adapted for video: the email field becomes a
- * "link in bio" button (nothing is typeable in a video). Reader-company marks come from
- * Simple Icons (owner decision, matches the site popup).
- * The reader count is the owner's own published claim; keep it in sync with the site.
+ * "link in bio" button (nothing is typeable in a video).
+ * Truthful-social variant (22 Nov, pending owner approval): subscriber count is 5 and no
+ * company readership is verifiable, so the 50,000+ line and company marks are removed.
  */
 const BG = "#0b0b0d", PANEL = "#111114", LINE = "#2a2a30", TXT = "#f3f2ee", MUTED = "#9a9aa2", CYAN = "#5fd0f5", VIOLET = "#7b5cf0";
 export const NEWSLETTER = {
   kicker: "FREE DAILY NEWSLETTER",
   pre: "Master tech in ", accent: "1 minute", post: " a day",
   body: "Get the latest tech news, understand why it matters, and learn how to apply it in your work.",
-  social: "Join 50,000+ readers from Apple, OpenAI, NASA & more",
+  social: "Join the free newsletter",
   cta: "Subscribe free · link in bio",
   fine: "Free. Unsubscribe in one click.",
 };
-
-const MARKS = [siApple, siOpenai, siGoogle, siNvidia, siNasa];
 
 export const EndCard: React.FC<{start: number; handle: string}> = ({start, handle}) => {
   const f = useCurrentFrame(), {fps} = useVideoConfig();
@@ -84,20 +81,6 @@ export const EndCard: React.FC<{start: number; handle: string}> = ({start, handl
         </div>
         <div style={{fontSize: 34, lineHeight: 1.5, color: MUTED, marginTop: 26, opacity: line(36)}}>{NEWSLETTER.body}</div>
         <div style={{display: "flex", alignItems: "center", gap: 26, marginTop: 34}}>
-          <div style={{display: "flex", flexShrink: 0}}>
-            {MARKS.map((m, i) => {
-              const mp = sp(42 + i * 3, {damping: 14, stiffness: 240});
-              return (
-                <div key={m.slug} style={{width: 78, height: 78, borderRadius: "50%", background: "#151518",
-                  border: `2px solid ${LINE}`, marginLeft: i ? -16 : 0, display: "flex", alignItems: "center",
-                  justifyContent: "center", opacity: mp, transform: `scale(${0.5 + 0.5 * mp})`, zIndex: MARKS.length - i}}>
-                  <svg viewBox="0 0 24 24" width={m.slug === "nasa" ? 50 : 38} height={m.slug === "nasa" ? 50 : 38}>
-                    <path d={m.path} fill={TXT}/>
-                  </svg>
-                </div>
-              );
-            })}
-          </div>
           <div style={{fontSize: 30, lineHeight: 1.35, color: MUTED, opacity: line(52)}}>{NEWSLETTER.social}</div>
         </div>
         <div style={{marginTop: 40, background: CYAN, color: "#06121a", borderRadius: 16, padding: "30px 0",
