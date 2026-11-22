@@ -286,14 +286,16 @@ def validate_alignment(script: str, words: list[dict], wav_path: Path) -> list[s
     for i in range(1, len(words)):
         if words[i]["s"] < words[i - 1]["s"]:
             gap = words[i - 1]["s"] - words[i]["s"]
-            if gap > 0.25:
+            if gap > 0.25 and not (gap <= 1.0 and words[i]["e"] > words[i - 1]["e"]):
                 problems.append(f"word timings out of order at index {i} (>{gap:.2f}s back)")
                 break
-            words[i]["s"] = words[i - 1]["s"]
+            # whisper segment-boundary quirk: window shifted left but end is still past
+            # the previous word's end, so speaking order is intact - clamp to prev end.
+            words[i]["s"] = words[i - 1]["e"]
             words[i]["e"] = max(words[i]["e"], words[i]["s"])
             clamped += 1
     if clamped:
-        print(f"note: clamped {clamped} minor timestamp inversion(s) (<0.25s)", flush=True)
+        print(f"note: clamped {clamped} timestamp inversion(s) (window-shifted, order intact)", flush=True)
     return problems
 
 
