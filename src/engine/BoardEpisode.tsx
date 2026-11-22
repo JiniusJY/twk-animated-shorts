@@ -85,11 +85,11 @@ export const BoardEpisode: React.FC = () => {
   // ---- camera journey ----
   const lookX = interpolate(f,
     [0, 105, 190, 470, 730, 775, 890, 950, 1125, 1185, 1365, 1470, 1695, 1780, 1851, 2046],
-    [600, 600, 1550, 2450, 2450, 3300, 3300, 4200, 4200, 4800, 4950, 5730, 5730, 3300, 1700, 1700],
+    [600, 600, 1550, 2450, 2450, 3300, 3300, 4200, 4200, 4800, 4950, 5730, 5730, 3300, 1640, 1640],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const lookY = interpolate(f,
     [0, 900, 1125, 1410, 1695, 1851, 2046],
-    [1000, 960, 860, 900, 960, 640, 640],
+    [1000, 960, 860, 900, 960, 780, 780],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const cam = interpolate(f,
     [0, 60, 900, 1050, 1125, 1695, 1851, 2046],
@@ -315,8 +315,8 @@ export const BoardEpisode: React.FC = () => {
 
         {/* STAKES: push into the traffic-stop card; record line highlights */}
         {f >= 1780 && (
-          <div style={{position: "absolute", left: TRAFFIC.x + 80, top: TRAFFIC.y + 420, width: 560,
-            fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 40, color: INK,
+          <div style={{position: "absolute", left: TRAFFIC.x + 20, top: TRAFFIC.y + 640, width: 700,
+            fontFamily: "Georgia,serif", fontStyle: "italic", fontSize: 38, color: INK,
             opacity: clamp01((f - 1790) / 16)}}>every line can put a real person in handcuffs.</div>
         )}
       </div>
