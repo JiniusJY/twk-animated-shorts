@@ -1,5 +1,9 @@
 # TWK content system
 
+QUALITY TARGET (owner, 22 November 2026): the explicit bar is rivalling cleo abram's channel - top-tier editorial animated motion graphics (typography, easing, layout, pacing as a design system). Zach King-style live-action VFX is explicitly OUT of scope (hand-crafted per-shot compositing cannot automate). Motion graphics is the lane where code matches the top tier, and every improvement compounds across episodes. This target sits alongside the standing 100/100 release gate: before any cut ships, ask "if you were the viewer would you watch, or would you skip" - inclined to skip means it is bad and does not ship.
+
+
+
 ## The standard episode flow (standing, per owner 22 November 2026)
 
 When the owner says "episode N" (or just approves a topic), the whole pipeline runs without him driving each step: trend and creator research, topic pick with viral-potential check, script, scene production, voiceover, render, cover shortlist under the cover rules, quality gate. He is shown the final video (and cover options if he has not delegated the pick) and approves before anything publishes. Approval of the final cut is the one step that is never skipped; everything before it is the system's job, not his.
