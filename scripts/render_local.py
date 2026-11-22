@@ -75,6 +75,18 @@ def main() -> int:
     code_h = input_hash(ep, args.scale)
     only = {int(s) for s in args.shots.split(",") if s.strip() != ""} if args.shots else None
 
+    # Bundle once per code state; per-chunk renders then skip the 30s bundler.
+    bundle_dir = out_dir / ".bundle"
+    if manifest.get("_bundle") != code_h or not (bundle_dir / "index.html").exists():
+        print("bundling once for this code state...")
+        rc = run(["npx", "remotion", "bundle", "src/index.ts", "--out-dir", str(bundle_dir)], out_dir / "bundle.log")
+        if rc != 0 or not (bundle_dir / "index.html").exists():
+            print(f"bundle failed - see {out_dir}/bundle.log", file=sys.stderr)
+            return 1
+        manifest["_bundle"] = code_h
+        manifest_path.write_text(json.dumps(manifest, indent=1))
+    entry = str(bundle_dir)
+
     jobs = []
     for i, sh in enumerate(shots):
         a, b = int(sh["a"]), int(sh["b"]) - 1  # shot b is exclusive end
@@ -94,7 +106,7 @@ def main() -> int:
         def render(job):
             i, a, b, chunk, key = job
             rc = run([
-                "npx", "remotion", "render", "src/index.ts", slug, str(chunk),
+                "npx", "remotion", "render", entry, slug, str(chunk),
                 "--codec", "h264", "--crf", "18", "--x264-preset", "veryfast",
                 "--scale", args.scale, f"--frames={a}-{b}", "--muted", "--timeout=120000",
             ], out_dir / f"chunk-{i:02d}.log")
