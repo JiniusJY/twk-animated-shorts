@@ -26,15 +26,15 @@ const WORLD_W = 2600, WORLD_H = 1920;
 
 // world anchors
 const HUB = {x: 1180, y: 880};
-const TERM = {x: 880, y: 560};
+const TERM = {x: 950, y: 520};
 const CARDS = [
-  {img: "photos/cjis-aerial.jpg", x: 180, y: 420, rot: -4, enter: 6,
+  {img: "photos/cjis-aerial.jpg", x: 96, y: 440, rot: -4, enter: 6,
    label: "CJIS, Clarksburg WV - home of NCIC", credit: "FBI photo, public domain"},
-  {img: "photos/traffic-stop.jpg", x: 1420, y: 380, rot: 3, enter: 196,
+  {img: "photos/traffic-stop.jpg", x: 1420, y: 380, rot: 3, enter: 182,
    label: "Every traffic stop queries it", credit: "Ildar Sagdejev, CC BY-SA 4.0"},
-  {img: "photos/fbi-hq.jpg", x: 1960, y: 460, rot: -2, enter: 210,
+  {img: "photos/fbi-hq.jpg", x: 1960, y: 460, rot: -2, enter: 196,
    label: "Every field office hits it at once", credit: "FBI photo, public domain"},
-  {img: "photos/server-rack.jpg", x: 1960, y: 1080, rot: 2, enter: 224,
+  {img: "photos/server-rack.jpg", x: 1960, y: 1080, rot: 2, enter: 208,
    label: "One database. Always on.", credit: "Public domain"},
 ] as const;
 
@@ -69,8 +69,8 @@ export const BoardTest: React.FC = () => {
   const f = useCurrentFrame();
 
   // ---- camera: dolly across the board, then push into the terminal ----
-  const lookX = interpolate(f, [0, 40, 115, 190, 290, 340, 415], [420, 420, 880, 1180, 1700, 1180, 940], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const lookY = interpolate(f, [340, 415], [900, 660], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
+  const lookX = interpolate(f, [0, 40, 115, 175, 255, 320, 415], [420, 420, 880, 1180, 1700, 1180, 940], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
+  const lookY = interpolate(f, [320, 415], [900, 660], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const cam = interpolate(f, [0, 340, 415], [1.06, 1.06, 1.8], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const camRot = interpolate(f, [0, 415], [-1.6, 0]);
   const camX = lookX - 540 / cam, camY = lookY - 960 / cam;
@@ -78,11 +78,11 @@ export const BoardTest: React.FC = () => {
   // ---- beat progress ----
   const typed = "STATUS: ONLINE  24/7/365";
   const typedN = Math.floor(clamp01((f - 52) / 40) * typed.length);
-  const counter = Math.floor(interpolate(f, [118, 182], [0, 90214], {extrapolateLeft: "clamp", extrapolateRight: "clamp"}));
-  const dim = interpolate(f, [290, 330, 355, 415], [0, 0.62, 0.62, 0.35], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const threadGlow = interpolate(f, [290, 330], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
-  const stamp = spring({frame: Math.max(0, f - 372), fps: 30, config: {damping: 11, stiffness: 260, mass: 0.8}});
-  const threadP = [clamp01((f - 40) / 45), clamp01((f - 196) / 40), clamp01((f - 210) / 40), clamp01((f - 224) / 40)];
+  const counter = Math.floor(interpolate(f, [118, 160], [0, 90214], {extrapolateLeft: "clamp", extrapolateRight: "clamp"}));
+  const dim = interpolate(f, [222, 262, 300, 415], [0, 0.62, 0.62, 0.35], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
+  const threadGlow = interpolate(f, [222, 262], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
+  const stamp = spring({frame: Math.max(0, f - 356), fps: 30, config: {damping: 11, stiffness: 260, mass: 0.8}});
+  const threadP = [clamp01((f - 40) / 45), clamp01((f - 182) / 40), clamp01((f - 196) / 40), clamp01((f - 208) / 40)];
 
   const layerStyle = (k: number, blur = 0): React.CSSProperties => ({
     position: "absolute", left: 0, top: 0, width: WORLD_W, height: WORLD_H,
@@ -137,7 +137,7 @@ export const BoardTest: React.FC = () => {
           <div style={{fontFamily: "monospace", fontSize: 66, fontWeight: 700, color: GRN, marginTop: 6}}>
             {counter.toLocaleString("en-US")}
           </div>
-          {f >= 372 && (
+          {f >= 356 && (
             <div style={{position: "absolute", right: 26, bottom: 30, transform: `rotate(-9deg) scale(${0.4 + 0.6 * stamp})`,
               opacity: stamp, border: `6px solid ${RED}`, borderRadius: 8, padding: "8px 18px"}}>
               <span style={{fontFamily: "Arial,sans-serif", fontWeight: 800, fontSize: 44, color: RED, letterSpacing: 3}}>ACCESS: OPEN</span>
@@ -177,7 +177,7 @@ export const BoardTest: React.FC = () => {
       {/* end-state red vignette */}
       <div style={{position: "absolute", inset: 0, pointerEvents: "none",
         background: `radial-gradient(circle at 50% 42%, transparent 40%, rgba(224,73,46,0.35) 100%)`,
-        opacity: interpolate(f, [360, 415], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"})}}/>
+        opacity: interpolate(f, [330, 415], [0, 1], {extrapolateLeft: "clamp", extrapolateRight: "clamp"})}}/>
     </div>
   );
 };
