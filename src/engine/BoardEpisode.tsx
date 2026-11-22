@@ -161,7 +161,7 @@ export const BoardEpisode: React.FC = () => {
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const camBase = interpolate(f,
     [0, 60, 203, 503, 628, 668, 678, 729, 865, 930, 1030, 1100, 1160, 1331, 1415, 1624, 1712, 1788, 1828, 2014],
-    [1.25, 1.06, 1.065, 1.09, 1.16, 1.12, 1.10, 1.075, 1.10, 1.14, 1.32, 1.2, 1.21, 1.32, 1.12, 1.24, 1.1, 1.28, 0.95, 1.0],
+    [1.25, 1.06, 1.065, 1.09, 1.16, 1.12, 1.10, 0.95, 0.98, 1.14, 1.32, 1.2, 1.21, 1.32, 1.12, 1.24, 1.1, 1.28, 0.95, 1.0],
     {extrapolateLeft: "clamp", extrapolateRight: "clamp"});
   const cam = camBase * (1 + kickAt(f));
   const shake = shakeAt(f);
