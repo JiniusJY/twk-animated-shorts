@@ -12,9 +12,9 @@ on:
         required: false
         default: "1"
       shards:
-        description: "Parallel render shards (up to 16 on free public runners)"
+        description: "Parallel render shards (up to 30; last run tail was shard-bound)"
         required: false
-        default: "15"
+        default: "28"
       storyboard:
         description: "Render a 4-still storyboard preview before the paid render"
         required: false
@@ -44,8 +44,8 @@ jobs:
           fi
           test -f "src/episodes/$EP/episode.json" || { echo "no such episode: $EP" >&2; exit 1; }
           S="${{ inputs.shards }}"
-          if ! [[ "$S" =~ ^[0-9]+$ ]] || [ "$S" -lt 1 ] || [ "$S" -gt 16 ]; then
-            echo "shards must be 1-16, got: $S" >&2; exit 1
+          if ! [[ "$S" =~ ^[0-9]+$ ]] || [ "$S" -lt 1 ] || [ "$S" -gt 30 ]; then
+            echo "shards must be 1-30, got: $S" >&2; exit 1
           fi
           SC="${{ inputs.scale }}"
           if ! [[ "$SC" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
@@ -204,7 +204,7 @@ jobs:
           mkdir -p out
           PROPS=$(find prep -name 'props.json' | head -n 1)
           npx remotion render src/index.ts "${{ inputs.episode }}" "out/chunk-${{ matrix.shard.idx }}.mp4" \
-            --codec h264 --crf 16 --scale "${{ inputs.scale }}" \
+            --codec h264 --crf 18 --x264-preset veryfast --scale "${{ inputs.scale }}" \
             --props="$PROPS" \
             --frames="${{ matrix.shard.range }}" \
             --timeout=120000 \

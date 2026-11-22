@@ -16,6 +16,17 @@ Before any episode enters production, without being asked each time: research th
 
 GROUNDING RULE (owner, 22 November 2026, "maybe ur research is bad"): motion, pacing, transition and hook decisions must be grounded in studying ACTUAL current top tech-shorts videos - frame-level analysis of real cuts (via the Bright Data TikTok/shorts scrape and direct reference pulls), not articles about virality. Writeups (including every source listed below) are secondary context, never the primary evidence. Each episode's pre-production refreshes this: pull real recent videos from the target creators, note their cut cadence, camera moves, transition types and hook framing, and record the observed evidence in the plan notes.
 
+MEASURED PLAYBOOK (22 November 2026 frame-level study of Fireship, Cleo Abram, Mrwhosetheboss, johnnyytech, BBC shorts - evidence grids retained). Apply from episode 3 in full; episode 2 folds in the hook event, transition palette and render speedups only:
+- SHOT BUDGET: 25-30 shots for a 60-70s episode (median 2.0-2.5s, ~4-4.5 cuts/10s). Long single-take shots read slow against the genre.
+- FIRST SHOT: <=2.5s, then a cut or an in-frame visual event (flash, burst, camera kick) - never a slow settle.
+- BURST MONTAGE: at evidence/scale moments, 3-5 shots of 0.5-0.8s. Lint allows sub-1s shots inside a declared burst while still flagging metronome monotony.
+- CAPTIONS: karaoke phrase bursts of 1-4 words, swap every ~1-2s even within one shot (the engine's groupCaptionPages already does this: maxWords 4, maxDur 1.7s - verify the rhythm in rendered frames, do not redesign).
+- VO NONSTOP: no gap >0.3s except scripted tension pauses from the cue pass.
+- TRANSITION PALETTE: hard cut is the default (~90%); match cut for scale/shape links; whip pan for same-energy subject swaps; zoom-punch on number/product emphasis. Dissolve marks time/place shifts. Every boundary picks deliberately.
+- EVIDENCE INSERTS (engine work, ep3+): a shot type for real B-roll/screenshots with an auto top-left "* SOURCE: X" tag, matching how Cleo Abram grounds claims.
+- MUSIC: the genre is voice-driven; trending audio is not the growth lever, packaging is. The fresh-track-per-episode rule stands as hygiene, not as a virality bet.
+- RENDER SPEED (adopted 22 November): shards cap 16->30 (default 28; the tail was shard-bound at 15.6 min vs 4.0 for equal ranges), x264 preset veryfast + crf 18 (indistinguishable for toon content), more to come (validate+prepare merge, storyboard skip on rebuild runs, and Remotion Lambda ~200-way parallel = 2-4 min renders, pending the owner's AWS decision).
+
 What the current evidence says (checked 22 November 2026; re-verify as it ages):
 
 - **Genre:** tech shorts that travel are "this affects YOU" stories: breaches, scams, your data, your money, your phone. Fear and outrage outperform neutral explainers. Failure-behind-the-headline explainers (Boeing ep1, NCIC ep2) sit inside this genre. High-concept comparisons and superlative stunts ('$10 vs $10,000', 'World's X') are Mrwhosetheboss's most repeatable reach engine but need props/budget our illustrated format can borrow only as framing devices.

@@ -64,7 +64,9 @@ function checkKeys(o: Obj, allowed: string[], where: string, errs: string[]) {
 
 function validateShot(s: Obj, i: number, dur: number, errs: string[]): ShotDef | null {
   const where = `shots[${i}]`;
-  checkKeys(s, ["id", "a", "b", "world", "light", "dof", "flashAt", "kickAt", "sunAz", "sunEl", "cam", "purpose", "anchor", "graphic"], where, errs);
+  checkKeys(s, ["id", "a", "b", "world", "light", "dof", "flashAt", "kickAt", "sunAz", "sunEl", "cam", "purpose", "anchor", "graphic", "move", "transitionIn"], where, errs);
+  if (s.move !== undefined && !["static", "truck", "push", "pull", "crane", "pan"].includes(s.move as string)) errs.push(`${where}.move: invalid move class`);
+  if (s.transitionIn !== undefined && !["cut", "whip-left", "whip-right", "dissolve"].includes(s.transitionIn as string)) errs.push(`${where}.transitionIn: invalid transition`);
   if (s.anchor !== undefined && (!isStr(s.anchor) || !s.anchor.trim())) errs.push(`${where}.anchor: must be a nonempty phrase`);
   if (s.graphic !== undefined && !["counter", "overflow", "power", "reset", "hook", "lab", "stakes", "question", "clock", "storage", "odometer", "directive", "payoff", "ncic-hook", "ncic-stop", "ncic-files", "ncic-records", "ncic-clock", "ncic-doors", "ncic-breach", "ncic-pattern", "ncic-payoff"].includes(s.graphic as string)) errs.push(`${where}.graphic: invalid graphic`);
   if (s.purpose !== undefined && !isStr(s.purpose)) errs.push(`${where}.purpose: must be a string`);

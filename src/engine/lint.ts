@@ -21,6 +21,20 @@ export function lintEpisodeErrors(spec: EpisodeSpec): string[] {
     );
   }
 
+  // Camera-language rule (owner, 22 November 2026): every shot declares its move
+  // class, and no two adjacent shots may use the same class - a uniform push-in
+  // on every shot is a defect, not a style.
+  spec.shots.forEach((s, i) => {
+    if (!s.graphic && !s.move) {
+      errors.push(`shot ${s.id}: no declared camera move class (static/truck/push/pull/crane/pan)`);
+    }
+    if (i > 0 && s.move && spec.shots[i - 1].move && s.move === spec.shots[i - 1].move) {
+      errors.push(
+        `shots ${spec.shots[i - 1].id}+${s.id}: adjacent identical camera moves (${s.move}) - vary the camera language`
+      );
+    }
+  });
+
   return errors;
 }
 
