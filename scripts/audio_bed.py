@@ -227,19 +227,50 @@ def git_sha() -> str:
         return "unknown"
 
 
+def loop_crossfade(raw: np.ndarray, dur: float, xfade_s: float = 1.5) -> np.ndarray:
+    """Tile a short track to dur with equal-power crossfades at every seam.
+
+    Owner rule (22 Nov 2026): music must never end before the clip or restart
+    audibly - loop joins crossfade, the only hard fade is the outro fade.
+    """
+    n = ns(dur)
+    src_n = raw.shape[1]
+    if src_n >= n:
+        return raw[:, :n]
+    x = min(ns(xfade_s), src_n // 2)
+    if x <= 0:
+        return np.tile(raw, (1, int(np.ceil(n / src_n))))[:, :n]
+    fin = np.sin(0.5 * np.pi * np.linspace(0, 1, x)) ** 2
+    fout = np.cos(0.5 * np.pi * np.linspace(0, 1, x)) ** 2
+    out = np.zeros((2, n), dtype=np.float64)
+    adv = src_n - x
+    t = 0
+    first = True
+    while t < n:
+        seg = raw[:, : min(src_n, n - t)]
+        L = seg.shape[1]
+        if first:
+            out[:, :L] += seg
+            first = False
+        else:
+            k = min(x, L, n - t)
+            out[:, t:t + k] = out[:, t:t + k] * fout[:k] + seg[:, :k] * fin[:k]
+            if L > k:
+                out[:, t + k:t + L] += seg[:, k:]
+        t += adv
+    return out
+
+
 def load_bg_audio(src: Path, dur: float) -> np.ndarray:
     n = ns(dur)
     with tempfile.TemporaryDirectory() as tmp:
         wav = Path(tmp) / "bg.wav"
         subprocess.run(
-            ["ffmpeg", "-y", "-stream_loop", "-1", "-i", str(src), "-t", f"{dur:.3f}", "-ar", str(SR), "-ac", "2", "-c:a", "pcm_s24le", str(wav)],
+            ["ffmpeg", "-y", "-i", str(src), "-ar", str(SR), "-ac", "2", "-c:a", "pcm_s24le", str(wav)],
             check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
         raw, _ = read_wav(str(wav))
-    out = np.zeros((2, n), dtype=np.float64)
-    k = min(n, raw.shape[1])
-    out[:, :k] = raw[:, :k]
-    return fades(out, 0.05, 0.25)
+    return fades(loop_crossfade(raw, dur), 0.05, 0.25)
 
 
 def main():

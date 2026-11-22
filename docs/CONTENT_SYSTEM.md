@@ -93,6 +93,8 @@ Default to editorial captions: dark ink, active word in restrained red, no rubbe
 
 Narration is primary. Music supplies an emotional bed, not a constant wall. Sounds belong to visible events. Use separate layers for anticipation, contact/mechanism and decay; do not add a whoosh to every cut. Stereo movement must survive mono playback. Brief reduction of music can give a failure or punchline more weight than another loud impact.
 
+MUSIC LOOP RULE (owner, 22 November 2026): music must never end before the clip ends or restart audibly. Source tracks shorter than the episode loop with an equal-power crossfade (~1.5s) at every seam (load_bg_audio -> loop_crossfade); the only hard fade is the outro fade at video end.
+
 The current procedural sounds are a cleared starting point, not a claim to equal bespoke recorded foley. Listen on headphones and a phone speaker. Keep voice, music and SFX stems and timing metadata so the mix can be revised without another voice generation. Retain the master and stems with the prep artifact, not only the combined track.
 
 
