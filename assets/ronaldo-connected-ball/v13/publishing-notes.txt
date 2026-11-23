@@ -1,0 +1,25 @@
+TWK Ronaldo connected-ball short
+Prepared for user-led release on Tuesday 24 November 2026, Singapore time.
+
+Title option: Did Ronaldo even touch it?
+
+Description:
+Ronaldo celebrated. The ball told a different story.
+At the 2022 World Cup, the opening goal against Uruguay went to Bruno Fernandes. adidas said connected-ball measurements showed no Ronaldo contact.
+A motion sensor suspended inside the match ball sampled movement 500 times per second. It supplied evidence, not an automatic refereeing decision.
+
+Illustrated recreation and conceptual mechanism, not match footage, actual sensor measurements or an exact engineering teardown. Ball graphics are illustrative, not official adidas product renders. No Euro 2024 case is shown in this version.
+
+Sources:
+adidas connected-ball announcement, 1 July 2022:
+https://news.adidas.com/football/adidas-reveals-the-first-fifa-world-cup--official-match-ball-featuring-connected-ball-technology/s/cccb7187-a67c-4166-b57d-2b28f1d36fa0
+adidas statement via FIFA, reported by CBS Sports, 29 November 2022:
+https://www.cbssports.com/soccer/news/fifa-2022-world-cup-cristiano-ronaldo-didnt-score-portugals-opening-goal-vs-uruguay-according-to-adidas/
+
+Music: Sports Highlights by Ahjay Stelino, Mixkit.
+https://mixkit.co/free-stock-music/tag/sport/
+https://mixkit.co/license/modal/musicFree/
+Original generated illustrations, edited and animated for TWK. No unlicensed match footage or reference photograph used in the final cut. Earlier retail-ball photograph is not used in v13.
+
+Internal release note for owner:
+28.2 seconds, 1080x1920 delivery encode from 540x960 illustration composition, not newly generated 1080 artwork. Retained endcard. Technical QA passes. Audio transcript/alignment and loudness checked; human-like acoustic listening has not been verified. Nothing has been posted or scheduled.

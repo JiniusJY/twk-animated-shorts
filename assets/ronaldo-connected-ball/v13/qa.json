@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "metrics": {
+    "video": "/downloads/ronaldo-tight-v13.mp4",
+    "integrated_lufs": -15.5,
+    "true_peak_dbtp": -1.8,
+    "duration_s": 28.2,
+    "black_segments": [],
+    "freeze_segments": []
+  },
+  "failures": []
+}
