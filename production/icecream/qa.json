@@ -1,0 +1,23 @@
+{
+  "file": "TWK-Ice-Cream-Final-v3.mp4",
+  "sha256": "c104a7c0afc2a3eab80e12769e4954404464015f79b3a938964f93650f5e160d",
+  "duration": 63.5,
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "integratedLUFS": -15.84,
+  "truePeakDBTP": -1.75,
+  "acousticListening": "unverified",
+  "pixelReview": "whole film sampled, key corrected frames from encoded output inspected",
+  "blackFrames": "none detected",
+  "freezeCaveat": "designed holds remain; source action12fps interpolated30; not every scene continuous physical motion",
+  "release": "review only, no posting",
+  "music": "Quirky Comedy Strings by TOP_SUE, Pixabay Content License",
+  "sources": [
+    "https://dslinc.com/wp-content/uploads/2026/06/C602.pdf",
+    "https://bazinet-taylor.ca/en/product/taylor-soft-serve-ice-cream-machine-c602-mcdo/",
+    "https://www.wired.com/story/they-hacked-mcdonalds-ice-cream-makers-started-cold-war/",
+    "https://pixabay.com/music/comedy-quirky-comedy-strings-629010/",
+    "https://pixabay.com/service/license-summary/"
+  ]
+}

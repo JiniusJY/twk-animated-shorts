@@ -1,0 +1,30 @@
+{
+  "provider": "fish-audio",
+  "model": "s2.1-pro-free",
+  "script": "This ice cream machine deliberately heats its own mix. And that helps explain your missing cone. Inside the Taylor C602 used at McDonald's, the mix sits in a hopper and a freezing barrel. Its daily heat-treatment cycle takes that mix to about sixty-six Celsius, holds it hot, then cools it back down. But watch the clock. Cooling must finish within two hours. Imagine one night: heating passes. Cooling times out. The controller soft-locks the machine. That doesn't prove a particular part broke. It means the safety cycle failed. Now open the cycle record. It stores the failed stage, elapsed times, and temperatures sampled every five minutes. So the useful question changes from, why won't it serve, to, what stopped it cooling in time? That's a starting point for diagnosis, not a licence to bypass safety. After the problem is corrected, recovery needs a successful heat cycle or the required cleaning. Not every unavailable cone has this cause. But sometimes, the freezer is refusing to serve because it's following the rules. Follow TechWhoKnows for the tech behind the moment.",
+  "voice": {
+    "temperature": 0.8,
+    "topP": 0.8,
+    "speed": 1.03,
+    "direction": "Curious engaged explainer, crisp and warm with natural contrasts",
+    "beats": [
+      {
+        "before": "This ice cream machine deliberately heats its own mix.",
+        "direction": "surprised, curious"
+      },
+      {
+        "before": "But watch the clock.",
+        "direction": "serious"
+      },
+      {
+        "before": "That's a starting point for diagnosis, not a licence to bypass safety.",
+        "direction": "clear, serious"
+      },
+      {
+        "before": "But sometimes, the freezer is refusing to serve because it's following the rules.",
+        "direction": "warm, emphatic"
+      }
+    ]
+  },
+  "developmentOnly": true
+}

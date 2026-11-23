@@ -33,6 +33,10 @@ b=cyl('Sectioned barrel mix',(.17,-.08,1.065),.088,.64);b.rotation_euler.x=math.
 # Hide unsupported lower hardware from the explanatory section and keep the sealed lower cabinet.
 for o in bpy.data.objects:
  if o.name.startswith('Compressor'):o.hide_render=True
+for o in bpy.data.objects:
+ if o.type=='MESH' and o.name.startswith(('Sectioned','Hopper wall','Freezing barrel')):
+  bpy.context.view_layer.objects.active=o;o.select_set(True)
+  bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.mesh.normals_make_consistent(inside=False);bpy.ops.object.mode_set(mode='OBJECT');o.select_set(False)
 # Sensor probe is a functional schematic feature, not a claimed exact OEM placement.
 m=bpy.data.materials['Black polymer']
 bpy.ops.mesh.primitive_uv_sphere_add(segments=24,ring_count=12,radius=.017,location=(.215,-.31,1.12));bpy.context.object.name='Temperature sensor emphasis';bpy.context.object.data.materials.append(m)

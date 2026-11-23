@@ -1,0 +1,47 @@
+ICE CREAM MACHINE EPISODE
+Finished master: TWK-Ice-Cream-Final-v3.mp4
+Cover: TWK-Ice-Cream-Cover-v1.jpg
+Release status: review only. Nothing posted or scheduled.
+
+YOUTUBE SHORTS TITLE
+Why McDonald's Ice Cream Machines Heat Their Own Mix
+
+INSTAGRAM / TIKTOK OPENING
+The ice cream machine heats its own mix. That's where this story starts.
+
+CAPTION / DESCRIPTION
+A freezer that deliberately heats its mix? The Taylor C602 uses a heat-treatment cycle, and a missed cooling deadline can leave it soft-locked.
+
+We follow one hypothetical failed cycle from the hopper and freezing barrel to its stage, time and temperature records. Those records can narrow the diagnosis. They don't prove which part failed, and clearing an error is not a substitute for fixing the cause.
+
+This is one cause of unavailability, not an explanation for every McDonald's outage or every machine model. It is an explanation, not repair instructions.
+
+Follow @techwhoknows for the tech behind the moment. Newsletter: link in bio.
+
+Original 3D animation and schematic example, not footage of an actual failed machine. AI-generated narration. Functional cutaway is simplified, not exact manufacturer CAD. No store-level data is shown.
+
+Sources:
+Taylor C602 Service Manual, updated July 14, 2023, Controls 2-9, 2-10/11, 2-23/25 and 2-39/40:
+https://dslinc.com/wp-content/uploads/2026/06/C602.pdf
+Product context:
+https://bazinet-taylor.ca/en/product/taylor-soft-serve-ice-cream-machine-c602-mcdo/
+Reporting on McDonald's C602 machines:
+https://www.wired.com/story/they-hacked-mcdonalds-ice-cream-makers-started-cold-war/
+
+Music: Quirky Comedy Strings by TOP_SUE, via Pixabay.
+https://pixabay.com/music/comedy-quirky-comedy-strings-629010/
+Used under the Pixabay Content License:
+https://pixabay.com/service/license-summary/
+
+#McDonalds #IceCreamMachine #FoodTech #TechExplained #TechWhoKnows
+
+FIRST COMMENT
+What everyday machine should we open up next? Follow @techwhoknows for the tech behind the moment.
+
+PRODUCTION NOTES, NOT PART OF POST
+- No legal or secret-menu claim. No outage statistic.
+- The temperature curve is hypothetical; only the threshold/deadline labels are numerical source facts.
+- Music differs from the Ronaldo episode. Source and licence checked. No claim that it is trending; no acoustic audition completed.
+- Audio: measured encoded output -15.84 LUFS integrated, -1.75 dBTP. Source narration 60.97 seconds. Finished cut 63.5 seconds, 30 fps, 1080x1920.
+- Native geometry renders were 540x960 at 12 fps, optical-flow interpolation to 30 fps; authored titles/records/captions run at 720x1280/30 fps, final upscaled to 1080x1920. Not native 1080 geometry.
+- Retains existing approved newsletter endcard, not a new logo design.

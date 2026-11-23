@@ -1,0 +1,11 @@
+# Ice cream production checklist
+- Original script and3D, no Johnny Harris wording or images copied.
+- C602 context, not every McDonald's model or failure.
+- Manual2-9/2-39/2-40: heat about66C,hold,cool within120minutes. Omit ambiguous whole-cycle duration, no typical4hour assertion.
+- Manual2-10/11: cooling failure soft lock, not automatic technician call or permanent hardlock.
+- Manual2-23/24/25: stage,elapsedtime,5minute sampled temperatures. Not all secret technician-only.
+- Hypothetical failed night explicitly spoken, chart is schematic, no fake exact store/time or invented failed part.
+- Recovery simplified, not step-by-step repair instructions, requires corrected problem + successful cycle or required cleaning.
+- Model functional section, not exactOEMCAD; no decorative copper circuit.
+- New licensed music, no acoustic audition claim, not proven trending.
+- Finished cut goes to user before any posting. No spend or posting.
