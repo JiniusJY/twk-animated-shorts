@@ -2,28 +2,32 @@
   "slug": "icecream-safety-cycle",
   "developmentOnly": true,
   "title": "Why an ice cream machine heats its own mix",
-  "script": "This ice cream machine deliberately heats its own mix. And that helps explain your missing cone. Inside the Taylor C602 used at McDonald's, the mix sits in a hopper and a freezing barrel. Its daily heat-treatment cycle takes that mix to about sixty-six Celsius, holds it hot, then cools it back down. But watch the clock. Cooling must finish within two hours. Imagine one night: heating passes. Cooling times out. The controller soft-locks the machine. That doesn't prove a particular part broke. It means the safety cycle failed. Now open the cycle record. It stores the failed stage, elapsed times, and temperatures sampled every five minutes. So the useful question changes from, why won't it serve, to, what stopped it cooling in time? That's a starting point for diagnosis, not a licence to bypass safety. After the problem is corrected, recovery needs a successful heat cycle or the required cleaning. Not every unavailable cone has this cause. But sometimes, the freezer is refusing to serve because it's following the rules. Follow TechWhoKnows for the tech behind the moment.",
+  "script": "This ice cream machine deliberately heats its own mix. So what happens when you ask for a cone? Inside the Taylor C602 used at McDonald's, the mix sits in a hopper and a freezing barrel. Every day, a heat-treatment cycle takes it to about sixty-six Celsius, holds it hot, then cools it down. The cooling stage gets two hours. Let's follow one imaginary night. Heating goes through. Cooling takes too long. The controller soft-locks the machine, and your cone has to wait. To find out what happened, you can look back through the cycle record. There's the failed stage, how long it took, and temperatures saved every five minutes. Here, the mix was still too warm when time ran out. That gives the person fixing it somewhere to start. Once the problem's sorted, the machine needs a successful heat cycle or the required cleaning before serving again. Plenty of other things can stop a machine. This is one of them. Follow TechWhoKnows for more everyday tech stories.",
   "voice": {
     "temperature": 0.8,
     "topP": 0.8,
-    "speed": 1.03,
-    "direction": "Curious engaged explainer, crisp and warm with natural contrasts",
+    "speed": 0.98,
+    "direction": "Conversational, curious, warm, clear, relaxed pauses between sentences",
     "beats": [
       {
         "before": "This ice cream machine deliberately heats its own mix.",
-        "direction": "surprised, curious"
+        "direction": "curious"
       },
       {
-        "before": "But watch the clock.",
-        "direction": "serious"
+        "before": "Let's follow one imaginary night.",
+        "direction": "calm"
       },
       {
-        "before": "That's a starting point for diagnosis, not a licence to bypass safety.",
-        "direction": "clear, serious"
+        "before": "That gives the person fixing it somewhere to start.",
+        "direction": "warm"
       },
       {
-        "before": "But sometimes, the freezer is refusing to serve because it's following the rules.",
-        "direction": "warm, emphatic"
+        "before": "Plenty of other things can stop a machine.",
+        "direction": "calm, relaxed"
+      },
+      {
+        "before": "Follow TechWhoKnows for more everyday tech stories.",
+        "direction": "warm"
       }
     ]
   },
