@@ -1,0 +1,37 @@
+name: Ice cream development narration (free only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  narration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: One complete free-model narration only
+        env:
+          FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
+          FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          mkdir -p out/icecream-narration
+          python - <<'PY'
+          import json,os,sys
+          from pathlib import Path
+          sys.path.insert(0,'scripts')
+          import voice
+          e=json.loads(Path('src/episodes/icecream-safety-cycle/episode.json').read_text())
+          assert voice.MODEL_ORDER == ('s2.1-pro-free',)
+          provider,model=voice.synth_fish_audio(e['script'],Path('out/icecream-narration/narration.mp3'),os.environ['FISH_API_KEY'],os.environ['FISH_VOICE_ID'],e['voice'])
+          words=voice.align_groq_whisper(Path('out/icecream-narration/narration.mp3'),os.environ['GROQ_API_KEY'])
+          Path('out/icecream-narration/words.json').write_text(json.dumps(words,indent=2))
+          Path('out/icecream-narration/manifest.json').write_text(json.dumps({'provider':provider,'model':model,'script':e['script'],'voice':e['voice'],'developmentOnly':True},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: icecream-development-narration
+          path: out/icecream-narration/
+          retention-days: 7
