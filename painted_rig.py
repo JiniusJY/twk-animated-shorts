@@ -25,6 +25,9 @@ def isolate(box):
  n,l,st,_=cv2.connectedComponentsWithStats((alpha>0).astype('uint8'));k=1+np.argmax(st[1:,cv2.CC_STAT_AREA]);roi[:,:,3]=np.where(l==k,255,0)
  return Image.fromarray(roi)
 approach=isolate((0,125,495,815));landing=isolate((947,150,1306,810))
+# Remove painted ground scraps from isolated grounded keyposes.
+a=np.array(approach); yy,xx=np.mgrid[:a.shape[0],:a.shape[1]];a[((yy>655)&((xx<43)|(xx>147)))|(yy>=680),3]=0;approach=Image.fromarray(a)
+a=np.array(landing);yy,xx=np.mgrid[:a.shape[0],:a.shape[1]];a[((yy>620)&((xx<194)|(xx>258)))|(yy>=650),3]=0;landing=Image.fromarray(a)
 font='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf';bold='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 def text(d,xy,s,n=24,fill='#26352f',b=False):d.text(xy,s,font=ImageFont.truetype(bold if b else font,n),fill=fill)
 def make(t):
@@ -33,9 +36,9 @@ def make(t):
  text(d,(28,72),'CRISTIANO RONALDO',28,b=True);text(d,(28,111),'Did he even touch it?',27,'#b33337',True)
  text(d,(28,161),'ILLUSTRATED RECREATION · WORLD CUP 2022',10)
  if t<6:
-  replay=t>=3.25
-  local=t-3.25 if replay else t
-  q=min(1,max(0,(local-.55)/1.6));jump=math.sin(q*math.pi)*85
+  replay=False
+  local=t
+  q=min(1,max(0,(local-.55)/2.45));jump=math.sin(q*math.pi)*85
   # Smooth inverse skinning of a single clean silhouette avoids cut-out seams.
   phase=math.sin(q*math.pi)
   clean=SRC.copy(); arr=np.array(clean)
@@ -61,14 +64,31 @@ def make(t):
   d.ellipse((164,777,394,798),fill='#d6d7c6')
   if not replay and t<.55:
    figure=approach.resize((346,483),Image.Resampling.LANCZOS);x=89+25*t;y=311
-  elif not replay and t>2.25:
-   figure=landing.resize((264,485),Image.Resampling.LANCZOS);x=153-18*(t-2.25);y=309+9*math.sin((t-2.25)*math.pi)
+  elif not replay and t>3.05:
+   figure=landing.resize((264,485),Image.Resampling.LANCZOS);x=153-25*min(1,t-3.05);y=309+12*min(1,(t-3.05)*3)
   im.paste(figure,(int(x),int(y)),figure)
   # Generic schematic ball; not a branded Al Rihla representation.
-  bx=455-430*q;by=192
-  if replay: text(d,(28,746),'SLOW REPLAY',13,'#b33337',True)
+  bx=455-480*q;by=192
+
   d.ellipse((bx-22,by-22,bx+22,by+22),fill='#fffdf0',outline='#26352f',width=2)
   pts=[(bx+10*math.cos(a*math.pi/2.5-1.5),by+10*math.sin(a*math.pi/2.5-1.5)) for a in range(5)];d.polygon(pts,fill='#26352f')
+  if t>=3.65:
+   # Forensic detail replay from the same single attempt, never restart full-body jump.
+   # Crop captures forehead and ball gap. Ball crosses on its own while pose holds.
+   detail=make(1.68).crop((107,224,278,391)).resize((414,405),Image.Resampling.LANCZOS)
+   im.paste(Image.new('RGB',(540,630),'#f1eddd'),(0,184))
+   # Fade crop edges into paper instead of a hard rectangular torso cut.
+   mask=Image.new('L',detail.size,255);ma=np.array(mask,dtype=float)
+   ma*=np.minimum(1,(414-np.arange(414))[None,:]/44)
+   ma*=np.minimum(1,(405-np.arange(405))[:,None]/34)
+   im.paste(detail,(63,307),Image.fromarray(ma.astype('uint8')))
+   d=ImageDraw.Draw(im)
+   bx=414-255*min(1,(t-3.65)/1.5);by=266
+   d.ellipse((bx-25,by-25,bx+25,by+25),fill='#fffdf0',outline='#26352f',width=2)
+   d.polygon([(bx,by-11),(bx+11,by-3),(bx+7,by+10),(bx-7,by+10),(bx-11,by-3)],fill='#26352f')
+   text(d,(31,212),'THE TINY-TOUCH QUESTION',22,'#b33337',True)
+   # Explicitly illustrative framing, no fabricated contact result or data trace.
+   text(d,(74,728),'Detail replay · illustrated recreation',14)
   cap='Cristiano Ronaldo celebrated' if t<2.3 else 'this World Cup goal.' if t<3.9 else 'But did he even touch the ball?'
   text(d,(28,839),cap,24 if t<3.9 else 23,b=True)
   text(d,(28,882),'Schematic ball · illustrated recreation',13,'#b33337')

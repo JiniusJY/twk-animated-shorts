@@ -34,12 +34,12 @@ def frame(t):
   im=opening(t)
   # Optional drawing-on reveal, same likeness and action, complete within0.55s.
   if t<.55:
-   ar=np.array(im);roi=ar[210:805].copy();gray=cv2.cvtColor(roi,cv2.COLOR_RGB2GRAY);edges=cv2.Canny(gray,65,140)
+   ar=np.array(im);roi=ar[210:760].copy();gray=cv2.cvtColor(roi,cv2.COLOR_RGB2GRAY);edges=cv2.Canny(gray,65,140)
    sketch=np.empty_like(roi);sketch[:]=(241,237,221);sketch[edges>0]=(73,78,65)
    q=min(1,(t+.08)/.63);yy,xx=np.mgrid[:roi.shape[0],:roi.shape[1]]
    # Fast staggered stroke bands, not a slow wipe that delays the question.
    rank=(yy/roi.shape[0]*.75+(xx%57)/57*.25);mask=rank<q
-   sketch[mask]=roi[mask];ar[210:805]=sketch;im=Image.fromarray(ar)
+   sketch[mask]=roi[mask];ar[210:760]=sketch;im=Image.fromarray(ar)
 
  elif k in ['match','bruno']:
   im=base();d=ImageDraw.Draw(im)
