@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "metrics": {
+    "video": "/downloads/TWK-Ronaldo-Final-v15.mp4",
+    "integrated_lufs": -15.6,
+    "true_peak_dbtp": -1.5,
+    "duration_s": 42.5,
+    "black_segments": [],
+    "freeze_segments": []
+  },
+  "failures": []
+}
