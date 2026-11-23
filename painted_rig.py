@@ -32,9 +32,9 @@ font='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf';bold='/usr/share/fonts/tr
 def text(d,xy,s,n=24,fill='#26352f',b=False):d.text(xy,s,font=ImageFont.truetype(bold if b else font,n),fill=fill)
 def make(t):
  im=Image.new('RGB',(540,960),'#f1eddd');d=ImageDraw.Draw(im)
- text(d,(28,28),'TECHWHOKNOWS',12,'#b33337',True);d.line((28,52,512,52),fill='#566453')
+
  text(d,(28,72),'CRISTIANO RONALDO',28,b=True);text(d,(28,111),'Did he even touch it?',27,'#b33337',True)
- text(d,(28,161),'ILLUSTRATED RECREATION · WORLD CUP 2022',10)
+
  if t<6:
   replay=False
   local=t
@@ -68,10 +68,11 @@ def make(t):
    figure=landing.resize((264,485),Image.Resampling.LANCZOS);x=153-25*min(1,t-3.05);y=309+12*min(1,(t-3.05)*3)
   im.paste(figure,(int(x),int(y)),figure)
   # Generic schematic ball; not a branded Al Rihla representation.
-  bx=455-480*q;by=192
+  bx=455-480*q;by=180
 
-  d.ellipse((bx-22,by-22,bx+22,by+22),fill='#fffdf0',outline='#26352f',width=2)
-  pts=[(bx+10*math.cos(a*math.pi/2.5-1.5),by+10*math.sin(a*math.pi/2.5-1.5)) for a in range(5)];d.polygon(pts,fill='#26352f')
+  ball=Image.open(pathlib.Path(__file__).resolve().parent/'assets/ronaldo-connected-ball/whole-ball.png').convert('RGBA')
+  bm=Image.new('L',ball.size);ImageDraw.Draw(bm).ellipse((5,5,ball.width-7,ball.height-13),fill=255);ball.putalpha(bm)
+  ball=ball.rotate(-q*95,Image.Resampling.BICUBIC).resize((60,60),Image.Resampling.LANCZOS);im.paste(ball,(int(bx-30),int(by-30)),ball)
   if t>=3.65:
    # Forensic detail replay from the same single attempt, never restart full-body jump.
    # Crop captures forehead and ball gap. Ball crosses on its own while pose holds.
@@ -83,15 +84,14 @@ def make(t):
    ma*=np.minimum(1,(405-np.arange(405))[:,None]/34)
    im.paste(detail,(63,307),Image.fromarray(ma.astype('uint8')))
    d=ImageDraw.Draw(im)
-   bx=414-255*min(1,(t-3.65)/1.5);by=266
-   d.ellipse((bx-25,by-25,bx+25,by+25),fill='#fffdf0',outline='#26352f',width=2)
-   d.polygon([(bx,by-11),(bx+11,by-3),(bx+7,by+10),(bx-7,by+10),(bx-11,by-3)],fill='#26352f')
-   text(d,(31,212),'THE TINY-TOUCH QUESTION',22,'#b33337',True)
+   bx=414-255*min(1,(t-3.65)/1.5);by=246
+   ball=ball.resize((76,76),Image.Resampling.LANCZOS);im.paste(ball,(int(bx-38),int(by-38)),ball)
+
    # Explicitly illustrative framing, no fabricated contact result or data trace.
-   text(d,(74,728),'Detail replay · illustrated recreation',14)
+
   cap='Cristiano Ronaldo celebrated' if t<2.3 else 'this World Cup goal.' if t<3.9 else 'But did he even touch the ball?'
   text(d,(28,839),cap,24 if t<3.9 else 23,b=True)
-  text(d,(28,882),'Schematic ball · illustrated recreation',13,'#b33337')
+
  else:
   text(d,(28,215),'PORTUGAL v URUGUAY',29,b=True);text(d,(28,260),'WORLD CUP 2022',22,'#b33337',True)
   d.rounded_rectangle((28,363,512,570),12,fill='#26352f')

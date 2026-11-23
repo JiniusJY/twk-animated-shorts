@@ -37,7 +37,7 @@ def stage(im,t):
     amp=18*math.sin(j*.9+(t-14)*.6);line(d,[(x,680),(x,636-amp)],MINT,3);d.ellipse((x-6,630-amp,x+6,642-amp),fill=MINT)
   line(d,[(45,681),(495,681)],'#60777b',2)
   d.arc((202,696,270,723),0,180,fill=RED,width=2);txt(d,(218,730),'2 ms',21,RED)
-  line(d,[(270,596),(270,689)],RED,2);txt(d,(48,784),'Conceptual sample train, slowed down',16)
+  line(d,[(270,596),(270,689)],RED,2);
   return Image.blend(im,over,q)
  if t<22.04:
   over=base();d=ImageDraw.Draw(over);q=e(19.62,20.7,t);cx=120+260*q;cy=332-50*math.sin(q*math.pi)
@@ -52,49 +52,51 @@ def stage(im,t):
    pts.append((x,y))
   if len(pts)>1:line(d,pts,MINT,4)
   if end>275:line(d,[(275,580),(275,710)],RED,2)
-  txt(d,(40,753),'ILLUSTRATION, NOT MATCH DATA',18,RED)
+  
   return Image.blend(im,over,e(19.62,19.92,t))
  if t<25.72:return im
  over=base();d=ImageDraw.Draw(over)
  if t<27.68:
-  q=e(25.72,27.2,t);ball(over,270+240*e(27.25,27.68,t),330,110-45*q);d=ImageDraw.Draw(over)
-  txt(d,(51,509),'GOAL AWARDED TO',23);txt(d,(51,556),'BRUNO',58,MINT);txt(d,(51,623),'FERNANDES',46,MINT)
-  line(d,[(53,699),(53+430*q,699)],RED,3);txt(d,(53,738),'Portugal v Uruguay / 2022',20)
-  return Image.blend(im,over,e(25.72,26.12,t))
- # Field and timeline occupy the whole stage. This is a distinct conceptual workflow.
- q=e(27.68,29,t);box=(40,270,500,646)
- txt(d,(43,247),'ATTACK >  /  RED: DEFENDERS',16,MINT)
- d.rounded_rectangle(box,12,outline='#63837f',width=3);d.line((270,271,270,645),fill='#63837f',width=2);d.ellipse((213,405,327,517),outline='#63837f',width=2)
- d.rectangle((40,358,110,555),outline='#63837f',width=2);d.rectangle((430,358,500,555),outline='#63837f',width=2)
- if t<30.5:phase=e(27.68,30.5,t)
- else:phase=1
- # Motion stops at the selected kick point; the next step validates rather than inventing a decision.
- kx=155+70*phase;ax=338+16*phase;dx=353
- for x,y,c in [(kx,494,MINT),(ax,369,MINT),(dx,402,RED),(395,548,RED)]:
-  d.ellipse((x-10,y-10,x+10,y+10),fill=c);d.ellipse((x-16,y-16,x+16,y+16),outline=c,width=1)
- ball(over,kx+25,505-120*e(29.2,30.5,t),16);d=ImageDraw.Draw(over)
- if t<30.5:
-  arrow(d,(190,474),(320,387),MINT,2);txt(d,(61,214),'1  LOCATE THE KICK',25,MINT)
- elif t<32.14:
-  line(d,[(dx,275),(dx,640)],RED,3);txt(d,(61,214),'2  MATCH PLAYER POSITION',21,MINT);txt(d,(62,665),'SECOND-LAST DEFENDER LINE',17,RED)
- else:
-  txt(d,(61,214),'3  CHECK THE SUGGESTION',23,MINT)
-  a=e(32.14,33.5,t);line(d,[(dx,275),(dx,275+365*a)],RED,3)
-  d.rounded_rectangle((70,300,470,612),8,outline=INK,width=2)
-  # Operator review reticle settles onto the proposed line without declaring an on/offside outcome.
-  ry=300+250*e(32.4,34.6,t);line(d,[(dx-24,ry),(dx+24,ry)],INK,2);line(d,[(dx,ry-24),(dx,ry+24)],INK,2)
-  txt(d,(62,665),'KICK POINT + LINE: HUMAN REVIEW',17,RED)
- line(d,[(55,731),(485,731)],'#63837f',2)
- for j in range(10):
-  x=56+j*47;d.ellipse((x-3,728,x+3,734),fill=MINT)
- cx=56+282*e(27.68,30.5,t);line(d,[(cx,714),(cx,749)],RED,4)
- txt(d,(58,772),'TIMING / POSITION CONCEPT, NOT A RULING',14,MINT)
+  over=Image.new('RGB',(540,960),'#f1eddd');q=e(25.72,26.2,t)
+  from ball_scenes import BRUNO,act
+  import cv2
+  ar=np.array(BRUNO.copy());rgb=ar[:,:,:3];bg=(rgb[:,:,0]>207)&(rgb[:,:,1]>204)&(rgb[:,:,2]>185)&((rgb[:,:,0].astype(int)-rgb[:,:,2])<45)
+  nn,ll=cv2.connectedComponents(bg.astype('uint8'));edge=np.unique(np.concatenate([ll[0],ll[-1],ll[:,0],ll[:,-1]]));ar[:,:,3]=np.where(np.isin(ll,edge[edge!=0]),0,255).astype('uint8')
+  br=act(Image.fromarray(ar),t-25.72,.7).resize((330,575),Image.Resampling.LANCZOS)
+  over.paste(br,(180-int(15*q),170),br);d=ImageDraw.Draw(over)
+  txt(d,(28,70),'GOAL CREDIT',22,'#a43d3d');txt(d,(28,110),'BRUNO FERNANDES',32,'#26352f')
+  return Image.blend(im,over,e(25.72,25.95,t))
+ # Three-dimensional player pass, selected instant and review share one camera move.
+ local=t-27.68
+ idx=min(235,max(0,round(local*30)))
+ path=f'/tmp/ronaldo-players-smooth/{idx+1:04d}.png'
+ if not __import__('os').path.exists(path):path=f'/tmp/ronaldo-players/{min(95,max(0,round(local*12))):04d}.png'
+ if not __import__('os').path.exists(path):path='/tmp/ronaldo-players/0048.png'
+ pitch=Image.open(path).convert('RGB');d=ImageDraw.Draw(pitch)
+ if t<30.2:lab='1  THE PASS'
+ elif t<32.14:lab='2  RETURN TO THE PASS'
+ else:lab='3  SAME INSTANT. CHECK POSITIONS.'
+ txt(d,(30,175),lab,20,MINT)
+ if t>=30.2:
+  # The selected instant is marked on the timing ribbon, not a fabricated recorded trace.
+  line(d,[(40,740),(500,740)],INK,2)
+  for j in range(12):
+   xx=40+j*41;line(d,[(xx,734),(xx,746)],MINT,2)
+  cx=300-210*e(30.2,30.7,t);line(d,[(cx,722),(cx,758)],RED,3)
+ if t>=32.14:
+  # Review the frozen instant in a moving loupe, from pass boot to defender position.
+  q=e(32.14,35.64,t);d.rounded_rectangle((27,257,513,696),12,outline=INK,width=2)
+  focus=e(32.14,34.5,t);fx=50+302*focus;fy=582-88*focus
+  clean=pitch.copy();box=(int(fx-44),int(fy-44),int(fx+44),int(fy+44))
+  loupe=clean.crop(box).resize((136,136),Image.Resampling.LANCZOS)
+  d.ellipse((fx-20,fy-20,fx+20,fy+20),outline=RED,width=3)
+  pitch.paste(loupe,(340,218));d=ImageDraw.Draw(pitch);d.rectangle((339,217,477,355),outline=MINT,width=2)
+  line(d,[(fx,fy-21),(408,357)],RED,2)
+  txt(d,(40,775),'SAME INSTANT: KICK + POSITION',17,INK)
  if t>=35.64:
-  # The field shrinks into a context window while a timing bracket connects to the human decision.
-  final=base();f=ImageDraw.Draw(final);thumb=over.crop((30,195,510,790)).resize((300,372));final.paste(thumb,(120,220))
-  txt(f,(55,626),'SENSOR: WHEN',30,MINT);txt(f,(55,679),'OFFICIALS: CONTEXT',28,INK)
-  arrow(f,(270,595),(270,616),RED,3)
-  # A review sweep links the timing record to the context image, not a decorative progress bar.
-  sy=265+280*e(35.64,38.94,t);line(f,[(110,sy),(430,sy)],RED,2)
-  return Image.blend(over,final,e(35.64,36.2,t))
- return Image.blend(im,over,e(27.68,28.2,t))
+  pitch=Image.open('/tmp/ronaldo-players-smooth/0236.png').convert('RGB') if __import__('os').path.exists('/tmp/ronaldo-players-smooth/0236.png') else pitch
+  q=e(35.64,36.4,t);end=base();thumb=pitch.crop((0,220,540,800)).resize((410,440));end.paste(thumb,(65,194));dd=ImageDraw.Draw(end)
+  txt(dd,(40,674),'SENSOR: WHEN',30,MINT);txt(dd,(40,725),'OFFICIALS: CONTEXT',28,INK)
+  sy=210+380*e(35.64,38.94,t);line(dd,[(55,sy),(485,sy)],RED,2)
+  return Image.blend(pitch,end,q)
+ return Image.blend(im,pitch,e(27.68,28.05,t))

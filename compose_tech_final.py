@@ -42,8 +42,9 @@ def frame(t):
   im=stage(im,t)
 
   # Titles/captions use the same studio palette. No fake interfaces or real-match waveform.
-  im=panel(im,(18,24,522,173),175);d=ImageDraw.Draw(im)
-  text(d,(35,38),'TECHWHOKNOWS  /  INSIDE THE GAME',12,MINT,True)
+  if not 25.72<=t<27.68:im=panel(im,(18,24,522,135),175)
+  d=ImageDraw.Draw(im)
+
   if t<4.16:lines=['THE BALL CARRIED','EVIDENCE.'];sub='Generic model, not the official 2022 ball'
   elif t<8.88:lines=['SUSPENDED SENSOR','AT THE CENTRE'];sub='IMU = inertial measurement unit'
   elif t<10.94:lines=['ACCELEROMETER','Changes in motion'];sub='Concept: a tiny mass responds to acceleration'
@@ -55,12 +56,13 @@ def frame(t):
   elif t<32.14:lines=['ANOTHER USE: OFFSIDE','TIMING + POSITION'];sub='Separate workflow, not this goal-credit decision'
   elif t<35.64:lines=['VIDEO OFFICIALS','CHECK AND VALIDATE'];sub='Suggested kick point + offside line'
   else:lines=['SENSOR HELPS WITH WHEN.','OFFICIALS INTERPRET.'];sub='Motion measurements need match context'
-  text(d,(35,68),lines[0],26,INK,True);text(d,(35,103),lines[1],27,MINT,True);text(d,(35,148),sub,13,INK)
+  if not 25.72<=t<27.68:
+   text(d,(35,38),lines[0],26,INK,True);text(d,(35,76),lines[1],27,MINT,True)
   if 8.88<=t<10.94:
    im=panel(im,(32,675,508,796));d=ImageDraw.Draw(im);cx=270-22*math.sin((t-8.88)*9);d.rounded_rectangle((73,705,467,767),6,outline=MINT,width=2)
-   d.line((80,736,cx-26,736),fill=MINT,width=2);d.line((cx+26,736,460,736),fill=MINT,width=2);d.rectangle((cx-26,714,cx+26,758),fill='#a7bbb8');text(d,(54,777),'Concept inset: relative mass response',13)
+   d.line((80,736,cx-26,736),fill=MINT,width=2);d.line((cx+26,736,460,736),fill=MINT,width=2);d.rectangle((cx-26,714,cx+26,758),fill='#a7bbb8')
    d.line((140,692,397,692),fill=RED,width=3);d.polygon([(397,692),(386,686),(386,698)],fill=RED)
-  d=ImageDraw.Draw(im);text(d,(31,811),'GENERIC 3D MODEL · CONCEPTUAL MECHANISM',10,MINT,True)
+
  # Caption backing stays fixed in safe area, white/ink for illustrated bookend.
  d=ImageDraw.Draw(im);d.rectangle((0,836,540,960),fill='#142027' if t>=2.66 else '#f1eddd')
  pg=next((p for p in pages if p[0]['s']<=t<max(p[-1]['e'],p[0]['s']+.22)),None)

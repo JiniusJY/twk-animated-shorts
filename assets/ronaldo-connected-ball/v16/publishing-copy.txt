@@ -1,0 +1,32 @@
+TITLE
+Did Ronaldo touch it? The ball carried evidence.
+
+DESCRIPTION
+Ronaldo celebrated. But did he touch it?
+
+Inside the connected ball, a suspended inertial measurement unit measures acceleration and rotation. At 500 samples a second, the gap between readings is 2 milliseconds. That is a sampling interval, not a decision every 2 milliseconds.
+
+adidas said Ronaldo's attempted header against Uruguay produced no measurable external force. The goal went to Bruno Fernandes.
+
+A separate use of connected-ball timing is semi-automated offside: timing is combined with camera-tracked player positions, then video officials validate the suggested kick point and offside line.
+
+Visuals are illustrations and generic 3D models. The coloured opening ball is an artistic interpretation, not an exact product model. Cutaway, sample train, signal and player sequence are explanatory demonstrations, not match footage, recorded signals, exact ball engineering or an offside ruling. The offside sequence rewinds to the moment of the pass and compares player positions at that same instant.
+
+Follow @techwhoknows for the tech behind the moment.
+
+Sources:
+adidas connected-ball announcement:
+https://news.adidas.com/football/adidas-reveals-the-first-fifa-world-cup--official-match-ball-featuring-connected-ball-technology/s/cccb7187-a67c-4166-b57d-2b28f1d36fa0
+TDK, accelerometer and gyroscope explanation:
+https://www.tdk.com/en/tech-mag/sportstech/002
+FIFA, semi-automated offside workflow:
+https://inside.fifa.com/en/innovation/world-cup-2022/semi-automated-offside-technology
+CBS Sports, adidas statement via FIFA and Bruno goal credit:
+https://www.cbssports.com/soccer/news/fifa-2022-world-cup-cristiano-ronaldo-didnt-score-portugals-opening-goal-vs-uruguay-according-to-adidas/
+
+Music: Sports Highlights by Ahjay Stelino, via Mixkit.
+https://mixkit.co/free-stock-music/tag/sport/
+Music licence:
+https://mixkit.co/license/modal/musicFree/
+
+#TechWhoKnows #FootballTech #ConnectedBall #Ronaldo #WorldCup
