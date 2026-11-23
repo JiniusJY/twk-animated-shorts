@@ -1,0 +1,26 @@
+{
+  "provider": "fish-audio",
+  "model": "s2.1-pro-free",
+  "script": "Ronaldo celebrated. But did he touch it? The ball carried evidence. Inside, a suspension system stabilises an inertial measurement unit, or IMU. An accelerometer measures changes in motion. A gyroscope measures how fast the ball rotates. It samples five hundred times a second. That's one reading every two milliseconds, not a verdict every two milliseconds. A touch can produce a sudden change in the signal. Adidas said Ronaldo's attempted header produced no measurable external force. The goal went to Bruno Fernandes. For offside checks, software combines ball timing with camera-tracked player positions. Video officials validate the suggested kick point and offside line. The sensor helps establish when. Officials interpret the play. Follow TechWhoKnows for the tech behind the moment.",
+  "voice": {
+    "temperature": 0.8,
+    "topP": 0.8,
+    "speed": 1.03,
+    "direction": "Engaged explainer, curious opening, crisp technical explanation with natural pauses",
+    "beats": [
+      {
+        "before": "But did he touch it?",
+        "direction": "skeptical, curious"
+      },
+      {
+        "before": "That's one reading every two milliseconds, not a verdict every two milliseconds.",
+        "direction": "clear, contrasting"
+      },
+      {
+        "before": "The sensor helps establish when. Officials interpret the play.",
+        "direction": "confident, decisive"
+      }
+    ]
+  },
+  "developmentOnly": true
+}
