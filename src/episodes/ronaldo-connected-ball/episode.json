@@ -2,27 +2,23 @@
   "slug": "ronaldo-connected-ball",
   "title": "The ball that snitched on Ronaldo",
   "developmentOnly": true,
-  "script": "Cristiano Ronaldo celebrated. But did he even touch the ball? World Cup, 2022. The goal went to Bruno Fernandes. Adidas said the ball's sensor showed no Ronaldo contact. Here's how. Suspended inside the match ball, a motion sensor measures movement five hundred times a second. That data helps officials check tiny touches. No automatic referee. The sensor supplies evidence. People make the call. Follow TechWhoKnows for the tech behind the moment.",
+  "script": "Ronaldo celebrated. But did he touch it? The ball carried evidence. Inside, a suspension system stabilises an inertial measurement unit, or IMU. An accelerometer measures changes in motion. A gyroscope measures how fast the ball rotates. It samples five hundred times a second. That's one reading every two milliseconds, not a verdict every two milliseconds. A touch can produce a sudden change in the signal. Adidas said Ronaldo's attempted header produced no measurable external force. The goal went to Bruno Fernandes. For offside checks, software combines ball timing with camera-tracked player positions. Video officials validate the suggested kick point and offside line. The sensor helps establish when. Officials interpret the play. Follow TechWhoKnows for the tech behind the moment.",
   "voice": {
     "temperature": 0.8,
     "topP": 0.8,
     "speed": 1.03,
-    "direction": "Engaged storyteller, crisp and curious, quick transitions with a clear final contrast",
+    "direction": "Engaged explainer, curious opening, crisp technical explanation with natural pauses",
     "beats": [
       {
-        "before": "But did he even touch the ball?",
+        "before": "But did he touch it?",
         "direction": "skeptical, curious"
       },
       {
-        "before": "Here's how.",
-        "direction": "inviting, clear"
+        "before": "That's one reading every two milliseconds, not a verdict every two milliseconds.",
+        "direction": "clear, contrasting"
       },
       {
-        "before": "No automatic referee.",
-        "direction": "emphatic, concise"
-      },
-      {
-        "before": "People make the call.",
+        "before": "The sensor helps establish when. Officials interpret the play.",
         "direction": "confident, decisive"
       }
     ]
