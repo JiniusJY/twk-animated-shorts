@@ -1,0 +1,36 @@
+# Ronaldo story preview v8, development only
+
+42.7 seconds. Not approved for publication. The narration and music have not had an acoustic listening review.
+
+## Picture and evidence
+- Ronaldo is original generated editorial art, corrected to short sleeves, animated with keyposes and local deformation. Clearly illustrated recreation, not match footage or exact event geometry.
+- Cutaway and hand are original generated conceptual illustrations. Suspension and central 500Hz sensor are supported design facts, not a factual blueprint of shell, seams, capsule dimensions or wiring.
+- Opening and Euro balls are schematic, not branded product representations. Euro2024 is explicitly a separate case.
+- No waveform is presented as actual measured evidence.
+
+## Al Rihla exterior photograph
+Photo by HyperionLEO, Wikimedia Commons, CC BY-SA4.0. Depicts a retail ball exterior, not proof that the photographed ball contains the connected sensor. Changes: circular crop, background removal, resize and placement. This adapted photo asset is distributed under CC BY-SA4.0.
+Source: https://commons.wikimedia.org/wiki/File:Al-Rihla_(cropped).jpg
+License: https://creativecommons.org/licenses/by-sa/4.0/
+The source page and author/license were independently read on23Nov2026. The exterior design in the supplied image was visually checked against the source image.
+
+## Music
+Sports Highlights by Ahjay Stelino, Mixkit item51.
+Track: https://assets.mixkit.co/music/51/51.mp3
+Catalog: https://mixkit.co/free-stock-music/tag/sport/
+License: https://mixkit.co/license/modal/musicFree/
+License independently read23Nov2026, permits commercial web/social video. No attribution required, retained here for traceability. Not claimed to be trending or acoustically auditioned.
+
+## Sources for speech and conceptual mechanics
+https://news.adidas.com/football/adidas-reveals-the-first-fifa-world-cup--official-match-ball-featuring-connected-ball-technology/s/cccb7187-a67c-4166-b57d-2b28f1d36fa0
+https://www.cbssports.com/soccer/news/fifa-2022-world-cup-cristiano-ronaldo-didnt-score-portugals-opening-goal-vs-uruguay-according-to-adidas/
+https://www.espn.com/football/story/_/id/40371283/var-review-why-romelu-lukaku-equaliser-belgium-was-ruled-lois-openda-handball
+
+## Timing and sound
+Same retained free narration, no re-synthesis. Word timings from retained-take alignment, homophone spelling normalized to script and last word endpoint clamped to audio duration. Voice40.672583s. Native endcard appearance preserved, entrance begins after initial dark period. Synthetic event tones mapped to visible events. Preview mix measured -16.1LUFS, -1.5dBTP. No detected black or freeze segments beyond project thresholds. Automated checks do not certify taste, natural voice performance, music fit or mix listening.
+
+## Open gates
+- Acoustic listening review of complete take and mix.
+- Full-resolution final render and exhaustive transition/native platform-overlay inspection.
+- Motion polish remains below bespoke studio in-between character animation. Mechanism art is stronger, but official-review scene remains simple symbolic explanation.
+- No final cover, platform descriptions, publication decision or schedule.

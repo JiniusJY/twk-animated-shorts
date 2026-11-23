@@ -1,0 +1,56 @@
+{
+  "shots": [
+    [
+      0,
+      "hook"
+    ],
+    [
+      5.34,
+      "match"
+    ],
+    [
+      6.96,
+      "bruno"
+    ],
+    [
+      10.74,
+      "adidas"
+    ],
+    [
+      15,
+      "suspension"
+    ],
+    [
+      18.5,
+      "sampling"
+    ],
+    [
+      20.36,
+      "evidence"
+    ],
+    [
+      23.84,
+      "euro"
+    ],
+    [
+      27.04,
+      "euro-touch"
+    ],
+    [
+      29.74,
+      "judgment"
+    ],
+    [
+      32.24,
+      "payoff"
+    ],
+    [
+      38.04,
+      "cta"
+    ]
+  ],
+  "source": "retained take word alignment",
+  "duration": 42.7,
+  "audioDuration": 40.672583,
+  "developmentOnly": true
+}

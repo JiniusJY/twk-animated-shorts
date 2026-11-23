@@ -65,8 +65,8 @@ def make(t):
    figure=landing.resize((264,485),Image.Resampling.LANCZOS);x=153-18*(t-2.25);y=309+9*math.sin((t-2.25)*math.pi)
   im.paste(figure,(int(x),int(y)),figure)
   # Generic schematic ball; not a branded Al Rihla representation.
-  bx=455-430*q;by=245-20*math.sin(q*math.pi)
-  if replay: text(d,(28,205),'SLOW REPLAY',13,'#b33337',True)
+  bx=455-430*q;by=192
+  if replay: text(d,(28,746),'SLOW REPLAY',13,'#b33337',True)
   d.ellipse((bx-22,by-22,bx+22,by+22),fill='#fffdf0',outline='#26352f',width=2)
   pts=[(bx+10*math.cos(a*math.pi/2.5-1.5),by+10*math.sin(a*math.pi/2.5-1.5)) for a in range(5)];d.polygon(pts,fill='#26352f')
   cap='Cristiano Ronaldo celebrated' if t<2.3 else 'this World Cup goal.' if t<3.9 else 'But did he even touch the ball?'

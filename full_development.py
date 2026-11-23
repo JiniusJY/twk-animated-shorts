@@ -21,7 +21,7 @@ def caption(im,t):
  pg=next((p for p in pages if p[0]['s']<=t<max(p[-1]['e'],p[0]['s']+.22)),None)
  if pg:
   s=' '.join(x['w'] for x in pg);n=26
-  while d.textlength(s,font=ImageFont.truetype(font,n))>478:n-=1
+  while d.textlength(s,font=ImageFont.truetype(font,n))>418:n-=1
   f=ImageFont.truetype(font,n);x=(540-d.textlength(s,font=f))/2
   for z in pg:
    tok=z['w']+' ';d.text((x,848),tok,font=f,fill=RED if z['s']<=t<z['e'] else INK);x+=d.textlength(tok,font=f)
@@ -40,9 +40,11 @@ def frame(t):
    d.ellipse((213,332,245,364),fill=RED);d.ellipse((321,572,353,604),fill=INK)
   else:
    q=min(1,u/.35);y=int(345+45*(1-q));d.rounded_rectangle((30,y,510,y+220),10,fill=INK)
-   text(d,(57,y+26),'THE OFFICIAL CREDIT',20,PAPER,True);text(d,(57,y+73),'BRUNO',53,PAPER,True);text(d,(57,y+137),'FERNANDES',42,PAPER,True)
+   text(d,(57,y+26),'THE OFFICIAL CREDIT',20,PAPER,True)
+   if t>=9.22:text(d,(57,y+73),'BRUNO',53,PAPER,True)
+   if t>=9.4:text(d,(57,y+137),'FERNANDES',42,PAPER,True)
  elif k=='cta':
-  return Image.open(endframes/f'{min(119,int(u*30)):04d}.png').convert('RGB')
+  return Image.open(endframes/f'{min(119,23+int(u*30)):04d}.png').convert('RGB')
  else:
   if k=='euro-touch':im=draw('euro',u+3.21)
   else:im=draw(k,u)
