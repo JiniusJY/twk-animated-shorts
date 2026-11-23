@@ -1,6 +1,6 @@
 {
-  "file": "TWK-Ice-Cream-Final-v3.mp4",
-  "sha256": "c104a7c0afc2a3eab80e12769e4954404464015f79b3a938964f93650f5e160d",
+  "file": "TWK-Ice-Cream-Final-v4.mp4",
+  "sha256": "297192fda7f168b15c5ef7635d781e91c6a9afb0e272c0a0ecf510bd96229e98",
   "duration": 63.5,
   "width": 1080,
   "height": 1920,
@@ -19,5 +19,6 @@
     "https://www.wired.com/story/they-hacked-mcdonalds-ice-cream-makers-started-cold-war/",
     "https://pixabay.com/music/comedy-quirky-comedy-strings-629010/",
     "https://pixabay.com/service/license-summary/"
-  ]
+  ],
+  "endcard": "Populated approved card from58.17seconds, tap58.4-58.7, hold through63.5; exact encoded frames inspected"
 }

@@ -130,7 +130,8 @@ def frame(t):
   im=hero[min(len(hero)-1,int((58.15-t)*12))].copy();d=ImageDraw.Draw(im);txt(d,(W/2,140),'Sometimes, it is following the rules.',31,'#fff7e8',True)
  else:
   # Preserve the established endcard visual; existing logo, follow interaction and newsletter design.
-  ef=min(119,max(0,int((t-58.15)*30)));im=Image.open(f'/tmp/twk-ronaldo-proof/out/endcard/{ef:04d}.png').convert('RGB').resize((W,H))
+  ef=min(119,max(0,15+int((t-58.15)*45)));im=Image.open(f'/tmp/twk-ronaldo-proof/out/endcard/{ef:04d}.png').convert('RGB').resize((W,H))
+  full=Image.open('/tmp/twk-ronaldo-proof/out/endcard/0090.png').convert('RGB').resize((W,H));im.paste(full.crop((30,440,690,1080)),(30,440))
  caption(im,t);return im
 if '--proof' in sys.argv:
  for t in [0,9.8,13.5,19.5,25.5,32,39,48,60]:frame(t).save(ROOT+f'/proof-{t}.jpg')
