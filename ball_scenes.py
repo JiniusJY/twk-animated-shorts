@@ -38,7 +38,7 @@ def draw(kind,t):
  elif kind=='sampling':
   text(d,(36,108),'500',110,RED,True);text(d,(39,240),'measurements each second',25,INK,True)
   # One-second strip is assembled as 500 discrete samples, not a measured event trace.
-  progress=min(1,t/2)
+  progress=min(1,t/1.2)
   for i in range(int(500*progress)):
    x=36+(i%50)*9.4;y=350+(i//50)*24
    d.rectangle((x,y,x+4,y+12),fill=INK)
@@ -60,7 +60,7 @@ def draw(kind,t):
   ball(d,(210,440),120)
   finger=302+max(0,1-t)*80
   d.rounded_rectangle((finger,402,474,433),15,fill='#bfa087',outline=INK,width=3)
-  if t>1:
+  if t>3.2:
    d.ellipse((307,393,337,440),outline=RED,width=3);text(d,(38,666),"OPENDA'S TOUCH",32,INK,True)
   text(d,(38,733),'Touch evidence',25,GREEN,True)
  elif kind=='judgment':
@@ -72,7 +72,9 @@ def draw(kind,t):
   d.polygon([(330,359),(312,349),(312,369)],fill=RED)
   d.ellipse((370,292,432,354),fill=INK);d.rounded_rectangle((349,357,455,477),20,fill=INK)
   text(d,(345,499),'REVIEW',23)
-  if t>1:
+  if t>.88:
+   text(d,(332,547),'HANDBALL',20,RED,True)
+  if t>1.54:
    d.rounded_rectangle((50,601,490,716),10,fill=RED);text(d,(83,632),'GOAL CANCELLED',32,PAPER,True)
  elif kind=='payoff':
   text(d,(30,108),'DIFFERENT TOURNAMENT.',29,INK,True);text(d,(30,153),'DIFFERENT DECISION.',29,RED,True)
@@ -80,6 +82,9 @@ def draw(kind,t):
   d.line((252,419,323,419),fill=GREEN,width=3)
   d.ellipse((378,343,436,401),fill=INK);d.rounded_rectangle((349,407,467,527),18,fill=INK)
   text(d,(52,582),'SENSOR',25,GREEN,True);text(d,(322,582),'OFFICIALS',25,INK,True)
-  if t>1:
-   text(d,(45,642),'EVIDENCE',27,GREEN,True);text(d,(337,642),'CALL',27,RED,True)
+  if t>2.9:
+   text(d,(45,642),'EVIDENCE',27,GREEN,True)
+   d.line((216,615,313,615),fill=GREEN,width=3);d.polygon([(313,615),(298,606),(298,624)],fill=GREEN)
+  if t>4.25:
+   text(d,(337,642),'CALL',27,RED,True)
  return im
