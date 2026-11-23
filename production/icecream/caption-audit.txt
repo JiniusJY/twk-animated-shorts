@@ -1,0 +1,40 @@
+01   0.16-  1.20 This ice cream machine
+02   1.20-  3.02 deliberately heats its own mix.
+03   3.44-  4.02 So what happens
+04   4.02-  5.30 when you ask for a cone?
+05   5.42-  7.32 Inside the Taylor C602
+06   7.32-  8.46 used at McDonald's,
+07   8.46-  9.80 the mix sits in a hopper
+08   9.80- 10.82 and a freezing barrel.
+09  11.00- 12.42 Every day a heat treatment cycle
+10  12.42- 14.34 takes it to about 66 Celsius,
+11  14.34- 15.40 holds it hot,
+12  15.40- 16.34 then cools it down.
+13  16.34- 17.40 The cooling stage
+14  17.40- 18.42 gets two hours.
+15  18.42- 20.30 Let's follow one imaginary night.
+16  20.44- 21.46 Heating goes through,
+17  21.46- 22.48 cooling takes too long.
+18  22.48- 24.76 The controller soft locks the machine,
+19  24.76- 26.00 and your cone has to wait.
+20  26.00- 27.42 To find out what happened,
+21  27.42- 28.18 you can look back
+22  28.18- 29.30 through the cycle record.
+23  29.38- 30.76 There's the failed stage,
+24  30.76- 31.70 how long it took,
+25  31.70- 32.64 and temperatures saved
+26  32.64- 33.64 every five minutes.
+27  33.64- 35.34 Here, the mix was still too warm
+28  35.34- 36.32 when time ran out.
+29  36.32- 37.80 That gives the person fixing it
+30  37.80- 38.64 somewhere to start.
+31  38.64- 40.06 Once the problem's sorted,
+32  40.06- 40.68 the machine needs
+33  40.68- 41.94 a successful heat cycle
+34  41.94- 43.26 or the required cleaning
+35  43.26- 44.44 before serving again.
+36  44.44- 45.99 Plenty of other things
+37  45.99- 47.06 can stop a machine.
+38  47.06- 48.56 This is one of them.
+39  49.36- 50.36 Follow Tech Who Knows
+40  50.36- 52.30 for more everyday tech stories.

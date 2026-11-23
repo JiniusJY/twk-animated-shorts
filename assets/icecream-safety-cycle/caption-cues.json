@@ -1,0 +1,282 @@
+[
+  {
+    "text": "This ice cream machine",
+    "s": 0.16,
+    "e": 1.2,
+    "wordStart": 0,
+    "wordEnd": 4
+  },
+  {
+    "text": "deliberately heats its own mix.",
+    "s": 1.2,
+    "e": 3.02,
+    "wordStart": 4,
+    "wordEnd": 9
+  },
+  {
+    "text": "So what happens",
+    "s": 3.44,
+    "e": 4.02,
+    "wordStart": 9,
+    "wordEnd": 12
+  },
+  {
+    "text": "when you ask for a cone?",
+    "s": 4.02,
+    "e": 5.3,
+    "wordStart": 12,
+    "wordEnd": 18
+  },
+  {
+    "text": "Inside the Taylor C602",
+    "s": 5.42,
+    "e": 7.32,
+    "wordStart": 18,
+    "wordEnd": 22
+  },
+  {
+    "text": "used at McDonald's,",
+    "s": 7.32,
+    "e": 8.46,
+    "wordStart": 22,
+    "wordEnd": 25
+  },
+  {
+    "text": "the mix sits in a hopper",
+    "s": 8.46,
+    "e": 9.8,
+    "wordStart": 25,
+    "wordEnd": 31
+  },
+  {
+    "text": "and a freezing barrel.",
+    "s": 9.8,
+    "e": 10.82,
+    "wordStart": 31,
+    "wordEnd": 35
+  },
+  {
+    "text": "Every day a heat treatment cycle",
+    "s": 11.0,
+    "e": 12.42,
+    "wordStart": 35,
+    "wordEnd": 41
+  },
+  {
+    "text": "takes it to about 66 Celsius,",
+    "s": 12.42,
+    "e": 14.34,
+    "wordStart": 41,
+    "wordEnd": 47
+  },
+  {
+    "text": "holds it hot,",
+    "s": 14.34,
+    "e": 15.4,
+    "wordStart": 47,
+    "wordEnd": 50
+  },
+  {
+    "text": "then cools it down.",
+    "s": 15.4,
+    "e": 16.34,
+    "wordStart": 50,
+    "wordEnd": 54
+  },
+  {
+    "text": "The cooling stage",
+    "s": 16.34,
+    "e": 17.4,
+    "wordStart": 54,
+    "wordEnd": 57
+  },
+  {
+    "text": "gets two hours.",
+    "s": 17.4,
+    "e": 18.42,
+    "wordStart": 57,
+    "wordEnd": 60
+  },
+  {
+    "text": "Let's follow one imaginary night.",
+    "s": 18.42,
+    "e": 20.3,
+    "wordStart": 60,
+    "wordEnd": 65
+  },
+  {
+    "text": "Heating goes through,",
+    "s": 20.44,
+    "e": 21.46,
+    "wordStart": 65,
+    "wordEnd": 68
+  },
+  {
+    "text": "cooling takes too long.",
+    "s": 21.46,
+    "e": 22.48,
+    "wordStart": 68,
+    "wordEnd": 72
+  },
+  {
+    "text": "The controller soft locks the machine,",
+    "s": 22.48,
+    "e": 24.76,
+    "wordStart": 72,
+    "wordEnd": 78
+  },
+  {
+    "text": "and your cone has to wait.",
+    "s": 24.76,
+    "e": 26.0,
+    "wordStart": 78,
+    "wordEnd": 84
+  },
+  {
+    "text": "To find out what happened,",
+    "s": 26.0,
+    "e": 27.42,
+    "wordStart": 84,
+    "wordEnd": 89
+  },
+  {
+    "text": "you can look back",
+    "s": 27.42,
+    "e": 28.18,
+    "wordStart": 89,
+    "wordEnd": 93
+  },
+  {
+    "text": "through the cycle record.",
+    "s": 28.18,
+    "e": 29.3,
+    "wordStart": 93,
+    "wordEnd": 97
+  },
+  {
+    "text": "There's the failed stage,",
+    "s": 29.38,
+    "e": 30.76,
+    "wordStart": 97,
+    "wordEnd": 101
+  },
+  {
+    "text": "how long it took,",
+    "s": 30.76,
+    "e": 31.7,
+    "wordStart": 101,
+    "wordEnd": 105
+  },
+  {
+    "text": "and temperatures saved",
+    "s": 31.7,
+    "e": 32.64,
+    "wordStart": 105,
+    "wordEnd": 108
+  },
+  {
+    "text": "every five minutes.",
+    "s": 32.64,
+    "e": 33.64,
+    "wordStart": 108,
+    "wordEnd": 111
+  },
+  {
+    "text": "Here, the mix was still too warm",
+    "s": 33.64,
+    "e": 35.34,
+    "wordStart": 111,
+    "wordEnd": 118
+  },
+  {
+    "text": "when time ran out.",
+    "s": 35.34,
+    "e": 36.32,
+    "wordStart": 118,
+    "wordEnd": 122
+  },
+  {
+    "text": "That gives the person fixing it",
+    "s": 36.32,
+    "e": 37.8,
+    "wordStart": 122,
+    "wordEnd": 128
+  },
+  {
+    "text": "somewhere to start.",
+    "s": 37.8,
+    "e": 38.64,
+    "wordStart": 128,
+    "wordEnd": 131
+  },
+  {
+    "text": "Once the problem's sorted,",
+    "s": 38.64,
+    "e": 40.06,
+    "wordStart": 131,
+    "wordEnd": 135
+  },
+  {
+    "text": "the machine needs",
+    "s": 40.06,
+    "e": 40.68,
+    "wordStart": 135,
+    "wordEnd": 138
+  },
+  {
+    "text": "a successful heat cycle",
+    "s": 40.68,
+    "e": 41.94,
+    "wordStart": 138,
+    "wordEnd": 142
+  },
+  {
+    "text": "or the required cleaning",
+    "s": 41.94,
+    "e": 43.26,
+    "wordStart": 142,
+    "wordEnd": 146
+  },
+  {
+    "text": "before serving again.",
+    "s": 43.26,
+    "e": 44.44,
+    "wordStart": 146,
+    "wordEnd": 149
+  },
+  {
+    "text": "Plenty of other things",
+    "s": 44.44,
+    "e": 45.988,
+    "wordStart": 149,
+    "wordEnd": 153
+  },
+  {
+    "text": "can stop a machine.",
+    "s": 45.988,
+    "e": 47.056,
+    "wordStart": 153,
+    "wordEnd": 157
+  },
+  {
+    "text": "This is one of them.",
+    "s": 47.056,
+    "e": 48.556,
+    "wordStart": 157,
+    "wordEnd": 162
+  },
+  {
+    "text": "Follow Tech Who Knows",
+    "s": 49.361291666666666,
+    "e": 50.359,
+    "wordStart": 162,
+    "wordEnd": 166
+  },
+  {
+    "text": "for more everyday tech stories.",
+    "s": 50.359,
+    "e": 52.299,
+    "wordStart": 166,
+    "wordEnd": 171
+  }
+]
