@@ -2,60 +2,28 @@
   "slug": "ronaldo-connected-ball",
   "title": "The ball that snitched on Ronaldo",
   "developmentOnly": true,
-  "script": "Cristiano Ronaldo celebrated this World Cup goal. But did he even touch the ball? Portugal versus Uruguay, 2022. FIFA awarded the goal to Bruno Fernandes. The next day, Adidas said the ball's sensor showed no contact from Ronaldo. Inside the match ball, a sensor sits in suspension, measuring movement five hundred times a second. When officials need to check a tiny touch, that data can help. At Euro 2024, connected-ball technology detected Openda's touch before Belgium's equaliser. The officials judged it handball and cancelled the goal. Different tournament, different decision. Same idea: the sensor gives evidence. The officials make the call. Follow TechWhoKnows for the tech inside the game.",
+  "script": "Cristiano Ronaldo celebrated. But did he even touch the ball? World Cup, 2022. The goal went to Bruno Fernandes. Adidas said the ball's sensor showed no Ronaldo contact. Here's how. Suspended inside the match ball, a motion sensor measures movement five hundred times a second. That data helps officials check tiny touches. No camera inside. No automatic referee. The sensor supplies evidence. People make the call. Follow TechWhoKnows for the tech behind the moment.",
   "voice": {
     "temperature": 0.8,
     "topP": 0.8,
-    "speed": 1.0,
-    "direction": "Conversational storyteller, curious and clear, unhurried",
+    "speed": 1.03,
+    "direction": "Engaged storyteller, crisp and curious, quick transitions with a clear final contrast",
     "beats": [
       {
-        "before": "Cristiano Ronaldo celebrated this World Cup goal",
-        "direction": "curious, conversational"
-      },
-      {
-        "before": "But did he even touch the ball? Portugal versus Uruguay, 2022",
+        "before": "But did he even touch the ball?",
         "direction": "skeptical, curious"
       },
       {
-        "before": "FIFA awarded the goal to Bruno Fernandes",
-        "direction": "clear, factual"
+        "before": "Here's how.",
+        "direction": "inviting, clear"
       },
       {
-        "before": "The next day, Adidas said the ball's sensor showed no contact from Ronaldo",
-        "direction": "clear, matter of fact"
+        "before": "No camera inside. No automatic referee.",
+        "direction": "emphatic, concise"
       },
       {
-        "before": "Inside the match ball, a sensor sits in suspension, measuring movement five hundred times a second",
-        "direction": "serious, precise"
-      },
-      {
-        "before": "When officials need to check a tiny touch, that data can help",
-        "direction": "calm, explaining"
-      },
-      {
-        "before": "At Euro 2024, connected-ball technology detected Openda's touch before Belgium's equaliser",
-        "direction": "clear, emphasizing the number"
-      },
-      {
-        "before": "The officials judged it handball and cancelled the goal",
-        "direction": "warm, explaining"
-      },
-      {
-        "before": "Different tournament, different decision",
-        "direction": "serious, concise"
-      },
-      {
-        "before": "Same idea: the sensor gives evidence",
-        "direction": "clear, decisive"
-      },
-      {
-        "before": "The officials make the call",
-        "direction": "calm, contrasting"
-      },
-      {
-        "before": "Follow TechWhoKnows for the tech inside the game",
-        "direction": "confident, concise"
+        "before": "People make the call.",
+        "direction": "confident, decisive"
       }
     ]
   },
