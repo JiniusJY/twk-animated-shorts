@@ -6,19 +6,19 @@ from ball_scenes import draw,base,text,INK,RED,PAPER,BRUNO,REF,act,paste
 import cv2,numpy as np
 ROOT=pathlib.Path(__file__).parent
 OUT=ROOT/'out/full-development';OUT.mkdir(exist_ok=True)
-w=json.loads(pathlib.Path('/downloads/ronaldo-tight-narration/words.json').read_text())
+w=json.loads(pathlib.Path('/downloads/ronaldo-final-narration/words.json').read_text())
 # Retain raw timings. Caption spelling comes from script, not a homophone ASR error.
 for x in w:
  if x['w']=='censor':x['w']='sensor'
- x['e']=min(x['e'],26.906083)
+ x['e']=min(x['e'],25.266083)
 pages=[]
 for x in w:
  if not pages or len(pages[-1])>=4 or x['s']-pages[-1][0]['s']>1.7 or re.search(r'[.?!,]$',pages[-1][-1]['w']):pages.append([])
  pages[-1].append(x)
-shots=[(0,'hook'),(3.68,'bruno'),(7.1,'hero'),(10.3,'inside'),(14.4,'samples'),(15.92,'check'),(18.42,'myths'),(21.58,'call'),(24.34,'cta')]
+shots=[(0,'hook'),(3.68,'bruno'),(7.1,'hero'),(10.3,'inside'),(14.4,'samples'),(15.92,'check'),(18.42,'myths'),(19.94,'call'),(22.70,'cta')]
 font='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 def caption(im,t):
- if t>=24.34:return im
+ if t>=22.70:return im
  d=ImageDraw.Draw(im);d.rectangle((0,814,540,960),fill=PAPER)
  pg=next((p for p in pages if p[0]['s']<=t<max(p[-1]['e'],p[0]['s']+.22)),None)
  if pg:
@@ -62,5 +62,5 @@ def frame(t):
   else:im=draw(k,u)
  return caption(im,t)
 if __name__=='__main__':
- for i in range(846):frame(i/30).save(OUT/f'{i:04d}.png')
- pathlib.Path('/downloads/ronaldo-full-narration/story-timing-map.json').write_text(json.dumps({'shots':shots,'source':'retained take word alignment','duration':28.2,'audioDuration':26.906083,'developmentOnly':True},indent=2))
+ for i in range(797):frame(i/30).save(OUT/f'{i:04d}.png')
+ pathlib.Path('/downloads/ronaldo-full-narration/story-timing-map.json').write_text(json.dumps({'shots':shots,'source':'retained take word alignment','duration':26.566667,'audioDuration':25.266083,'developmentOnly':True},indent=2))

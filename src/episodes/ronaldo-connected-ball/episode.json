@@ -2,7 +2,7 @@
   "slug": "ronaldo-connected-ball",
   "title": "The ball that snitched on Ronaldo",
   "developmentOnly": true,
-  "script": "Cristiano Ronaldo celebrated. But did he even touch the ball? World Cup, 2022. The goal went to Bruno Fernandes. Adidas said the ball's sensor showed no Ronaldo contact. Here's how. Suspended inside the match ball, a motion sensor measures movement five hundred times a second. That data helps officials check tiny touches. No camera inside. No automatic referee. The sensor supplies evidence. People make the call. Follow TechWhoKnows for the tech behind the moment.",
+  "script": "Cristiano Ronaldo celebrated. But did he even touch the ball? World Cup, 2022. The goal went to Bruno Fernandes. Adidas said the ball's sensor showed no Ronaldo contact. Here's how. Suspended inside the match ball, a motion sensor measures movement five hundred times a second. That data helps officials check tiny touches. No automatic referee. The sensor supplies evidence. People make the call. Follow TechWhoKnows for the tech behind the moment.",
   "voice": {
     "temperature": 0.8,
     "topP": 0.8,
@@ -18,7 +18,7 @@
         "direction": "inviting, clear"
       },
       {
-        "before": "No camera inside. No automatic referee.",
+        "before": "No automatic referee.",
         "direction": "emphatic, concise"
       },
       {

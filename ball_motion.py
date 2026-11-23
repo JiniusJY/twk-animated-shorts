@@ -6,6 +6,7 @@ N=420
 yy,xx=np.mgrid[:N,:N].astype('float32');nx=(xx-N/2)/(N/2-4);ny=(yy-N/2)/(N/2-4);inside=nx*nx+ny*ny<=1
 z=np.sqrt(np.maximum(0,1-nx*nx-ny*ny));lon=np.arctan2(nx,z);lat=np.arcsin(np.clip(ny,-1,1))
 tex=np.array(BALL.resize((N,N),Image.Resampling.LANCZOS))
+tex[:,:,:3]=cv2.inpaint(tex[:,:,:3],(tex[:,:,3]<250).astype('uint8')*255,5,cv2.INPAINT_TELEA)
 def ease(t):
  t=max(0,min(1,t));return t*t*(3-2*t)
 def sphere(angle):
@@ -50,7 +51,7 @@ def scene(kind,t):
   text(d,(30,88),'HIDDEN AT THE CENTRE',31,INK,True);exploded(im,t)
   text(d,(125,739),'Conceptual suspension system',17)
  elif kind=='samples':
-  text(d,(30,88),'MOVEMENT. NOT VIDEO.',32,INK,True)
+  text(d,(30,88),'MOVEMENT. MEASURED.',32,INK,True)
   exploded(im,2)
   # A moving sweep indexes illustrative discrete samples, never an invented real trace.
   d=ImageDraw.Draw(im);d.rectangle((20,704,520,788),fill=PAPER)
@@ -67,10 +68,9 @@ def scene(kind,t):
   text(d,(44,672),'A tiny touch. A better check.',27,INK,True)
   text(d,(114,754),'Illustrative data transfer',16)
  elif kind=='myths':
-  text(d,(30,88),'NO CAMERA INSIDE.',33,INK,True)
-  if t>.95:text(d,(30,141),'NO AUTOMATIC REFEREE.',30,RED,True)
+  text(d,(30,88),'NO AUTOMATIC REFEREE.',30,RED,True)
   hero(im,t,(270,451),162)
-  if t>1.8:text(d,(120,722),'A motion sensor.',29,INK,True)
+  text(d,(100,722),'Ball movement data.',29,INK,True)
  elif kind=='call':
   text(d,(30,88),'THE SENSOR SUPPLIES',31,INK,True);text(d,(30,134),'EVIDENCE.',39,GREEN,True)
   paste(im,act(VAR,t),(21,306),(225,240));paste(im,act(REF,t),(324,268),(166,419))
