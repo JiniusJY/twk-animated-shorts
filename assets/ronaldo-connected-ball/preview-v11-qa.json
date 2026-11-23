@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "metrics": {
+    "video": "/downloads/ronaldo-illustrated-story-v11.mp4",
+    "integrated_lufs": -16.1,
+    "true_peak_dbtp": -1.5,
+    "duration_s": 42.7,
+    "black_segments": [],
+    "freeze_segments": []
+  },
+  "failures": []
+}

@@ -1,7 +1,8 @@
 import pathlib,json,math,re
 from PIL import Image,ImageDraw,ImageFont
 from painted_rig import make as opening
-from ball_scenes import draw,base,text,INK,RED,PAPER
+from ball_scenes import draw,base,text,INK,RED,PAPER,BRUNO,REF,act,paste
+import cv2,numpy as np
 ROOT=pathlib.Path(__file__).parent
 OUT=ROOT/'out/full-development';OUT.mkdir(exist_ok=True)
 w=json.loads(pathlib.Path('/downloads/ronaldo-full-narration/words.json').read_text())
@@ -31,18 +32,26 @@ def frame(t):
  a,k=max((a,k) for a,k in shots if a<=t);u=t-a
  if k=='hook':
   im=opening(t)
+  # Optional drawing-on reveal, same likeness and action, complete within0.55s.
+  if t<.55:
+   ar=np.array(im);roi=ar[210:805].copy();gray=cv2.cvtColor(roi,cv2.COLOR_RGB2GRAY);edges=cv2.Canny(gray,65,140)
+   sketch=np.empty_like(roi);sketch[:]=(241,237,221);sketch[edges>0]=(73,78,65)
+   q=min(1,(t+.08)/.63);yy,xx=np.mgrid[:roi.shape[0],:roi.shape[1]]
+   # Fast staggered stroke bands, not a slow wipe that delays the question.
+   rank=(yy/roi.shape[0]*.75+(xx%57)/57*.25);mask=rank<q
+   sketch[mask]=roi[mask];ar[210:805]=sketch;im=Image.fromarray(ar)
+
  elif k in ['match','bruno']:
   im=base();d=ImageDraw.Draw(im)
-  text(d,(30,110),'PORTUGAL v URUGUAY',29,INK,True);text(d,(30,156),'WORLD CUP 2022',22,RED,True)
+  text(d,(30,95),'PORTUGAL v URUGUAY',29,INK,True);text(d,(30,140),'WORLD CUP 2022',22,RED,True)
   if k=='match':
-   # A small pitch establishes the match, before the attribution reveal.
-   d.rectangle((60,300,480,688),outline=INK,width=3);d.line((60,494,480,494),fill=INK,width=2);d.ellipse((216,440,324,548),outline=INK,width=2)
-   d.ellipse((213,332,245,364),fill=RED);d.ellipse((321,572,353,604),fill=INK)
+   # Carry the same football action into an illustrated celebration, not pitch dots.
+   a=act(BRUNO,u,.7);paste(im,a,(117+10*min(1,u),225),(300,523))
   else:
-   q=min(1,u/.35);y=int(345+45*(1-q));d.rounded_rectangle((30,y,510,y+220),10,fill=INK)
-   text(d,(57,y+26),'THE OFFICIAL CREDIT',20,PAPER,True)
-   if t>=9.22:text(d,(57,y+73),'BRUNO',53,PAPER,True)
-   if t>=9.4:text(d,(57,y+137),'FERNANDES',42,PAPER,True)
+   a=act(BRUNO,u,1);paste(im,a,(144,205),(274,477))
+   if t>=9.22:
+    text(d,(31,704),'BRUNO',36,INK,True)
+   if t>=9.4:text(d,(31,738),'FERNANDES',36,RED,True)
  elif k=='cta':
   return Image.open(endframes/f'{min(119,23+int(u*30)):04d}.png').convert('RGB')
  else:

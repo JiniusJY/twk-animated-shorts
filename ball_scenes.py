@@ -1,97 +1,96 @@
-"""Development-only connected-ball scenes, times are replaced by real word anchors."""
+"""Illustrated story scenes v9, no fabricated match footage/data."""
 from PIL import Image,ImageDraw,ImageFont
-import math,numpy as np,pathlib
+import math,numpy as np,pathlib,cv2
 AS=pathlib.Path(__file__).parent/'assets/ronaldo-connected-ball'
-PHOTO=Image.open(AS/'al-rihla-photo-crop.png').convert('RGBA')
-CUT=Image.open(AS/'cutaway.png').convert('RGBA')
-HAND=Image.open(AS/'hand.png').convert('RGBA')
-def paste(im,asset,xy,wh):
- a=asset.resize(wh,Image.Resampling.LANCZOS);im.paste(a,tuple(map(int,xy)),a)
+PHOTO=Image.open(AS/'al-rihla-photo-crop.png').convert('RGBA');CUT=Image.open(AS/'cutaway.png').convert('RGBA');HAND=Image.open(AS/'hand.png').convert('RGBA')
+BALL=Image.open(AS/'whole-ball.png').convert('RGBA');_m=Image.new('L',BALL.size);ImageDraw.Draw(_m).ellipse((4,4,BALL.width-4,BALL.height-4),fill=255);BALL.putalpha(Image.fromarray(np.minimum(np.array(BALL.getchannel('A')),np.array(_m)).astype('uint8')));BRUNO=Image.open(AS/'bruno.png').convert('RGBA');REF=Image.open(AS/'ref-listen.png').convert('RGBA');CALL=Image.open(AS/'ref-call.png').convert('RGBA');VAR=Image.open(AS/'var-review.png').convert('RGBA')
 PAPER='#f1eddd';INK='#26352f';RED='#b33337';GREEN='#467765'
 F='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf';B='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 def text(d,xy,s,n=24,c=INK,b=False):d.text(xy,s,font=ImageFont.truetype(B if b else F,n),fill=c)
 def base():return Image.new('RGB',(540,960),PAPER)
-def ball(d,c=(270,455),r=164,cut=False,t=0):
- x,y=c;d.ellipse((x-r,y-r,x+r,y+r),fill='#fffdf1',outline=INK,width=3)
- if cut:
-  for a in range(0,360,60):
-   z=math.radians(a);d.line((x+(r-12)*math.cos(z),y+(r-12)*math.sin(z),x,y),fill=GREEN,width=3)
-  d.rounded_rectangle((x-32,y-27,x+32,y+27),8,fill=INK);text(d,(x-22,y-12),'IMU',18,PAPER,True)
- else:
-  for a in range(0,360,72):
-   z=math.radians(a);xx=x+r*.62*math.cos(z);yy=y+r*.62*math.sin(z)
-   d.arc((xx-34,yy-34,xx+34,yy+34),a,a+145,fill=GREEN,width=3)
-
+def paste(im,a,xy,wh):
+ a=a.resize(tuple(map(int,wh)),Image.Resampling.LANCZOS);im.paste(a,tuple(map(int,xy)),a)
+def act(a,t,strength=1):
+ # Local deformation, shoulders/arm/hand/head move independently within silhouette.
+ w,h=a.size;yy,xx=np.mgrid[:h,:w].astype('float32');dx=np.zeros_like(xx);dy=np.zeros_like(xx)
+ for cx,cy,rx,ry,vx,vy in [(.5,.15,.2,.16,1.5,-1),(.15,.35,.22,.25,-3,2),(.8,.35,.22,.25,3,-2),(.5,.6,.28,.3,1,0)]:
+  q=np.exp(-(((xx/w-cx)/rx)**2+((yy/h-cy)/ry)**2)*2)*math.sin(t*2.3)*strength;dx+=vx*q;dy+=vy*q
+ return Image.fromarray(cv2.remap(np.array(a),xx-dx,yy-dy,cv2.INTER_CUBIC,borderMode=cv2.BORDER_CONSTANT))
+def shell(im,xy,r,t=0):
+ # Simulated ball motion, not a logged trajectory.
+ a=BALL.rotate(t*13,Image.Resampling.BICUBIC,expand=False);paste(im,a,(xy[0]-r,xy[1]-r),(2*r,2*r))
+def wires(d,a,b,t,count=7):
+ # Discrete moving samples, not a fabricated measured waveform.
+ for j in range(count):
+  q=((t*.7+j/count)%1);x=a[0]+(b[0]-a[0])*q;y=a[1]+(b[1]-a[1])*q+15*math.sin(q*math.pi)
+  d.ellipse((x-3,y-3,x+3,y+3),fill=GREEN)
 def draw(kind,t):
  im=base();d=ImageDraw.Draw(im)
  if kind=='adidas':
-  text(d,(30,90),'THE NEXT DAY',22,RED,True)
-  if t>=.62:text(d,(30,142),'adidas',63,INK,True)
-  paste(im,PHOTO,(102,276),(336,336))
-  if t>2.3:
-   d.line((138,672,139+min(274,(t-2.3)*240),672),fill=RED,width=3)
-  if t>=2.3:text(d,(75,672),'No Ronaldo contact',30,INK,True)
-  text(d,(80,723),'adidas statement via FIFA',18)
-  text(d,(74,769),'Al Rihla exterior: retail-ball photo',13)
+  text(d,(30,96),'THE NEXT DAY',22,RED,True)
+  if t>=.62:text(d,(30,140),'adidas',54,INK,True)
+  # Exterior is evidence of design only, never proof of connected internals.
+  paste(im,PHOTO,(90,267),(360,360))
+  if t>=2.3:
+   q=min(1,(t-2.3)/.4);d.line((89,677,89+350*q,677),fill=RED,width=4);text(d,(85,697),'No Ronaldo contact',29,INK,True)
+  text(d,(95,764),'Statement via FIFA · retail exterior photo',13)
  elif kind=='suspension':
-  text(d,(35,120),'INSIDE THE MATCH BALL',30,INK,True)
-  q=min(1,t/1.25)
-  if q<1:paste(im,PHOTO,(90,290),(360,360))
-  else:
-   paste(im,CUT,(98,218),(344,425))
-   if t>=2.08:
-    d.line((277,422,409,683),fill=RED,width=2);text(d,(351,690),'SENSOR',17,RED,True)
-  text(d,(113,730),'Conceptual cutaway',16)
+  text(d,(30,98),'INSIDE THE BALL',33,INK,True)
+  # Match shape into original cutaway through a progressive curved reveal.
+  if t<.25:shell(im,(270,452),187,0)
+  art=CUT.resize((362,448),Image.Resampling.LANCZOS)
+  # Conceptual shell sway, suspended central capsule stays fixed.
+  yy,xx=np.mgrid[:448,:362].astype('float32');weight=1-np.exp(-((yy-224)/95)**2);dx=weight*4*math.sin(max(0,t-.8)*3);art=Image.fromarray(cv2.remap(np.array(art),xx-dx,yy,cv2.INTER_CUBIC,borderMode=cv2.BORDER_CONSTANT))
+  q=min(1,max(0,t/.35));m=Image.new('L',art.size,int(255*q))
+  # Hide whole ball behind conceptual cutaway once transition completes.
+  if q>0:d.rectangle((66,228,474,665),fill=PAPER)
+  layer=Image.new('RGBA',im.size);layer.paste(art,(89,223));alpha=Image.new('L',im.size);alpha.paste(m,(89,223));layer.putalpha(Image.fromarray(np.minimum(np.array(layer.getchannel('A')),np.array(alpha)).astype('uint8')));im.paste(layer,(0,0),layer)
+  d=ImageDraw.Draw(im)
+  if t>=1.3:
+   # Motion evidence emerges from central sensor, not an arbitrary circuit diagram.
+   for j in range(5):
+    q=((t-1.3)*.6+j/5)%1;x=270+q*155;y=448-q*215;d.ellipse((x-3,y-3,x+3,y+3),fill=RED)
+  text(d,(150,741),'Conceptual cutaway',15)
  elif kind=='sampling':
-  text(d,(36,108),'500',110,RED,True);text(d,(39,240),'measurements each second',25,INK,True)
-  # One-second strip is assembled as 500 discrete samples, not a measured event trace.
-  progress=min(1,t/1.2)
-  for i in range(int(500*progress)):
-   x=36+(i%50)*9.4;y=350+(i//50)*24
-   d.rectangle((x,y,x+4,y+12),fill=INK)
-  text(d,(36,664),'1 SECOND',21,INK,True);text(d,(36,713),'Movement samples, not a verdict.',21)
- elif kind=='evidence':
-  text(d,(35,110),'A TINY TOUCH',36,INK,True)
-  ball(d,(188,426),123)
-  # Hand actually brushes surface, then a packet moves to official review.
-  q=min(1,max(0,t/.9));paste(im,HAND,(290+70*(1-q),381),(315,166))
-  if t>.9:
-   r=14+10*(t-.9);d.ellipse((309-r,411-r,309+r,411+r),outline=RED,width=2)
-   z=min(1,(t-.9)/1.6);xx=192+235*z;yy=600+40*z
-   d.rectangle((xx-16,yy-13,xx+16,yy+13),fill=GREEN)
-   d.ellipse((402,582,452,632),outline=INK,width=3);d.arc((378,630,476,727),180,360,fill=INK,width=3)
-  text(d,(80,769),'Data helps officials check.',25,INK,True)
- elif kind=='euro':
-  text(d,(34,100),'EURO 2024',44,RED,True);text(d,(34,165),'BELGIUM v SLOVAKIA',27,INK,True)
-  ball(d,(202,448),124)
-  q=min(1,t/3.2);paste(im,HAND,(304+60*(1-q),403),(298,157))
-  if t>3.2:
-   d.ellipse((303,419,333,465),outline=RED,width=3);text(d,(38,666),"OPENDA'S TOUCH",32,INK,True)
-  if t>4.3:
-   text(d,(38,733),'Before the equaliser',25,GREEN,True)
+  # Keep ball/sensor in view while dense samples leave it. No generic grid.
+  paste(im,CUT,(14,263),(255,315));text(d,(308,224),'500',65,RED,True)
+  text(d,(310,305),'PER SECOND',16,INK,True)
+  for j in range(65):
+   q=((j/65+t*.5)%1);x=246+q*243;y=444+65*math.sin(j*2.4)*(q*.7+.3)
+   d.line((x,y,x+4,y),fill=GREEN,width=2)
+  text(d,(94,702),'Movement, sampled.',30,INK,True)
+  text(d,(65,751),'Illustrative samples, not a measured trace',17)
+ elif kind in ['evidence','euro']:
+  euro=kind=='euro'
+  text(d,(30,90),'EURO 2024' if euro else 'CHECKING A TINY TOUCH',36 if euro else 28,RED if euro else INK,True)
+  if euro:text(d,(30,144),'BELGIUM v SLOVAKIA',25,INK,True)
+  touch=3.2 if euro else .9;q=min(1,t/touch)
+  shell(im,(190,425),140,t*.09)
+  paste(im,act(HAND,t,.5),(316+65*(1-q),376),(302,159))
+  if t>=touch:
+   # Small evidence ring marks the illustration's brush, not a specific measured location.
+   r=12+8*min(1,t-touch);d.ellipse((326-r,411-r,326+r,411+r),outline=RED,width=2)
+   if euro:
+    text(d,(31,673),"OPENDA'S TOUCH",30,INK,True)
+    if t>4.3:text(d,(31,726),'Before the equaliser',23,GREEN,True)
+   else:
+    paste(im,act(VAR,t),(325,598),(164,176));wires(d,(184,554),(371,649),t)
  elif kind=='judgment':
-  text(d,(32,100),'THE OFFICIALS DECIDE',32,INK,True)
-  # Evidence moves into referee review, then decision changes goal state.
-  d.rounded_rectangle((36,259,236,460),15,outline=GREEN,width=4)
-  text(d,(65,324),'TOUCH',29,GREEN,True)
-  d.line((254,359,330,359),fill=RED,width=4)
-  d.polygon([(330,359),(312,349),(312,369)],fill=RED)
-  d.ellipse((370,292,432,354),fill=INK);d.rounded_rectangle((349,357,455,477),20,fill=INK)
-  text(d,(345,499),'REVIEW',23)
-  if t>.88:
-   text(d,(332,547),'HANDBALL',20,RED,True)
-  if t>1.54:
-   d.rounded_rectangle((50,601,490,716),10,fill=RED);text(d,(83,632),'GOAL CANCELLED',32,PAPER,True)
+  text(d,(30,96),'THE OFFICIALS DECIDE',31,INK,True)
+  # Illustrated operator -> on-field official, not an automated ball verdict.
+  paste(im,act(VAR,t),(0,291),(271,289))
+  a=act(REF if t<1.54 else CALL,t,.8);ww=164 if t<1.54 else 254
+  paste(im,a,(310 if t<1.54 else 263,230),(ww,414))
+  wires(d,(209,494),(329,384),t,5)
+  if t>.88:text(d,(32,683),'HANDBALL',30,RED,True)
+  if t>1.54:text(d,(32,732),'Goal cancelled',27,INK,True)
  elif kind=='payoff':
-  text(d,(30,108),'DIFFERENT TOURNAMENT.',29,INK,True)
-  if t>=.94:text(d,(30,153),'DIFFERENT DECISION.',29,RED,True)
-  paste(im,CUT,(62,310),(179,221))
-  d.line((252,419,323,419),fill=GREEN,width=3)
-  d.ellipse((378,343,436,401),fill=INK);d.rounded_rectangle((349,407,467,527),18,fill=INK)
-  text(d,(52,582),'SENSOR',25,GREEN,True);text(d,(322,582),'OFFICIALS',25,INK,True)
+  # Two tournament cases become evidence and human call through physical objects.
+  text(d,(30,100),'DIFFERENT TOURNAMENT.',29,INK,True)
+  if t>.94:text(d,(30,145),'DIFFERENT DECISION.',29,RED,True)
+  paste(im,CUT,(30,311),(230,285));paste(im,act(REF,t),(339,252),(161,407))
   if t>2.9:
-   text(d,(45,642),'EVIDENCE',27,GREEN,True)
-   d.line((216,615,313,615),fill=GREEN,width=3);d.polygon([(313,615),(298,606),(298,624)],fill=GREEN)
-  if t>4.25:
-   text(d,(337,642),'CALL',27,RED,True)
+   wires(d,(250,450),(351,431),t,7);text(d,(57,700),'EVIDENCE',26,GREEN,True)
+  if t>4.25:text(d,(326,700),'THE CALL',26,RED,True)
+  text(d,(104,758),'Concept: evidence to human judgment',16)
  return im

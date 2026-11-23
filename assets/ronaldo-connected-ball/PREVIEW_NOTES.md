@@ -34,3 +34,6 @@ Same retained free narration, no re-synthesis. Word timings from retained-take a
 - Full-resolution final render and exhaustive transition/native platform-overlay inspection.
 - Motion polish remains below bespoke studio in-between character animation. Mechanism art is stronger, but official-review scene remains simple symbolic explanation.
 - No final cover, platform descriptions, publication decision or schedule.
+
+## v11 revision,23Nov13:22
+User praised opening and asked remainder to match illustrated quality, then suggested drawing-on reveal. Original v8 opening preserved in painted_rig_v8.py. Optional0.55s line-to-colour effect added before existing action, not literal hand-painted pixel production. New original generated Bruno/referee/operator/whole-ball assets replace pitch dots/cards/grid/icons. Referee/operator are generic illustrative people, not verified real officials or actual review-room footage. Bruno captain armband removed and kit colour corrected before use. Generic ball art must not be called Al Rihla or Euro hardware. End conceptual framing does not assert identical technology internals across tournaments. Same retained voice/music, acoustic review remains open. QA again passes, no publication.
