@@ -1,6 +1,6 @@
 from PIL import Image,ImageDraw,ImageFont,ImageFilter
 import numpy as np,math,pathlib,cv2
-SRC=Image.open('/downloads/ronaldo-2022-short-sleeve-keyposes.png').convert('RGBA').resize((1313,875),Image.Resampling.LANCZOS)
+SRC=Image.open(pathlib.Path(__file__).resolve().parent/'assets/ronaldo-connected-ball/keyposes.png').convert('RGBA').resize((1313,875),Image.Resampling.LANCZOS)
 R=pathlib.Path('/tmp/twk-ronaldo-proof/out/painted');R.mkdir(exist_ok=True)
 size=SRC.size
 outline=[(505,52),(557,48),(585,67),(584,112),(616,129),(694,147),(759,159),(817,175),(844,220),(867,249),(869,278),(848,289),(832,272),(812,257),(801,230),(762,213),(735,213),(757,266),(766,305),(814,371),(843,436),(871,487),(891,535),(922,567),(947,620),(945,654),(923,664),(904,641),(889,602),(871,575),(852,557),(827,521),(802,483),(773,453),(744,427),(714,417),(704,433),(733,472),(766,506),(780,546),(777,574),(756,594),(735,576),(722,547),(710,520),(675,495),(645,469),(626,447),(613,414),(610,379),(619,341),(605,318),(575,311),(548,298),(519,285),(495,280),(477,269),(473,251),(486,235),(505,237),(515,250),(523,253),(532,230),(529,210),(529,176),(518,156),(509,141),(497,132),(495,108),(499,87)]
