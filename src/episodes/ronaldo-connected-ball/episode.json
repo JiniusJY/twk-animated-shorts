@@ -1,0 +1,12 @@
+{
+  "slug": "ronaldo-connected-ball",
+  "title": "The ball that snitched on Ronaldo",
+  "developmentOnly": true,
+  "script": "Cristiano Ronaldo celebrated this World Cup goal. But did he even touch the ball? Portugal versus Uruguay, 2022. FIFA awarded the goal to Bruno Fernandes. The next day, Adidas said the ball's sensor showed no contact from Ronaldo. Inside the match ball, a sensor sits in suspension, measuring movement five hundred times a second. When officials need to check a tiny touch, that data can help. At Euro 2024, connected-ball technology detected Openda's touch before Belgium's equaliser. The officials judged it handball and cancelled the goal. Different tournament, different decision. Same idea: the sensor gives evidence. The officials make the call. Follow TechWhoKnows for the tech inside the game.",
+  "voice": {
+    "temperature": 0.8,
+    "topP": 0.8,
+    "speed": 1.0
+  },
+  "status": "development; factual and visual review pending; not registered for release"
+}
