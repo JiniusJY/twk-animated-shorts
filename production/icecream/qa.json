@@ -1,13 +1,13 @@
 {
-  "file": "TWK-Ice-Cream-Final-v4.mp4",
-  "sha256": "297192fda7f168b15c5ef7635d781e91c6a9afb0e272c0a0ecf510bd96229e98",
-  "duration": 63.5,
+  "file": "TWK-Ice-Cream-Final-v5.mp4",
+  "sha256": "da2335765951c7a6a2ffa30ca1716d2f70d53a9b40304501cd12469c3133fbe1",
+  "duration": 53.64,
   "width": 1080,
   "height": 1920,
   "fps": 30,
-  "integratedLUFS": -15.84,
-  "truePeakDBTP": -1.75,
-  "acousticListening": "unverified",
+  "integratedLUFS": -15.63,
+  "truePeakDBTP": -1.77,
+  "acousticListening": "unfulfilled, cannot hear audio through available inspection; affected WAV sent parent",
   "pixelReview": "whole film sampled, key corrected frames from encoded output inspected",
   "blackFrames": "none detected",
   "freezeCaveat": "designed holds remain; source action12fps interpolated30; not every scene continuous physical motion",
@@ -20,5 +20,7 @@
     "https://pixabay.com/music/comedy-quirky-comedy-strings-629010/",
     "https://pixabay.com/service/license-summary/"
   ],
-  "endcard": "Populated approved card from58.17seconds, tap58.4-58.7, hold through63.5; exact encoded frames inspected"
+  "endcard": "Populated approved card from49.36seconds through53.64",
+  "voice": "Humanised167word script; ending at0.88tempo;0.30s breath before ending and0.70s preCTA gap",
+  "motion": "New physical beater close-up, sequenced phase records, sampled points; encoded strips inspected"
 }

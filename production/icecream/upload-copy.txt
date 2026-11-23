@@ -1,5 +1,5 @@
 ICE CREAM MACHINE EPISODE
-Finished master: TWK-Ice-Cream-Final-v4.mp4
+Finished master: TWK-Ice-Cream-Final-v5.mp4
 Cover: TWK-Ice-Cream-Cover-v1.jpg
 Release status: review only. Nothing posted or scheduled.
 
@@ -42,6 +42,6 @@ PRODUCTION NOTES, NOT PART OF POST
 - No legal or secret-menu claim. No outage statistic.
 - The temperature curve is hypothetical; only the threshold/deadline labels are numerical source facts.
 - Music differs from the Ronaldo episode. Source and licence checked. No claim that it is trending; no acoustic audition completed.
-- Audio: measured encoded output -15.84 LUFS integrated, -1.75 dBTP. Source narration 60.97 seconds. Finished cut 63.5 seconds, 30 fps, 1080x1920.
+- Audio: measured encoded output -15.63 LUFS integrated, -1.77 dBTP. Revised conversational script167words; final thought slowed12%, with a clear pause before CTA. Finished cut 53.64 seconds, 30 fps, 1080x1920.
 - Native geometry renders were 540x960 at 12 fps, optical-flow interpolation to 30 fps; authored titles/records/captions run at 720x1280/30 fps, final upscaled to 1080x1920. Not native 1080 geometry.
 - Retains existing approved newsletter endcard, not a new logo design.
