@@ -16,3 +16,12 @@ class Review(unittest.TestCase):
  def test_separate_destinations(self):
   x=self.good();x['destinations'].append('tiktok')
   with self.assertRaises(AssertionError):check(x)
+
+ def test_nonboolean_review_rejected(self):
+  x=self.good();x['reviews']['instagram']['titles']='false'
+  with self.assertRaises(AssertionError):check(x)
+ def test_changed_video_rejected(self):
+  import tempfile
+  with tempfile.NamedTemporaryFile() as f:
+   f.write(b'changed');f.flush()
+   with self.assertRaises(AssertionError):check(self.good(),f.name)

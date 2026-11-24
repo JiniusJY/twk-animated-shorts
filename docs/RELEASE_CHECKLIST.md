@@ -80,3 +80,7 @@ named explicitly with a plan, never silently waved through.
 Log every published variant with `python3 scripts/experiments.py log` (one
 hypothesis, one deliberate change), compare against matched cohorts with
 `experiments.py report`. Never auto-post, and never call one winner a formula.
+
+## Final platform release review
+
+Render-only CI output remains a prerelease and is not permission to post. Before scheduling or releasing reviewed bytes, run `python scripts/release_gate.py --video <master.mp4> --review <destination-review.json> --expected-seconds <duration>`. This checks the exact media hash against per-destination pixel/cover/disclosure review, then runs the media gate. Missing review fails closed. A review record cannot be copied across changed masters. This repository has no social-posting API path; operators must not treat a successful render or GitHub prerelease as this final release gate.

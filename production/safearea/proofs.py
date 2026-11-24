@@ -22,7 +22,7 @@ def run(src,kind,times):
  cap.release()
 if __name__=='__main__':
  cues=json.load(open('/tmp/twk-icecream/voice-v5/caption-cues.json'));run('/downloads/TWK-Ice-Cream-Safearea-v7-preview.mp4','ice-v7',[(v['s']+v['e'])/2 for v in cues])
- words=json.load(open('/downloads/ronaldo-tech-narration/words.json'));times=[];last=-1
- for w in words:
-  if w['s']>=last+1:times.append(w['s']+.05);last=w['s']
- run('/downloads/TWK-Ronaldo-Safearea-v17-preview.mp4','ron-v17',times+[39.5,41])
+ import sys
+ sys.path.insert(0,'/tmp/twk-ronaldo-proof')
+ ns={};src=open('/tmp/twk-ronaldo-proof/compose_tech_final.py').read().split('if __name__')[0];ns['__file__']='/tmp/twk-ronaldo-proof/compose_tech_final.py';exec(src,ns)
+ run('/downloads/TWK-Ronaldo-Safearea-v17-preview.mp4','ron-v17',[(p[0]['s']+p[-1]['e'])/2 for p in ns['pages'] if p[0]['s']<38.94]+[38.95,40,42])
