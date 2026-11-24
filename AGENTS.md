@@ -36,4 +36,4 @@ New episodes include a short branded end card after the completed story: Follow 
 
 ## Release gates
 
-Apply docs/VIDEO_QA_RULES.md phone-app layout checks and per-asset disclosure review. No blanket AI flag and no unasked optional public caveats. A required disclosure is flagged before release, not silently selected. Existing user settings are not overwritten. These project checks do not grant publishing authority.
+Apply docs/VIDEO_QA_RULES.md phone-app layout checks and per-asset disclosure review. Never change AI-label settings on any platform; preserve existing state exactly. Do not ask again or add unapproved disclosure text. Report an unavoidable release blocker without choosing settings. No unasked optional public caveats. These project checks do not grant publishing authority.
