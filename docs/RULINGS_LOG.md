@@ -194,3 +194,7 @@ Every episode also follows [PUBLISHING_SYSTEM.md](PUBLISHING_SYSTEM.md): platfor
 - No "ILLUSTRATION" tags or inline source citations on original graphics. Labels/citations are used ONLY when imagery is pulled from the internet or real footage is used. Uncertainty labels that carry meaning (e.g. "APPARENT BREACH", "no evidence the two are linked") are content, not citations - they stay.
 - Every text element inside a container is measured to fit (canvas fitSize against real font metrics). Never estimate glyph widths.
 - Release verification: full-res sweep over every shot before a cut is considered gate-ready; the owner must never be the QC layer.
+
+## 24 November 2026: video-reference research workflow
+
+Owner explicitly asked to use niche-video discovery and AI usefulness ranking before new videos, and specified twk-animated-shorts plus careful code review. Existing real-video research remains the foundation. Structured reference evidence, explicit motion/audio coverage, reasoned usefulness scores and selected lessons now precede new concepts/storyboards through new_episode.py. No paid service, new account or changes to approved videos are implied.

@@ -19,3 +19,7 @@ The default production system is [docs/CONTENT_SYSTEM.md](docs/CONTENT_SYSTEM.md
 8. Deliver the verified result with material caveats. Do not call a rough cut finished or imply technical QA proves creator-level quality.
 
 The legacy cartoon renderer and bridge assets remain available for an explicit creative choice. Their old camera, grain, character and scene-count rules are not requirements for new episodes. Do not claim internal review scores, specific software brands or generic effects make a video high quality.
+
+## Before a new concept or storyboard
+
+Extend the existing real-video research step with [docs/REFERENCE_RESEARCH.md](docs/REFERENCE_RESEARCH.md). Discover references, actually review motion, rank editorial usefulness with observed reasons, and map selected lessons into the concept. `new_episode.py` requires the structured record. No metadata-only craft rankings, inferred hearing, copied assets or paid setup. Existing approved videos stay unchanged.

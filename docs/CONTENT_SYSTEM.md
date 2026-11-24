@@ -31,7 +31,7 @@ Report what was verified at each gate. Never start a workflow dispatch or publis
 
 ## 3. Pre-production research
 
-Do this for every episode, without being asked. Record the evidence in the episode's plan notes.
+Do this for every episode, without being asked. Record the evidence in the episode's plan notes and `reference_research` record before choosing the concept/storyboard. Follow [REFERENCE_RESEARCH.md](REFERENCE_RESEARCH.md); `new_episode.py` validates this record for new episodes. This extends the existing real-video study, not a second story scout.
 
 - **Ground decisions in real videos.** Base motion, pacing, transition and hook choices on frame-level study of current top tech shorts (Bright Data TikTok/Shorts scrape and direct reference pulls). Articles about virality are background only.
 - **Refresh every episode.** Pull recent videos from the target creators and note cut cadence, camera moves, transition types and hook framing.

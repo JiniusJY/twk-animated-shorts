@@ -1,0 +1,25 @@
+name: Reference research regressions
+on:
+  push:
+    paths:
+      - 'scripts/reference_review.py'
+      - 'scripts/new_episode.py'
+      - 'tests/test_reference_review.py'
+      - '.github/workflows/reference-research-tests.yml'
+  pull_request:
+    paths:
+      - 'scripts/reference_review.py'
+      - 'scripts/new_episode.py'
+      - 'tests/test_reference_review.py'
+      - '.github/workflows/reference-research-tests.yml'
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m unittest discover -s tests -p test_reference_review.py -v

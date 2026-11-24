@@ -8,6 +8,10 @@ editorial policy from the content-system playbook, not a platform formula.
 
 Use the original editorial illustration system in `CONTENT_SYSTEM.md`. New episodes start from `scripts/new_episode.py` and an authored plan, not a repeated dashboard or a fixed cartoon scene. Review a real free-only voice audition and the whole assembled edit. A rough cut with old audio is not final.
 
+## New-episode pre-production gate
+
+Before concept/storyboard creation, complete the reference review in [REFERENCE_RESEARCH.md](REFERENCE_RESEARCH.md). `python scripts/reference_review.py --report <research.json>` validates evidence and produces the usefulness order; `new_episode.py` requires the same record in the authored plan. Existing approved episodes are not retroactively changed.
+
 ## Automated gates (CI, blocking)
 
 - `npx tsx scripts/validate_episode.ts <episode.json>` - schema: required fields,

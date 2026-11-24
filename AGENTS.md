@@ -37,3 +37,7 @@ New episodes include a short branded end card after the completed story: Follow 
 ## Phone-safe production and release
 
 Read docs/VIDEO_QA_RULES.md for destination-specific phone layout, immutable captions, separate platform performance tests and the global never-change-AI-label rule. Run the final hash-bound release preflight before social scheduling. A successful render is a prerelease, not permission to publish.
+
+## Before a new concept or storyboard
+
+Extend the existing real-video research step with [docs/REFERENCE_RESEARCH.md](docs/REFERENCE_RESEARCH.md). Discover references, actually review supported video evidence, rank editorial usefulness with observed reasons, and map selected lessons into the concept. `new_episode.py` requires the structured record. No metadata-only craft rankings, inferred hearing, copied assets or paid setup. Existing approved videos stay unchanged.

@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import re
+from reference_review import validate_research
 
 GRAPHICS = {'hook','lab','stakes','question','clock','storage','counter','odometer','overflow','power','directive','payoff','reset',
             'ncic-hook','ncic-stop','ncic-files','ncic-records','ncic-clock','ncic-doors','ncic-breach','ncic-pattern','ncic-payoff'}
@@ -13,6 +14,7 @@ def build_episode(plan):
     missing = REQUIRED - plan.keys()
     if missing: raise ValueError('Missing authored plan fields: '+', '.join(sorted(missing)))
     if not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,63}',plan['slug']):raise ValueError('Invalid slug')
+    validate_research(plan.get('reference_research'))
     if not plan['claim_ledger']:raise ValueError('A sourced claim ledger is required')
     for i,s in enumerate(plan['shots']):
         if s.get('graphic') not in GRAPHICS:raise ValueError(f'Shot {i}: implement and register the required editorial rig before creation')
