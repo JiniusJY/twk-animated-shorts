@@ -25,3 +25,11 @@ The renderer, caption cues and final encode are one release candidate. Any chang
 - A layout revision keeps narration, music, timing and facts unchanged unless separately requested. Recheck hashes and get review before publishing the changed master. Keep affected unpublished records held; never delete/repost existing live posts as a layout fix without approval.
 - No automatic AI-disclosure tick, and no automatic false value. Complete a per-asset, per-platform assessment before release. AI assistance alone is not the test. Flag any specific required exception to the owner before publishing; do not silently override the owner's setting or relabel prior videos.
 - No optional public AI/illustration caveats or source dumps by default. Keep the fact-check ledger internal. Preserve required licence credits, and raise a concrete misleading-content risk or mandatory disclosure briefly before publishing. Do not remove an actually required disclosure silently.
+
+## Platform-specific performance checks
+
+- Compare YouTube Shorts only with YouTube Shorts, Instagram Reels only with Instagram Reels, and TikTok only with TikTok. Match actual post age and runtime bands where feasible; report the age/freshness gap, not an exact checkpoint when late.
+- TikTok: test an immediately understandable first 1-2 seconds and purposeful story progression. Track early retention, average watch time, completion and attributable follows when returned. Do not infer distribution cause from views alone.
+- Instagram: inspect first-frame clarity, skip rate, average watch time, reach and shares/saves with their actual definitions. Unsupported completion/follow values remain unavailable, not zero. App-overlay layout is a separate hard QA issue.
+- YouTube: separate exposure/shown-in-feed, chose-to-view versus swipe-away, engaged views and retention when available. Low views without exposure/retention data do not establish an opening failure. Avoid quota-heavy repeated deep reads.
+- A competitor example is creative evidence, not a matched-age benchmark or proof of why an account grew. A shorter runtime, more movement, a song or a posting hour is not a guaranteed growth fix.
