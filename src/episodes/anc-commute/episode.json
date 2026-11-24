@@ -4,70 +4,38 @@
   "title": "Why noise cancelling leaves the conversation",
   "script": "Noise cancelling on. So why can you still hear that conversation?\n\nYour headphones make another sound.\nMicrophones listen to the noise. A processor drives the speaker to produce counter-sound.\nAt your ear, those pressure changes partly cancel.\n\nThe tricky part is making them line up.\nLow-pitched rumble is a good target. Voices keep changing, across a wider range of frequencies. Some speech can still get through.\n\nAnd the electronics have help. The ear cups or ear tips form a physical barrier too. That seal matters.\n\nSo hearing the person beside you doesn't automatically mean your headphones are broken.\nThey can turn down the commute without muting it.\n\nFollow TechWhoKnows for the tech hiding in plain sight.",
   "voice": {
-    "temperature": 0.8,
-    "topP": 0.8,
-    "speed": 1.0,
-    "direction": "Curious conversational storyteller. Warm, precise, lightly amused by the question. Never a lecturer or announcer.",
+    "temperature": 0.88,
+    "topP": 0.85,
+    "speed": 0.97,
+    "direction": "Tell a friend a surprising discovery. Playful curiosity, vivid emphasis, quick setups and deliberate landings.",
     "beats": [
       {
         "before": "Noise cancelling on.",
-        "direction": "Small moment of relief, a casual tap."
+        "direction": "satisfied"
       },
       {
         "before": "So why can you still hear that conversation?",
-        "direction": "Genuinely puzzled, lightly amused, lean into the question."
+        "direction": "curious, lightly amused"
       },
       {
         "before": "Your headphones make another sound.",
-        "direction": "A surprising reveal, give another sound a little weight."
-      },
-      {
-        "before": "Microphones listen to the noise.",
-        "direction": "Clear, brisk, conversational."
-      },
-      {
-        "before": "At your ear,",
-        "direction": "Focus the explanation, calm and precise."
+        "direction": "surprised, emphasis on another"
       },
       {
         "before": "The tricky part",
-        "direction": "Curious turn, do not sound like a lecture."
-      },
-      {
-        "before": "Low-pitched rumble",
-        "direction": "Grounded, matter-of-fact."
+        "direction": "confiding, a small pause before the reveal"
       },
       {
         "before": "Voices keep changing,",
-        "direction": "Lively change in rhythm, never rushed."
-      },
-      {
-        "before": "Some speech can still get through.",
-        "direction": "Honest, lightly reassuring."
-      },
-      {
-        "before": "And the electronics have help.",
-        "direction": "Warm reveal, invite attention back."
-      },
-      {
-        "before": "The ear cups or ear tips",
-        "direction": "Simple and tangible."
-      },
-      {
-        "before": "That seal matters.",
-        "direction": "Small emphasis, do not overstate."
-      },
-      {
-        "before": "So hearing the person beside you",
-        "direction": "Reassuring payoff."
+        "direction": "animated, vary the cadence"
       },
       {
         "before": "They can turn down the commute",
-        "direction": "Dry, warm resolution, leave a little air after it."
+        "direction": "warm, confident payoff, let it breathe"
       },
       {
         "before": "Follow TechWhoKnows",
-        "direction": "Friendly invitation, unhurried."
+        "direction": "friendly invitation, with a smile"
       }
     ]
   },
