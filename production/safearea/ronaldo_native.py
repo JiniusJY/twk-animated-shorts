@@ -33,9 +33,9 @@ def frame(t):
  bg=Image.new('RGB',(540,960),tuple(ar[820,20]))
  if 13.46<=t<19.62:
   bg=Image.new('RGB',(540,960),'#142027')
-  body=im.crop((22,575,518,788)).resize((370,159));bg.paste(body,(60,378))
-  top=im.crop((155,185,385,425));top.thumbnail((140,140));bg.paste(top,(170,207))
-  d=ImageDraw.Draw(bg);d.text((65,351),'SAMPLES, NOT A VERDICT',font=ImageFont.truetype(F,17),fill='#f6f4eb')
+  body=im.crop((22,575,518,788)).resize((430,185));bg.paste(body,(40,250))
+  top=im.crop((155,185,385,425));top.thumbnail((230,230));bg.paste(top,(110,490))
+  d=ImageDraw.Draw(bg);d.text((65,220),'SAMPLES, NOT A VERDICT',font=ImageFont.truetype(F,17),fill='#f6f4eb')
  elif 19.62<=t<22.04:
   bg=Image.new('RGB',(540,960),'#142027');body=im.crop((15,210,525,755)).resize((370,340));bg.paste(body,(60,213))
  elif 27.68<=t<38.94:
@@ -45,11 +45,14 @@ def frame(t):
   elif t<13.46:crop=(30,180,510,805)
   elif t<25.72:crop=(20,180,520,820)
   else:crop=(95,170,520,805)
+  if 8.88<=t<10.94:crop=(30,180,510,675)
   body=im.crop(crop);body.thumbnail((530,655));bg.paste(body,((540-body.width)//2,210))
+ if 8.88<=t<10.94:
+  plate=im.crop((32,675,508,796)).resize((330,84));bg.paste(plate,(60,440))
  d=ImageDraw.Draw(bg)
  for j,line in enumerate(head):
   n=23
-  while d.textlength(line,font=ImageFont.truetype(F,n))>370:n-=1
+  while d.textlength(line,font=ImageFont.truetype(F,n))>350:n-=1
   d.text((235,151+j*32),line,font=ImageFont.truetype(F,n),fill=('#26352f' if t<2.66 or 25.72<=t<27.68 else '#f6f4eb'),anchor='mt')
  pg=next((p for p in pages if p[0]['s']<=t<max(p[-1]['e'],p[0]['s']+.22)),None)
  if pg:
@@ -57,8 +60,9 @@ def frame(t):
   for word in txt.split():
    if lines and d.textlength(lines[-1]+' '+word,font=ImageFont.truetype(F,n))<=305:lines[-1]+=' '+word
    else:lines.append(word)
-  d.rounded_rectangle((60,557,390,566+len(lines)*28),8,fill='#142027')
-  for j,line in enumerate(lines):d.text((220,564+j*28),line,font=ImageFont.truetype(F,n),fill='white',anchor='mt')
+  cy=442 if 13.46<=t<19.62 else 557
+  d.rounded_rectangle((60,cy,390,cy+9+len(lines)*28),8,fill='#142027')
+  for j,line in enumerate(lines):d.text((220,cy+7+j*28),line,font=ImageFont.truetype(F,n),fill='white',anchor='mt')
  return bg
 if __name__=='__main__':
  import sys

@@ -1,5 +1,9 @@
-# Experimental layout revision recipes
+# Layout revision recipes
 
-These scripts preserve approved audio through separate muxing. They are working reproduction recipes for the two held layout reviews, not an accepted production renderer. They depend on locally retained source assets and original composition modules at their recorded paths. Do not dispatch them in CI, publish their output automatically, or infer release approval from their presence here.
+Working recipes preserve approved audio through separate muxing and retain the source timeline. They depend on retained source assets and original composition modules at the recorded local paths. These are not a portable replacement renderer.
 
-Current known failures: final media freeze threshold after reduced layout, source-label readability, covers still awaiting review. Source masters pass the same media gate. Use shot-specific crops rather than a whole-frame shrink, and inspect each encoded caption cue and title state. No release review JSON has been marked complete for these revisions.
+Ronaldo v17 and ice v7 final layouts pass the unchanged media gate. Final visual review checks every caption cue, title state, information-heavy diagram, end card, destination overlay and cover crop. Media gate success alone is not a release approval. Use the hash-bound release preflight and record the actual review.
+
+Phone-safe layout is shot-specific. Nonessential imagery can fill the canvas; essential text and diagram labels must remain readable outside the destination UI bands. Never shrink the whole frame as the sole correction.
+
+AI-label settings are owner-controlled: never enable, disable or otherwise change existing label state on any platform. Do not add a disclosure caption as a workaround without approval. For updates, preserve existing state and verify it before and after. If a future required choice cannot be avoided, report the blocker rather than making the choice. This rule supersedes any prior blanket label default.

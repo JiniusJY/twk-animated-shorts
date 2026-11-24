@@ -58,7 +58,9 @@ def frame(t):
   d=ImageDraw.Draw(im);d.line((80,700,520,700),fill=ns['teal'],width=5)
  elif t>=49.36:
   im=card(540,960).resize((720,1280))
- safe_caption(im,t);return im
+
+ if t<49.36:safe_caption(im,t)
+ return im
 if __name__=='__main__':
  if '--proof' in sys.argv:
   for t in [0,9.8,13.5,19.5,23,28,32,35.5,41,46,50]:frame(t).save('/tmp/safearea/ice-native-'+str(t)+'.png')
