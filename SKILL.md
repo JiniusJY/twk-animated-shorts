@@ -10,7 +10,7 @@ The default production system is [docs/CONTENT_SYSTEM.md](docs/CONTENT_SYSTEM.md
 ## Production sequence
 
 1. Pick a supportable question and build the source/claim ledger.
-2. Write a concise spoken story and a shot-specific storyboard with unique narration anchors.
+2. Write a concise spoken story and a shot-specific storyboard with unique narration anchors. Before voice generation, apply [references/content-skills/SKILL.md](references/content-skills/SKILL.md) and save the [script review](docs/SCRIPT_REVIEW_TEMPLATE.md). This adds hook, causal-flow, plain-language and specific-writing checks without changing truth, CTA or release controls.
 3. Create original illustrations or rigs that show the mechanism. Do not force unrelated stories into the Boeing pilot scenes.
 4. Audition short voice performances. Free Fish model only; no paid or legacy fallback. Review an actual take.
 5. Use real aligned words and the shared editorial timing map for picture/actions/SFX.

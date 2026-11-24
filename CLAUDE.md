@@ -7,3 +7,5 @@ New work defaults to original, shot-specific editorial illustration. Keep the le
 Free Fish model only: `s2.1-pro-free`. Never add paid/legacy fallback. No automatic workflow dispatch or publication. A local picture rough cut with old narration is not a finished voice or sound revision.
 
 Protect secrets and asset rights. Check the actual rendered pixels and listen to the final mix. Review unsupported claims and analogy labels as carefully as narration.
+
+For TWK script drafting and review, use `references/content-skills/SKILL.md` after source/reference research and before voice generation, and save `docs/SCRIPT_REVIEW_TEMPLATE.md` with the episode notes. This is an adapted project workflow, not a global installation or permission to change accepted videos.

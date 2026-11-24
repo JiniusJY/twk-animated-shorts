@@ -64,6 +64,8 @@ Sources: writepanda.ai Fireship study, viralmint.net hook study, viralvault.stud
 
 ### Writing
 
+Run the project-scoped [script editor](../references/content-skills/SKILL.md) after source/reference research and before voice generation. Save a filled [script review](SCRIPT_REVIEW_TEMPLATE.md) with the episode notes. It checks hook clarity, causal story flow, plain technical language and specific writing. External writing formulas do not override factual limits, the spoken follow CTA, accepted assets or release approval. A personal voice profile must use authentic user samples, not assistant-authored narration presented as the user's speech.
+
 - Write spoken English. Open on the interesting fact, with no channel intro. Speak from the first frame.
 - The first 3 seconds establish the specific tension or consequence in both voice and picture.
 - Default length is 45-65s. Prefer the short end when the story fits. Never pad to a number, and never race a long script to hit one.
