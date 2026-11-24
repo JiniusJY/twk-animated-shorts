@@ -1,0 +1,75 @@
+{
+  "slug": "anc-commute",
+  "developmentOnly": true,
+  "title": "Why noise cancelling leaves the conversation",
+  "script": "Noise cancelling on. So why can you still hear that conversation?\n\nYour headphones make another sound.\nMicrophones listen to the noise. A processor drives the speaker to produce counter-sound.\nAt your ear, those pressure changes partly cancel.\n\nThe tricky part is making them line up.\nLow-pitched rumble is a good target. Voices keep changing, across a wider range of frequencies. Some speech can still get through.\n\nAnd the electronics have help. The ear cups or ear tips form a physical barrier too. That seal matters.\n\nSo hearing the person beside you doesn't automatically mean your headphones are broken.\nThey can turn down the commute without muting it.\n\nFollow TechWhoKnows for the tech hiding in plain sight.",
+  "voice": {
+    "temperature": 0.8,
+    "topP": 0.8,
+    "speed": 1.0,
+    "direction": "Curious conversational storyteller. Warm, precise, lightly amused by the question. Never a lecturer or announcer.",
+    "beats": [
+      {
+        "before": "Noise cancelling on.",
+        "direction": "Small moment of relief, a casual tap."
+      },
+      {
+        "before": "So why can you still hear that conversation?",
+        "direction": "Genuinely puzzled, lightly amused, lean into the question."
+      },
+      {
+        "before": "Your headphones make another sound.",
+        "direction": "A surprising reveal, give another sound a little weight."
+      },
+      {
+        "before": "Microphones listen to the noise.",
+        "direction": "Clear, brisk, conversational."
+      },
+      {
+        "before": "At your ear,",
+        "direction": "Focus the explanation, calm and precise."
+      },
+      {
+        "before": "The tricky part",
+        "direction": "Curious turn, do not sound like a lecture."
+      },
+      {
+        "before": "Low-pitched rumble",
+        "direction": "Grounded, matter-of-fact."
+      },
+      {
+        "before": "Voices keep changing,",
+        "direction": "Lively change in rhythm, never rushed."
+      },
+      {
+        "before": "Some speech can still get through.",
+        "direction": "Honest, lightly reassuring."
+      },
+      {
+        "before": "And the electronics have help.",
+        "direction": "Warm reveal, invite attention back."
+      },
+      {
+        "before": "The ear cups or ear tips",
+        "direction": "Simple and tangible."
+      },
+      {
+        "before": "That seal matters.",
+        "direction": "Small emphasis, do not overstate."
+      },
+      {
+        "before": "So hearing the person beside you",
+        "direction": "Reassuring payoff."
+      },
+      {
+        "before": "They can turn down the commute",
+        "direction": "Dry, warm resolution, leave a little air after it."
+      },
+      {
+        "before": "Follow TechWhoKnows",
+        "direction": "Friendly invitation, unhurried."
+      }
+    ]
+  },
+  "status": "development, no release; narration under editorial review"
+}

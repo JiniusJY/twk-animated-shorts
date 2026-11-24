@@ -10,6 +10,7 @@ FISH_VOICE_ID; use --dry-run to print the request payloads without calling.
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -27,7 +28,16 @@ DIRECTIONS = {
 def hook_text(script: str, seconds: float = 10.0, wps: float = 3.7) -> str:
     words = script.split()
     take = max(8, int(seconds * wps))
-    return " ".join(words[:take])
+    # End on a complete sentence where possible; a clipped word-count fragment
+    # makes performance auditions misleading and can alter intonation.
+    selected = " ".join(words[:take])
+    matches = list(re.finditer(r"[.!?](?:\s|$)", selected))
+    if matches:
+        last = matches[-1].end()
+        complete = selected[:last].strip()
+        if len(complete.split()) >= 8:
+            return complete
+    return selected
 
 
 def main():
