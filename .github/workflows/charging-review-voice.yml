@@ -1,0 +1,26 @@
+name: Charging review narration free-only
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Approved review narration, free Fish Vercel route
+        env:
+          FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          TWK_DIAGNOSTIC_RELAY_AUTH: ${{ secrets.TWK_DIAGNOSTIC_RELAY_AUTH }}
+          TWK_DIAGNOSTIC_RELAY_BYPASS: ${{ secrets.TWK_DIAGNOSTIC_RELAY_BYPASS }}
+        run: python scripts/charging_review_voice.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: charging-review-voice-${{ github.run_id }}
+          path: out/charging-review-voice/
+          retention-days: 7
