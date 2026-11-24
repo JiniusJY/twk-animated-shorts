@@ -29,6 +29,7 @@ def validate_research(report):
         for kind in ('video', 'metadata', 'transcript', 'audio'):
             item = extraction.get(kind, {})
             need(item.get('status') in ('available', 'unavailable', 'not_attempted') and bool(item.get('evidence')), rid + ': extraction status/evidence required for ' + kind)
+        need('tiktok' not in ref['platform'].lower() and not (urlparse(url).hostname or '').lower().endswith('tiktok.com'), rid + ': TikTok is excluded from active reference research by owner direction')
         coverage = ref.get('coverage')
         need(coverage in ('metadata_only', 'sampled_frames', 'sampled_sequence', 'motion_review'), rid + ': invalid coverage')
         need(ref.get('audio') in ('heard', 'not_heard', 'unavailable'), rid + ': declare audio access')

@@ -23,6 +23,9 @@ class ReferenceTests(unittest.TestCase):
     def test_sampled_sequence_cannot_claim_pacing(self):
         p=research_fixture();p['references'][0]['coverage']='sampled_sequence'
         with self.assertRaises(ValueError):validate_research(p)
+    def test_tiktok_excluded_from_research_not_posting(self):
+        p=research_fixture();p['references'][0]['platform']='tiktok';p['references'][0]['url']='https://www.tiktok.com/@fixture/video/1'
+        with self.assertRaisesRegex(ValueError,'TikTok is excluded'):validate_research(p)
     def test_rank(self):
         self.assertEqual(validate_research(research_fixture())[0]['usefulness_score'],3)
     def test_new_episode_fails_without_research(self):

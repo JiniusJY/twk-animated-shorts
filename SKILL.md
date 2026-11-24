@@ -23,3 +23,5 @@ The legacy cartoon renderer and bridge assets remain available for an explicit c
 ## Before a new concept or storyboard
 
 Extend the existing real-video research step with [docs/REFERENCE_RESEARCH.md](docs/REFERENCE_RESEARCH.md). Discover references, actually review motion, rank editorial usefulness with observed reasons, and map selected lessons into the concept. `new_episode.py` requires the structured record. No metadata-only craft rankings, inferred hearing, copied assets or paid setup. Existing approved videos stay unchanged.
+
+Reference research uses YouTube and Instagram only. TikTok is excluded from Doomscroll/reference research by owner direction; this does not change TikTok video posting or existing schedules.

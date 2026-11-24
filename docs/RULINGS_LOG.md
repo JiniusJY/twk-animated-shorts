@@ -198,3 +198,7 @@ Every episode also follows [PUBLISHING_SYSTEM.md](PUBLISHING_SYSTEM.md): platfor
 ## 24 November 2026: video-reference research workflow
 
 Owner explicitly asked to use niche-video discovery and AI usefulness ranking before new videos, and specified twk-animated-shorts plus careful code review. Existing real-video research remains the foundation. Structured reference evidence, explicit motion/audio coverage, reasoned usefulness scores and selected lessons now precede new concepts/storyboards through new_episode.py. No paid service, new account or changes to approved videos are implied.
+
+##24November2026: TikTok reference research removed
+
+Owner ended TikTok replies and Doomscroll/reference research after access failures. New-video reference research now uses YouTube and Instagram only. Do not treat this as a temporary login wait or retry it. TikTok video posting remains unchanged. Historical access notes are retained as history, not active instructions.
