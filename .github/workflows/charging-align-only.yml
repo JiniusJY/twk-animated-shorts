@@ -1,0 +1,39 @@
+name: Charging retained voice alignment only
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  align:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download retained narration, never regenerate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p out/aligned
+          gh run download 45417593399 --name charging-review-voice-45417593399 --dir out/aligned
+      - name: Align retained audio through existing curl helper
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          python - <<'PY'
+          import sys,os,json,pathlib
+          sys.path.insert(0,'scripts')
+          import voice
+          p=pathlib.Path('out/aligned')
+          words=voice.align_groq_whisper(p/'narration.mp3',os.environ['GROQ_API_KEY'])
+          (p/'words.json').write_text(json.dumps(words,indent=2))
+          print('Aligned words',len(words))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: charging-aligned-${{ github.run_id }}
+          path: out/aligned/
+          retention-days: 7
