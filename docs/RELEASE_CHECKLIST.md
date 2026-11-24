@@ -80,3 +80,7 @@ named explicitly with a plan, never silently waved through.
 Log every published variant with `python3 scripts/experiments.py log` (one
 hypothesis, one deliberate change), compare against matched cohorts with
 `experiments.py report`. Never auto-post, and never call one winner a formula.
+
+## Final destination review
+
+Before scheduling or releasing reviewed bytes, run `python scripts/release_gate.py --video <master.mp4> --review <destination-review.json> --expected-seconds <duration>`. It checks the exact SHA-256 against destination pixel/cover/settings review, then runs the unchanged media gate. Missing review fails closed. Review must be repeated for changed bytes. No social-posting API exists in this repository; this is an operator release preflight, not a scheduler-wide automatic guard. CI render output remains a prerelease. See docs/VIDEO_QA_RULES.md.
