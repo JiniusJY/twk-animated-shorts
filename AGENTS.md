@@ -33,3 +33,7 @@ Keep secrets, protected voice credentials and unlicensed assets out of source co
 ## Follow end card
 
 New episodes include a short branded end card after the completed story: Follow @techwhoknows. Keep the handle exact, preserve the payoff before the card, and avoid extra generic like/comment/share requests. The follow line is also spoken once in the voiceover (see `docs/CONTENT_SYSTEM.md` section 5). New-episode creation supplies the card by default; the audio timeline reserves its duration. Record follower conversion and retention as outcomes to measure, never guarantees.
+
+## Release gates
+
+Apply docs/VIDEO_QA_RULES.md phone-app layout checks and per-asset disclosure review. No blanket AI flag and no unasked optional public caveats. A required disclosure is flagged before release, not silently selected. Existing user settings are not overwritten. These project checks do not grant publishing authority.

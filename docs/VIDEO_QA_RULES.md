@@ -15,3 +15,13 @@ Owner feedback,23November2026. Apply to every future episode, not only ice cream
 - Verify final encoded loudness, peak, black intervals, dimensions, duration and media hash. Upload exact approved bytes and read back the scheduled state.
 
 The renderer, caption cues and final encode are one release candidate. Any change to any of them invalidates the relevant QA evidence. User review is not the first QA layer.
+
+## Phone-app layout and disclosure review, 24 November 2026
+
+- Review each destination separately: Instagram Reels, TikTok and YouTube Shorts. Full-frame desktop playback is insufficient.
+- Keep titles, subtitles, logos and essential action clear of the phone status/cutout band, app header, right action rail and collapsed account/caption/navigation area. Test long and short collapsed captions and the intended cover/feed crop.
+- Store per-platform overlay profiles with source URL, retrieval date and whether each margin is an ad-template fallback or an observed organic app measurement. Do not call ad margins an organic guarantee. Device and caption layout vary.
+- Export overlay proof images for every title state, every fixed subtitle cue and each key visual transition. Inspect the exact encoded master, fix collisions, then inspect again. Keep full endcard readable. Never solve safety by shrinking all content until unreadable.
+- A layout revision keeps narration, music, timing and facts unchanged unless separately requested. Recheck hashes and get review before publishing the changed master. Keep affected unpublished records held; never delete/repost existing live posts as a layout fix without approval.
+- No automatic AI-disclosure tick, and no automatic false value. Complete a per-asset, per-platform assessment before release. AI assistance alone is not the test. Flag any specific required exception to the owner before publishing; do not silently override the owner's setting or relabel prior videos.
+- No optional public AI/illustration caveats or source dumps by default. Keep the fact-check ledger internal. Preserve required licence credits, and raise a concrete misleading-content risk or mandatory disclosure briefly before publishing. Do not remove an actually required disclosure silently.
