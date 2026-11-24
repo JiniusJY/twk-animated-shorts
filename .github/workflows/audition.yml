@@ -15,6 +15,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Recover this run audio before a failed-job retry
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: anc-development-narration
+          path: out/anc-narration/
       - name: One full free-model take and existing free alignment
         env:
           FISH_API_KEY: ${{ secrets.FISH_API_KEY }}

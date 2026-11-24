@@ -8,6 +8,9 @@ ep=json.loads(Path('src/episodes/anc-commute/episode.json').read_text())
 assert voice.MODEL_ORDER==('s2.1-pro-free',)
 # Output is uploaded even if alignment fails, so failed-job retries can reuse it.
 mp3=root/'narration.mp3'
+if mp3.exists():
+ old=json.loads((root/'manifest.json').read_text())
+ assert old['script']==ep['script'] and old['voice']==ep['voice'],'Cached take does not match script/settings'
 if not mp3.exists():
  provider,model=voice.synth_fish_audio(ep['script'],mp3,os.environ['FISH_API_KEY'],os.environ['FISH_VOICE_ID'],ep['voice'])
 else:provider,model='fish-audio','s2.1-pro-free'
