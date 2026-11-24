@@ -1,0 +1,223 @@
+{
+  "fps": 30,
+  "world": "office",
+  "musicMood": "mystery",
+  "actors": [],
+  "props": [],
+  "fx": [],
+  "cues": [],
+  "slug": "iphone-charging-finish",
+  "title": "Why the last part of your iPhone charge slows down",
+  "script": "Why does the last twenty percent take forever? You plug in your iPhone, watch it climb, then the finish line starts crawling. Here's what's happening. Early in a normal charge, the battery can accept a higher current. As its voltage reaches the charging limit, the charger holds that voltage and eases the current down. Less current means those last few percent arrive more slowly. But an iPhone sitting at eighty percent overnight can be doing something else. Optimized Battery Charging learns your routine and may wait to finish until you're about to unplug. Heat can limit charging too. So a slow finish and a deliberate pause can look similar. Your phone is managing the battery, even when you're staring at the number. Follow TechWhoKnows for more everyday tech explained.",
+  "sourceUrl": "https://www.apple.com/batteries/why-lithium-ion/",
+  "durationFrames": 1500,
+  "shots": [],
+  "claim_ledger": [
+    {
+      "id": "apple-taper",
+      "claim": "Apple charging slows after about80%, timing depends on device/settings.",
+      "sourceUrl": "https://www.apple.com/batteries/why-lithium-ion/"
+    },
+    {
+      "id": "general-cccv",
+      "claim": "General lithium-ion constant-voltage phase reduces current at regulation voltage. Not an iPhone IC teardown.",
+      "sourceUrl": "https://www.ti.com/lit/ds/symlink/bq21040.pdf"
+    },
+    {
+      "id": "optimized",
+      "claim": "Optimized Battery Charging may delay past80% in an expected long charging session.",
+      "sourceUrl": "https://support.apple.com/en-us/108055"
+    },
+    {
+      "id": "thermal",
+      "claim": "Warmth can limit charging. Not every slowdown is heat.",
+      "sourceUrl": "https://support.apple.com/en-us/108805"
+    }
+  ],
+  "topic_card": {
+    "question": "Why does the last part of an iPhone charge slow down?",
+    "backlog": "Checked17YouTube videos and21Instagram reels24Nov2026. QR permanently excluded.",
+    "caveat": "No exact universal time or measured curve."
+  },
+  "creative_brief": {
+    "promise": "Explain current taper and distinguish optimized overnight pause.",
+    "state": "Voice audition only. Empty shots deliberately prevents pretending unbuilt rigs/storyboard are production-ready. Production script and timing remain provisional."
+  },
+  "reference_research": {
+    "stage": "before_concept",
+    "discovery_notes": "24Nov2026,20:33-20:42SGT. Searched YouTube charging slowdown,80%,battery health and wireless charging; Instagram native-reel web queries returned no candidates. Refreshed own YouTube17video and Instagram21reel backlogs first. QR permanently excluded; GPS rejected as insufficiently relatable. Smaller creators reviewed as well as Techquickie. No creator-relative growth claims or ranking by views. Existing cover log read, experiments report empty, no matched-age analytics conclusion invented. Instagram topic discovery lacks a reviewed new reference in this pass, not claimed covered by the own-channel audit.",
+    "references": [
+      {
+        "id": "techquickie",
+        "url": "https://www.youtube.com/shorts/bBS4i2ZONxM",
+        "creator": "@techquickie",
+        "platform": "YouTube Shorts",
+        "checked_at": "2026-11-24T20:42:00+08:00",
+        "access_notes": "Signed-out browser player accessible; no download, direct hearing or full continuous watch claimed.",
+        "coverage": "sampled_sequence",
+        "audio": "not_heard",
+        "duration_seconds": 35.581,
+        "review_method": "Browser canvas samples at roughly one-second spacing, actual contact sheets inspected. Captions read separately. Sequence supports composition and explanatory structure, not motion pacing.",
+        "extraction": {
+          "video": {
+            "status": "available",
+            "evidence": "refs/techquickie/contact.jpg and sequence.json, sampled1.13-24.40s"
+          },
+          "metadata": {
+            "status": "available",
+            "evidence": "Native browser title, creator and HTML video duration read."
+          },
+          "transcript": {
+            "status": "available",
+            "evidence": "Native player caption snippets retained in sequence JSON, supplemented by web_fetch on native video URL. Auto-caption errors possible."
+          },
+          "audio": {
+            "status": "not_attempted",
+            "evidence": "No audio extraction or direct auditory review. No sound/delivery judgment."
+          }
+        },
+        "observations": [
+          {
+            "at_seconds": 1.13,
+            "observed": "Large concrete problem headline over a charger."
+          },
+          {
+            "at_seconds": 3.14,
+            "observed": "Question promises practical resolution."
+          },
+          {
+            "at_seconds": 9.22,
+            "observed": "Phone and charger coils drawn separately with magnetic-field loops."
+          },
+          {
+            "at_seconds": 19.34,
+            "observed": "Side-view layers make the distance between coils legible."
+          },
+          {
+            "at_seconds": 23.39,
+            "observed": "Cutaway to a real cable plug after diagram."
+          }
+        ],
+        "scores": {
+          "hook": {
+            "value": 4,
+            "reason": "Instant familiar problem and practical question in opening samples."
+          },
+          "pacing": {
+            "value": null,
+            "reason": "One-second sampled sequence is not continuous motion or reliable cut-cadence evidence."
+          },
+          "visuals": {
+            "value": 4,
+            "reason": "Two scales explain an invisible mechanism: exploded coils then side-view gap."
+          },
+          "platform_fit": {
+            "value": 4,
+            "reason": "Large objects and sparse labels survive vertical framing; some labels are small."
+          }
+        }
+      },
+      {
+        "id": "techdesk",
+        "url": "https://www.youtube.com/shorts/IV4Rwp1eIZs",
+        "creator": "@the_tech_desk",
+        "platform": "YouTube Shorts",
+        "checked_at": "2026-11-24T20:42:00+08:00",
+        "access_notes": "Signed-out browser player accessible; no download, direct hearing or full continuous watch claimed.",
+        "coverage": "sampled_sequence",
+        "audio": "not_heard",
+        "duration_seconds": 30.641,
+        "review_method": "Browser canvas samples at roughly one-second spacing, actual contact sheets inspected. Captions read separately. Sequence supports composition and explanatory structure, not motion pacing.",
+        "extraction": {
+          "video": {
+            "status": "available",
+            "evidence": "refs/techdesk/contact.jpg, contact-third.jpg and sequence*.json, samples0.73-30.46s"
+          },
+          "metadata": {
+            "status": "available",
+            "evidence": "Native browser title, creator and HTML video duration read."
+          },
+          "transcript": {
+            "status": "available",
+            "evidence": "Native player caption snippets retained in sequence JSON, supplemented by web_fetch on native video URL. Auto-caption errors possible."
+          },
+          "audio": {
+            "status": "not_attempted",
+            "evidence": "No audio extraction or direct auditory review. No sound/delivery judgment."
+          }
+        },
+        "observations": [
+          {
+            "at_seconds": 0.73,
+            "observed": "Presenter opens on overnight charging claim."
+          },
+          {
+            "at_seconds": 5.78,
+            "observed": "Actual wireless charger illustrates familiar use."
+          },
+          {
+            "at_seconds": 10.78,
+            "observed": "Charging phone B-roll grounds the spoken claim."
+          },
+          {
+            "at_seconds": 13.32,
+            "observed": "Presenter and kinetic caption carry slowdown explanation with no mechanism diagram."
+          },
+          {
+            "at_seconds": 22.39,
+            "observed": "Presenter/caption explains scheduled80% pause."
+          }
+        ],
+        "scores": {
+          "hook": {
+            "value": 3,
+            "reason": "Familiar anxiety, but initial myth is stated before correction."
+          },
+          "pacing": {
+            "value": null,
+            "reason": "One-second sampled sequence is not continuous motion or reliable cut-cadence evidence."
+          },
+          "visuals": {
+            "value": 2,
+            "reason": "Charging B-roll establishes context; mechanism stays verbal in samples."
+          },
+          "platform_fit": {
+            "value": 3,
+            "reason": "Readable face/caption composition, little visual causal explanation."
+          }
+        }
+      }
+    ],
+    "selected_lessons": [
+      {
+        "reference_id": "techquickie",
+        "lesson": "Reveal hidden mechanism at two scales, then return to familiar object.",
+        "application": "Phone charging illustration opens from familiar battery indicator into qualitative voltage/current control, then returns to unplugging.",
+        "do_not_copy": "No purple palette, presenter, exact coil diagram, wording, music, footage or assets."
+      },
+      {
+        "reference_id": "techdesk",
+        "lesson": "Separate a gradual slowdown from a scheduled charging pause, and show the difference rather than leaving it verbal.",
+        "application": "Use two distinct animated states: current gradually tapers; overnight optimized charging holds then resumes before morning.",
+        "do_not_copy": "No myth-first script, face, exact caption treatment, B-roll or unsupported universal50-60% threshold."
+      }
+    ]
+  },
+  "productionStage": "voice-audition-only",
+  "voice": {
+    "temperature": 0.8,
+    "topP": 0.8,
+    "speed": 1.0,
+    "direction": "Curious and conversational, lightly impatient at the wait, clear and measured on mechanism.",
+    "beats": []
+  },
+  "endCard": {
+    "handle": "@techwhoknows",
+    "seconds": 3.2
+  },
+  "captions": {
+    "enabled": true,
+    "maxWordsPerPage": 4,
+    "theme": "editorial"
+  }
+}
