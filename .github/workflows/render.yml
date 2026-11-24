@@ -86,6 +86,8 @@ jobs:
           pip install numpy scipy
           python tests/test_pipeline.py
           python -m unittest discover -s tests -p test_quality.py -v
+          python -m unittest discover -s tests -p test_release_review.py -v
+          python -m unittest discover -s tests -p test_fixed_captions.py -v
 
   storyboard:
     needs: validate
