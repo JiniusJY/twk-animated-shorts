@@ -36,3 +36,5 @@ Downloads are optional. Search in the browser, follow observed native links, rea
 - TikTok: signed-out For You playback and player metadata appeared, but niche search returned no cards in the bounded test and a login modal then appeared over playback. Search and sustained review remain unverified. Existing QR login stays parked; no inference that signing in fixes these gaps.
 
 These are access observations, not universal availability or an autonomous recurring cross-platform scanner. Stop on restrictions and do not turn a downloader bot block into a browser-wide claim. Each next episode refreshes permitted access and records its actual limits.
+
+Bounded follow-up19:35-19:36SGT: clicked the visible TikTok Skip control without starting login. It opened a birthday-entry/signup dialog instead of returning to an unobstructed feed. No values entered, no signup/login submitted. This is the specific observed limit, not an assumed undismissible modal or proof of IP blocking.
