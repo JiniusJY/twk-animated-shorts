@@ -28,8 +28,19 @@ def frame(t):
   crop=(15,145,525,810)
   if t<13.46 or 22.04<=t<25.72:crop=(70,200,470,805)
   if 25.72<=t<27.68:crop=(130,170,515,805)
- # Source action occupies central field. Key labels are retained rather than rebuilding mechanics.
- body=im.crop(crop);body.thumbnail((420,330));bg.paste(body,(30+(420-body.width)//2,220+(330-body.height)//2));d=ImageDraw.Draw(bg)
+ # Shot-specific crops preserve useful phone scale, not the whole tall source panel.
+ if 13.46<=t<19.62:
+  body=im.crop((22,530,518,788));body.thumbnail((370,195));bg.paste(body,(58,350))
+  top=im.crop((155,185,385,470));top.thumbnail((125,155));bg.paste(top,(175,195))
+ elif 19.62<=t<22.04:
+  body=im.crop((50,210,500,755));body.thumbnail((350,340));bg.paste(body,(58+(350-body.width)//2,210))
+ elif 27.68<=t<38.94:
+  body=im.crop((80,210,520,800));body.thumbnail((370,340));bg.paste(body,(58+(370-body.width)//2,210))
+ else:
+  if 2.66<=t<13.46:crop=(65,195,475,805)
+  if 22.04<=t<25.72:crop=(65,280,475,700)
+  body=im.crop(crop);body.thumbnail((370,340));bg.paste(body,(58+(370-body.width)//2,210+(340-body.height)//2))
+ d=ImageDraw.Draw(bg)
  for j,line in enumerate(head):
   n=23
   while d.textlength(line,font=ImageFont.truetype(F,n))>370:n-=1
