@@ -1,4 +1,4 @@
-name: Charging review narration free-only
+name: Huang review narration free-only
 on:
   workflow_dispatch:
 permissions:
@@ -11,16 +11,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Approved review narration, free Fish Vercel route
+      - name: Generate review narration with existing free-model keys
         env:
+          FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
           FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          TWK_DIAGNOSTIC_RELAY_AUTH: ${{ secrets.TWK_DIAGNOSTIC_RELAY_AUTH }}
-          TWK_DIAGNOSTIC_RELAY_BYPASS: ${{ secrets.TWK_DIAGNOSTIC_RELAY_BYPASS }}
-        run: python scripts/charging_review_voice.py
+        run: python scripts/huang_review_voice.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: charging-review-voice-${{ github.run_id }}
-          path: out/charging-review-voice/
+          name: huang-review-voice-${{ github.run_id }}
+          path: out/huang-review-voice/
           retention-days: 7
